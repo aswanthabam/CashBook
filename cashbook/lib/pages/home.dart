@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cashbook/components/appbar.dart';
+import 'package:cashbook/classes/ledger.dart';
+import 'package:cashbook/components/addform.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -9,6 +11,97 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  late Ledger? ledger = null;
+  bool expenseAccount = false;
+  double totalEarning = 0;
+  @override
+  void didUpdateWidget(covariant Home oldWidget) {
+    super.didUpdateWidget(oldWidget);
+  }
+
+  void ledgerChanged(Ledger l) {
+    setState(() {
+      ledger = l;
+    });
+    ledger!
+        .totalMonth(Ledger.getMonthRange(DateTime.now())[0],
+            Ledger.getMonthRange(DateTime.now())[1])
+        .then((val) {
+      setState(() {
+        totalEarning = val.earning - val.expense;
+      });
+    });
+    // AccountModel.load(ledger!.getDatabase(), 1).then((val) {
+    //   val!
+    //       .getStatment(
+    //           ledger!.getDatabase(),
+    //           Ledger.getMonthRange(DateTime.now())[0],
+    //           Ledger.getMonthRange(DateTime.now())[1])
+    //       .then((val2) {
+    //     for (var element in val2!) {
+    //       print("Element : ${element.toMap()}");
+    //     }
+    //   });
+    // });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    Ledger.load(1).then((value) {
+      if (value == null) {
+        print("Ledger not loaded or creating");
+      } else {
+        ledger = value;
+        ledger!.setChangeNotifier(ledgerChanged);
+        ledger!
+            .totalMonth(
+                DateTime.now().copyWith(hour: 0, minute: 0, day: 1),
+                DateTime.now().copyWith(
+                    hour: 0,
+                    minute: 0,
+                    day: 1,
+                    month: (DateTime.now().month + 1) % 12))
+            .then((val) {
+          setState(() {
+            totalEarning = val.earning - val.expense;
+          });
+        });
+        print("LEDGER CREATED or loaded");
+      }
+    });
+  }
+
+  void addExpense() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AddExpenseForm(
+            ledger: ledger!,
+          );
+        });
+  }
+
+  void addEarning() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AddEarningForm(
+            ledger: ledger!,
+          );
+        });
+  }
+
+  void addAccount() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AddAccountForm(
+            ledger: ledger!,
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,7 +140,7 @@ class _HomeState extends State<Home> {
                                 ),
                                 const SizedBox(height: 10),
                                 Text(
-                                  "110.4\$",
+                                  "${ledger == null ? 0 : ledger!.expense}",
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                       fontSize: 30,
@@ -72,7 +165,7 @@ class _HomeState extends State<Home> {
                                 ),
                                 const SizedBox(height: 10),
                                 Text(
-                                  "100\$",
+                                  "${ledger == null ? 0 : ledger!.earning}",
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                       fontSize: 30,
@@ -88,15 +181,16 @@ class _HomeState extends State<Home> {
                   ],
                 ),
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   EntityButton(
-                      onClick: () {}, text: "Expence", icon: Icons.add),
+                      onClick: addExpense, text: "Expence", icon: Icons.add),
                   EntityButton(
-                      onClick: () {}, text: "Earnings", icon: Icons.add),
-                  EntityButton(onClick: () {}, text: "Account", icon: Icons.add)
+                      onClick: addEarning, text: "Earnings", icon: Icons.add),
+                  EntityButton(
+                      onClick: addAccount, text: "Account", icon: Icons.add)
                 ],
               ),
               const SizedBox(height: 20),
@@ -117,9 +211,11 @@ class _HomeState extends State<Home> {
                       children: [
                         Text("Total This Month"),
                         Text(
-                          "-10.4\$",
+                          "${totalEarning}",
                           style: TextStyle(
-                              color: Colors.red.shade500,
+                              color: totalEarning > 0
+                                  ? Colors.green.shade500
+                                  : Colors.red.shade500,
                               fontWeight: FontWeight.w700),
                         )
                       ],
@@ -174,7 +270,7 @@ class _HomeState extends State<Home> {
                       children: [
                         Text("Net Balance"),
                         Text(
-                          "500\$",
+                          "${ledger == null ? 0 : (ledger!.ledger.cashBalance + ledger!.ledger.bankBalance)}/-",
                           style: TextStyle(
                               color: Colors.green.shade500,
                               fontWeight: FontWeight.w700),
