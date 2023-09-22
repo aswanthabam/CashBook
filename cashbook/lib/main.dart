@@ -15,6 +15,7 @@ class Main extends StatelessWidget {
       routes: {"home": (context) => Home()},
       initialRoute: "home",
       debugShowCheckedModeBanner: false,
+      theme: ThemeData(fontFamily: "poppins"),
     );
   }
 }
