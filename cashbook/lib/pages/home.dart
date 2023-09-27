@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cashbook/components/appbar.dart';
 import 'package:cashbook/classes/ledger.dart';
 import 'package:cashbook/components/addform.dart';
+import 'package:cashbook/global.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -14,6 +15,8 @@ class _HomeState extends State<Home> {
   late Ledger? ledger = null;
   bool expenseAccount = false;
   double totalEarning = 0;
+  String topExpenceAC = "---";
+  String topEarningAC = "---";
   @override
   void didUpdateWidget(covariant Home oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -31,18 +34,40 @@ class _HomeState extends State<Home> {
         totalEarning = val.earning - val.expense;
       });
     });
-    // AccountModel.load(ledger!.getDatabase(), 1).then((val) {
-    //   val!
-    //       .getStatment(
-    //           ledger!.getDatabase(),
-    //           Ledger.getMonthRange(DateTime.now())[0],
-    //           Ledger.getMonthRange(DateTime.now())[1])
-    //       .then((val2) {
-    //     for (var element in val2!) {
-    //       print("Element : ${element.toMap()}");
-    //     }
-    //   });
-    // });
+    AccountModel.all(ledger!.getDatabase()).then((value) async {
+      Map<String, double> ear = {};
+      Map<String, double> exp = {};
+      for (var x in value) {
+        for (var i in (await x.getStatment(
+            ledger!.getDatabase(),
+            Ledger.getMonthRange(DateTime.now())[0],
+            Ledger.getMonthRange(DateTime.now())[1]))!) {
+          if (x.expenseAccount) {
+            exp[x.name] = exp.putIfAbsent(x.name, () => 0) + i.amount;
+          } else {
+            ear[x.name] = ear.putIfAbsent(x.name, () => 0) + i.amount;
+          }
+        }
+      }
+      double gr = 0, gr2 = 0;
+      String expGR = "---", earGR = "---";
+      ear.forEach((key, val) {
+        if (val > gr) {
+          gr = val;
+          earGR = key;
+        }
+      });
+      exp.forEach((key, val) {
+        if (val > gr2) {
+          gr2 = val;
+          expGR = key;
+        }
+      });
+      setState(() {
+        topEarningAC = earGR;
+        topExpenceAC = expGR;
+      });
+    });
   }
 
   @override
@@ -50,7 +75,7 @@ class _HomeState extends State<Home> {
     super.initState();
     Ledger.load(1).then((value) {
       if (value == null) {
-        print("Ledger not loaded or creating");
+        Global.log.w("Ledger not created!");
       } else {
         ledger = value;
         ledger!.setChangeNotifier(ledgerChanged);
@@ -67,7 +92,7 @@ class _HomeState extends State<Home> {
             totalEarning = val.earning - val.expense;
           });
         });
-        print("LEDGER CREATED or loaded");
+        Global.log.i("LEDGER CREATED or loaded");
       }
     });
   }
@@ -232,7 +257,7 @@ class _HomeState extends State<Home> {
                       children: [
                         Text("Major Spending on "),
                         Text(
-                          "Food A/C",
+                          topExpenceAC,
                           style: TextStyle(
                               color: Colors.red.shade500,
                               fontWeight: FontWeight.w700),
@@ -251,7 +276,7 @@ class _HomeState extends State<Home> {
                       children: [
                         Text("Major Earnings Threw"),
                         Text(
-                          "Salary A/c",
+                          topEarningAC,
                           style: TextStyle(
                               color: Colors.green.shade500,
                               fontWeight: FontWeight.w700),

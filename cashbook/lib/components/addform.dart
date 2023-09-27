@@ -84,16 +84,17 @@ class _AddEarningFormState extends State<AddEarningForm> {
             Spacer(),
             TextButton(
                 onPressed: () async {
-                  print(await widget.ledger.insertEntity(
-                      EntityModel(
-                          id: null,
-                          amount: double.parse(amountController.text),
-                          bank: fromBank,
-                          toAccount: await AccountModel.load(
-                              widget.ledger.getDatabase(),
-                              int.parse(accountController.text)),
-                          datetime: DateTime.parse(datetimeController.text)),
-                      widget.ledger.ledger));
+                  print(await widget.ledger.insertEntity(EntityModel(
+                      db: widget.ledger.getDatabase(),
+                      id: null,
+                      amount: double.parse(amountController.text),
+                      bank: fromBank,
+                      toAccount: (await AccountModel.get(
+                          widget.ledger.getDatabase(),
+                          int.parse(accountController.text)))!,
+                      datetime: DateTime.parse(datetimeController.text),
+                      accountId: int.parse(accountController.text),
+                      ledgerId: 1)));
                 },
                 child: Text("Add"))
           ]),
@@ -158,12 +159,13 @@ class _AddExpenseFormState extends State<AddExpenseForm> {
             TextButton(
                 onPressed: () async {
                   print(await widget.ledger!.insertAccount(AccountModel(
-                    id: null,
-                    name: controller.text,
-                    expenceAccount: expenseAccount,
-                    openingBalance: double.parse(openBalController.text),
-                    currentBalance: double.parse(curBalController.text),
-                  )));
+                      db: widget.ledger.getDatabase(),
+                      id: null,
+                      name: controller.text,
+                      expenseAccount: expenseAccount,
+                      openingBalance: double.parse(openBalController.text),
+                      currentBalance: double.parse(curBalController.text),
+                      ledgerId: 1)));
                 },
                 child: Text("Add"))
           ]),
@@ -228,16 +230,17 @@ class _AddAccountFormState extends State<AddAccountForm> {
             TextButton(
                 onPressed: () async {
                   print(await widget.ledger!.insertAccount(AccountModel(
-                    id: null,
-                    name: controller.text,
-                    expenceAccount: expenseAccount,
-                    openingBalance: openBalController.text.isEmpty
-                        ? 0
-                        : double.parse(openBalController.text),
-                    currentBalance: curBalController.text.isEmpty
-                        ? 0
-                        : double.parse(curBalController.text),
-                  )));
+                      db: widget.ledger.getDatabase(),
+                      id: null,
+                      name: controller.text,
+                      expenseAccount: expenseAccount,
+                      openingBalance: openBalController.text.isEmpty
+                          ? 0
+                          : double.parse(openBalController.text),
+                      currentBalance: curBalController.text.isEmpty
+                          ? 0
+                          : double.parse(curBalController.text),
+                      ledgerId: 1)));
                 },
                 child: Text("Add"))
           ]),

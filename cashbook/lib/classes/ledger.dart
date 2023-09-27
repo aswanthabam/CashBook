@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:flutter/material.dart';
+import '../global.dart';
 
 class CashData {
   double earning = 0, expense = 0;
@@ -25,13 +26,15 @@ class Ledger {
     CashData month = CashData();
     if (data != null) {
       for (var element in data) {
-        if (element.toAccount!.expenceAccount) {
+        if (element.toAccount.expenseAccount) {
           month.expense += element.amount;
         } else {
           month.earning += element.amount;
         }
       }
     }
+    Global.log.i(
+        "Calculated total month Total\nTotal records in time period : ${data!.length}\nEarnings : ${month.earning}\nExpense : ${month.expense}");
     return month;
   }
 
@@ -40,15 +43,7 @@ class Ledger {
       String sql = "select * from Entity where datetime between ? and ?";
       List<Map<String, dynamic>> maps = await _ledgerDB.rawQuery(sql,
           [from.toLocal().toIso8601String(), to.toLocal().toIso8601String()]);
-      List<EntityModel> lst = [];
-      for (var element in maps
-          .map((e) async => await EntityModel.load(_ledgerDB, e['id']))) {
-        if (await element == null) {
-          continue;
-        } else {
-          lst.add((await element)!);
-        }
-      }
+      List<EntityModel> lst = await EntityModel.loadData(_ledgerDB, maps);
       return lst;
     } catch (err) {
       print("Recors date: " + err.toString());
@@ -60,26 +55,20 @@ class Ledger {
     Ledger l = Ledger();
     await l.loadDatabases();
     await l.createTables(l._ledgerDB);
-    LedgerModel? model = await LedgerModel.load(l._ledgerDB, 1);
+    LedgerModel? model = await LedgerModel.get(l._ledgerDB, 1);
     if (model == null) {
-      l.ledger = const LedgerModel(
-          id: 1, cashBalance: 0, bankBalance: 0, entitites: [], accounts: []);
-      await l.createLedger(l.ledger);
+      l.ledger = LedgerModel(
+          db: l._ledgerDB,
+          id: 1,
+          cashBalance: 0,
+          bankBalance: 0,
+          entitites: [],
+          accounts: []);
+      await l.ledger.insert();
     } else {
       l.ledger = model;
     }
     return l;
-  }
-
-  Future<bool> createLedger(LedgerModel model) async {
-    try {
-      await _ledgerDB.insert("Ledger", model.toMap(),
-          conflictAlgorithm: ConflictAlgorithm.abort);
-      return true;
-    } catch (err) {
-      print("CREATE LEDGER : $err");
-      return false;
-    }
   }
 
   Future<int?> insertAccount(AccountModel account) async {
@@ -87,37 +76,32 @@ class Ledger {
       if (account.openingBalance != 0 && account.currentBalance == 0) {
         account.currentBalance = account.openingBalance;
       }
-      if (account.expenceAccount) {
+      if (account.expenseAccount) {
         expense += account.currentBalance;
       } else {
         earning += account.currentBalance;
       }
+      int? l = await account.insert();
       notify();
-      return await _ledgerDB.insert("Account", account.toMap(),
-          conflictAlgorithm: ConflictAlgorithm.abort);
+      return l;
     } catch (err) {
       print("Account creation : $err");
       return null;
     }
   }
 
-  Future<int?> insertEntity(EntityModel entity, LedgerModel ledger) async {
+  Future<int?> insertEntity(EntityModel entity) async {
     try {
-      int account_id = entity.toAccount!.id!;
-      int entity_id = await _ledgerDB.insert("Entity", entity.toMap(),
-          conflictAlgorithm: ConflictAlgorithm.abort);
-      await _ledgerDB.insert(
-          "EntityAccount", {'entity_id': entity_id, 'account_id': account_id},
-          conflictAlgorithm: ConflictAlgorithm.abort);
-      if (entity.toAccount!.expenceAccount) {
+      if (entity.toAccount.expenseAccount) {
         expense += entity.amount;
       } else {
         earning += entity.amount;
       }
+      int? l = await entity.insert();
       notify();
-      return entity_id;
+      return l;
     } catch (err) {
-      print("ONE" + err.toString());
+      print("insert Entrity" + err.toString());
       return null;
     }
   }
@@ -159,7 +143,11 @@ class Ledger {
         amount REAL NOT NULL,
         bank BOOLEAN NOT NULL,
         datetime DATETIME NOT NULL,
-        notes TEXT);
+        notes TEXT,
+        ledger_id INTEGER NOT NULL,
+        account_id INTEGER NOT NULL,
+        FOREIGN KEY(ledger_id) REFERENCES Ledger(id),
+        FOREIGN KEY(account_id) REFERENCES Account(id));
       """);
       await db.execute(""" 
         CREATE TABLE Account (
@@ -168,28 +156,9 @@ class Ledger {
         expenseAccount BOOLEAN NOT NULL,
         openingBalance REAL NOT NULL DEFAULT 0,
         currentBalance REAL NOT NULL DEFAULT 0,
-        notes TEXT);
-      """);
-      await db.execute(""" 
-        CREATE TABLE LedgerEntity (
+        notes TEXT,
         ledger_id INTEGER NOT NULL,
-        entity_id INTEGER NOT NULL,
-        FOREIGN KEY(ledger_id) REFERENCES Ledger(id),
-        FOREIGN KEY(entity_id) REFERENCES Entity(id));
-      """);
-      await db.execute(""" 
-        CREATE TABLE LedgerAccount (
-        account_id INTEGER NOT NULL,
-        ledger_id INTEGER NOT NULL,
-        FOREIGN KEY(account_id) REFERENCES Account(id),
         FOREIGN KEY(ledger_id) REFERENCES Ledger(id));
-      """);
-      await db.execute(""" 
-        CREATE TABLE EntityAccount (
-        account_id INTEGER NOT NULL,
-        entity_id INTEGER NOT NULL,
-        FOREIGN KEY(account_id) REFERENCES Account(id),
-        FOREIGN KEY(entity_id) REFERENCES Entity(id));
       """);
     } catch (err) {
       print("Create : $err");
@@ -211,21 +180,21 @@ class Ledger {
 }
 
 // Database models
-class LedgerModel {
+class LedgerModel extends Model {
   final int id;
   final double cashBalance;
   final double bankBalance;
   final List<EntityModel> entitites;
   final List<AccountModel> accounts;
   final String? notes;
-  const LedgerModel(
-      {required this.id,
+  LedgerModel(
+      {required super.db,
+      required this.id,
       required this.cashBalance,
       required this.bankBalance,
       required this.entitites,
       required this.accounts,
       this.notes});
-
   Map<String, dynamic> toMap() {
     return {
       'id': id,
@@ -235,45 +204,90 @@ class LedgerModel {
     };
   }
 
-  static Future<LedgerModel?> load(Database db, int id) async {
+  @override
+  Future<int?> insert() async {
     try {
-      LedgerModel l;
-      final List<Map<String, dynamic>> maps =
-          await db.query("Ledger", where: "id=?", whereArgs: [id]);
-      List<LedgerModel> list = List.generate(maps.length, (i) {
-        return LedgerModel(
-            id: maps[i]['id'],
-            cashBalance: maps[i]['cashBalance'],
-            bankBalance: maps[i]['bankBalance'],
-            entitites: maps[i]['entitites'],
-            accounts: maps[i]['accounts']);
-      });
-      if (list.isNotEmpty) {
-        l = list[0];
-        return l;
-      } else {
-        return null;
-      }
-    } catch (err) {
-      print("Ledger model load : $err");
+      return await db.insert("Ledger", toMap(),
+          conflictAlgorithm: ConflictAlgorithm.abort);
+    } catch (e) {
+      print("Insert Ledger : $e");
+      return null;
     }
+  }
+
+  @override
+  Future<bool> update() async {
+    try {
+      await db.update("Ledger", toMap(),
+          conflictAlgorithm: ConflictAlgorithm.abort);
+      return true;
+    } catch (e) {
+      print("Update ledger : $e");
+      return false;
+    }
+  }
+
+  @override
+  Future<bool> delete() async {
+    try {
+      await db.delete("Ledger", where: "id=?", whereArgs: [id]);
+      return true;
+    } catch (e) {
+      print("Delete : $e");
+      return false;
+    }
+  }
+
+  static Future<LedgerModel?> get(Database db, int id) async {
+    List<Map<String, dynamic>> res =
+        await db.query("Ledger", where: "id=?", whereArgs: [id]);
+    if (res.isEmpty) {
+      return null;
+    } else {
+      return LedgerModel(
+          db: db,
+          id: id,
+          cashBalance: res[0]['cashBalance'],
+          bankBalance: res[0]['bankBalance'],
+          entitites: res[0]['entitites'],
+          accounts: res[0]['accounts']);
+    }
+  }
+
+  static Future<List<LedgerModel>> loadData(
+      Database db, List<Map<String, dynamic>> data) async {
+    List<LedgerModel> d = [];
+    for (var res in data) {
+      d.add(LedgerModel(
+          db: db,
+          id: res['id'],
+          cashBalance: res['cashBalance'],
+          bankBalance: res['bankBalance'],
+          entitites: res['entitites'],
+          accounts: res['accounts']));
+    }
+    return d;
   }
 }
 
-class EntityModel {
+class EntityModel extends Model {
   final int? id;
   final double amount;
   final bool bank;
-  final AccountModel? toAccount;
+  final AccountModel toAccount;
   final DateTime datetime;
   final String? notes;
-
-  const EntityModel(
-      {required this.id,
+  final int ledgerId;
+  final int accountId;
+  EntityModel(
+      {required super.db,
+      required this.id,
       required this.amount,
       required this.bank,
       required this.toAccount,
       required this.datetime,
+      required this.ledgerId,
+      required this.accountId,
       this.notes});
   Map<String, dynamic> toMap() {
     return {
@@ -281,113 +295,243 @@ class EntityModel {
       'amount': amount,
       'bank': bank,
       'datetime': datetime.toIso8601String(),
-      'notes': notes
+      'notes': notes,
+      'ledger_id': ledgerId,
+      'account_id': accountId
     };
   }
 
-  static Future<EntityModel?> load(Database db, int id) async {
+  @override
+  Future<int?> insert() async {
     try {
-      EntityModel model;
-      List<Map<String, dynamic>> m =
-          await db.rawQuery("select * from Entity where id=?", [id]);
-      if (m.isEmpty) {
-        print("Empty record");
-        return null;
-      }
-      List<Map<String, dynamic>> am = await db
-          .rawQuery("select * from EntityAccount where entity_id=?", [id]);
-      if (am.isEmpty) {
-        print("Empty account data");
-        return null;
-      }
-
-      model = EntityModel(
-          id: m[0]['id'],
-          amount: m[0]['amount'],
-          bank: m[0]['bank'] == 0 ? false : true,
-          toAccount: await AccountModel.load(db, am[0]['account_id']),
-          datetime: DateTime.parse(m[0]['datetime']));
-      return model;
-    } catch (err) {
-      print("Entity model load : $err");
+      return await db.insert("Entity", toMap(),
+          conflictAlgorithm: ConflictAlgorithm.abort); // Insert a new entity
+    } catch (e) {
+      print("Insert Ledger : $e");
       return null;
     }
   }
+
+  @override
+  Future<bool> update() async {
+    try {
+      await db.update("Entity", toMap(),
+          conflictAlgorithm: ConflictAlgorithm.abort); // update record
+      return true;
+    } catch (e) {
+      print("Update ledger : $e");
+      return false;
+    }
+  }
+
+  @override
+  Future<bool> delete() async {
+    try {
+      await db
+          .delete("Entity", where: "id=?", whereArgs: [id]); // delete record
+      return true;
+    } catch (e) {
+      print("Delete : $e");
+      return false;
+    }
+  }
+
+  static Future<EntityModel?> get(Database db, int id) async {
+    List<Map<String, dynamic>> res =
+        await db.query("Entity", where: "id=?", whereArgs: [id]);
+    if (res.isEmpty) {
+      return null;
+    } else {
+      return EntityModel(
+          db: db,
+          id: id,
+          amount: res[0]['amount'],
+          bank: res[0]['bank'] == 0 ? false : true,
+          toAccount: (await AccountModel.get(db, res[0]['account_id']))!,
+          datetime: DateTime.parse(res[0]['datetime']),
+          ledgerId: res[0]['ledger_id'],
+          accountId: res[0]['account_id']);
+    }
+  }
+
+  static Future<List<EntityModel>> all(Database db) async {
+    List<Map<String, dynamic>> res = await db.query("Entity");
+    List<EntityModel> e = [];
+    if (res.isEmpty) {
+      return e;
+    } else {
+      for (var r in res) {
+        e.add(EntityModel(
+            db: db,
+            id: r['id'],
+            amount: r['amount'],
+            bank: r['bank'] == 0 ? false : true,
+            toAccount: (await AccountModel.get(db, r['account_id']))!,
+            datetime: DateTime.parse(r['datetime']),
+            ledgerId: r['ledger_id'],
+            accountId: r['account_id']));
+      }
+      return e;
+    }
+  }
+
+  static Future<List<EntityModel>> loadData(
+      Database db, List<Map<String, dynamic>> data) async {
+    List<EntityModel> d = [];
+    for (var res in data) {
+      d.add(EntityModel(
+          db: db,
+          id: res['id'],
+          amount: res['amount'],
+          bank: res['bank'] == 0 ? false : true,
+          toAccount: (await AccountModel.get(db, res['account_id']))!,
+          datetime: DateTime.parse(res['datetime']),
+          ledgerId: res['ledger_id'],
+          accountId: res['account_id']));
+    }
+    return d;
+  }
 }
 
-class AccountModel {
+class AccountModel extends Model {
   int? id;
   String name;
-  bool expenceAccount;
+  bool expenseAccount;
   double openingBalance;
   double currentBalance;
   String? notes;
+  int ledgerId;
   AccountModel(
-      {required this.id,
+      {required super.db,
+      required this.id,
       required this.name,
-      required this.expenceAccount,
+      required this.expenseAccount,
       required this.openingBalance,
       required this.currentBalance,
+      required this.ledgerId,
       this.notes});
   Map<String, dynamic> toMap() {
     return {
       'id': id,
       'name': name,
-      'expenseAccount': expenceAccount,
+      'expenseAccount': expenseAccount,
       'openingBalance': openingBalance,
       'currentBalance': currentBalance,
-      'notes': notes
+      'notes': notes,
+      'ledger_id': ledgerId
     };
   }
 
-  static Future<AccountModel?> load(Database db, int id) async {
+  @override
+  Future<int?> insert() async {
     try {
-      AccountModel model;
-      List<Map<String, dynamic>> m =
-          await db.rawQuery("select * from Account where id=?", [id]);
-      if (m.isEmpty) {
-        print("Empty record");
-        return null;
-      }
-      // print(m);
-      model = AccountModel(
-          id: m[0]['id'],
-          name: m[0]['name'],
-          expenceAccount: m[0]['expenseAccount'] == 0 ? false : true,
-          openingBalance: m[0]['openingBalance'],
-          currentBalance: m[0]['currentBalance']);
-      return model;
-    } catch (err) {
-      print("Account Model Load : $err");
+      return await db.insert("Account", toMap(),
+          conflictAlgorithm: ConflictAlgorithm.abort); // Insert a new account
+    } catch (e) {
+      print("Insert Ledger : $e");
       return null;
     }
+  }
+
+  @override
+  Future<bool> update() async {
+    try {
+      await db.update("Account", toMap(),
+          conflictAlgorithm: ConflictAlgorithm.abort); // update record
+      return true;
+    } catch (e) {
+      print("Update ledger : $e");
+      return false;
+    }
+  }
+
+  @override
+  Future<bool> delete() async {
+    try {
+      await db
+          .delete("Account", where: "id=?", whereArgs: [id]); // delete record
+      return true;
+    } catch (e) {
+      print("Delete : $e");
+      return false;
+    }
+  }
+
+  static Future<AccountModel?> get(Database db, int id) async {
+    List<Map<String, dynamic>> res =
+        await db.query("Account", where: "id=?", whereArgs: [id]);
+    if (res.isEmpty) {
+      return null;
+    } else {
+      return AccountModel(
+          db: db,
+          id: id,
+          name: res[0]['name'],
+          expenseAccount: res[0]['expenseAccount'] == 0 ? false : true,
+          openingBalance: res[0]['openingBalance'],
+          currentBalance: res[0]['currentBalance'],
+          ledgerId: res[0]['ledger_id']);
+    }
+  }
+
+  static Future<List<AccountModel>> all(Database db) async {
+    List<Map<String, dynamic>> res = await db.query("Account");
+    if (res.isEmpty) {
+      return [];
+    } else {
+      List<AccountModel> e = [];
+      for (var r in res) {
+        e.add(AccountModel(
+            db: db,
+            id: r['id'],
+            name: r['name'],
+            expenseAccount: r['expenseAccount'] == 0 ? false : true,
+            openingBalance: r['openingBalance'],
+            currentBalance: r['currentBalance'],
+            ledgerId: r['ledger_id']));
+      }
+      return e;
+    }
+  }
+
+  static Future<List<AccountModel>> loadData(
+      Database db, List<Map<String, dynamic>> data) async {
+    List<AccountModel> d = [];
+    for (var res in data) {
+      d.add(AccountModel(
+          db: db,
+          id: res['id'],
+          name: res['name'],
+          expenseAccount: res['expenseAccount'] == 0 ? false : true,
+          openingBalance: res['openingBalance'],
+          currentBalance: res['currentBalance'],
+          ledgerId: res['ledger_id']));
+    }
+    return d;
   }
 
   Future<List<EntityModel>?> getStatment(
       Database db, DateTime from, DateTime to) async {
     try {
       CashData data = CashData();
-      List<Map<String, dynamic>> m = await db
-          .rawQuery("select * from EntityAccount where account_id=?", [id]);
+      List<Map<String, dynamic>> m = await db.rawQuery(
+          "select * from Entity where account_id=? and datetime between ? and ?",
+          [
+            id,
+            from.toLocal().toIso8601String(),
+            to.toLocal().toIso8601String()
+          ]);
       List<EntityModel> ens = [];
       for (var element in m) {
-        var e_id = element['entity_id'];
-        List<Map<String, dynamic>> edata = await db.rawQuery(
-            "select * from Entity where id=? and datetime between ? and ?", [
-          e_id,
-          from.toLocal().toIso8601String(),
-          to.toLocal().toIso8601String()
-        ]);
-        if (edata.isEmpty) {
-          continue;
-        } else {
-          ens.add(EntityModel(
-              id: edata[0]['id'],
-              amount: edata[0]['amount'],
-              bank: edata[0]['bank'] == 0 ? false : true,
-              toAccount: this,
-              datetime: DateTime.parse(edata[0]['datetime'])));
-        }
+        ens.add(EntityModel(
+            db: db,
+            id: element['id'],
+            amount: element['amount'],
+            bank: element['bank'] == 0 ? false : true,
+            toAccount: this,
+            datetime: DateTime.parse(element['datetime']),
+            ledgerId: element['ledger_id'],
+            accountId: element['account_id']));
       }
       return ens;
     } catch (err) {
@@ -395,4 +539,13 @@ class AccountModel {
       return null;
     }
   }
+}
+
+abstract class Model {
+  Database db;
+  Model({required this.db});
+  Future<int?> insert();
+  Future<bool> delete();
+  Future<bool> update();
+  // Future<List<Model>> all();
 }
