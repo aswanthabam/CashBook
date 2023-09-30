@@ -5,10 +5,10 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
       {super.key,
       this.height = kToolbarHeight,
       this.onMenuClick,
-      this.onAccountClick});
+      this.onSettingsClick});
   double height;
   Function()? onMenuClick;
-  Function()? onAccountClick;
+  Function()? onSettingsClick;
   @override
   Size get preferredSize => Size.fromHeight(height);
   @override
@@ -37,9 +37,9 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
             ],
           ),
           IconButton(
-              onPressed: onMenuClick,
+              onPressed: onSettingsClick,
               icon: Icon(
-                Icons.account_circle,
+                Icons.settings,
               )),
         ],
       ),

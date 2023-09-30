@@ -1,22 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:cashbook/components/appbar.dart';
 import 'package:cashbook/classes/ledger.dart';
-import 'package:cashbook/components/addform.dart';
+import 'package:cashbook/pages/addform.dart';
 import 'package:cashbook/global.dart';
+import '../classes/models.dart';
 
 class Home extends StatefulWidget {
-  const Home({super.key});
-
+  Home({super.key, required this.ledger});
+  Ledger ledger;
   @override
   State<Home> createState() => _HomeState();
 }
 
 class _HomeState extends State<Home> {
-  late Ledger? ledger = null;
+  Ledger? ledger;
   bool expenseAccount = false;
   double totalEarning = 0;
   String topExpenceAC = "---";
   String topEarningAC = "---";
+  double expense = 0, earning = 0;
   @override
   void didUpdateWidget(covariant Home oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -73,12 +75,13 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    Ledger.load(1).then((value) {
-      if (value == null) {
+    // ledger = widget.ledger;
+    ledger = Ledger();
+    ledger!.loaded.then((value) {
+      if (!value) {
         Global.log.w("Ledger not created!");
       } else {
-        ledger = value;
-        ledger!.setChangeNotifier(ledgerChanged);
+        ledger!.setChangeNotifier(ledgerChanged, "home");
         ledger!
             .totalMonth(
                 DateTime.now().copyWith(hour: 0, minute: 0, day: 1),
@@ -92,45 +95,38 @@ class _HomeState extends State<Home> {
             totalEarning = val.earning - val.expense;
           });
         });
+
         Global.log.i("LEDGER CREATED or loaded");
       }
     });
   }
 
   void addExpense() {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AddExpenseForm(
-            ledger: ledger!,
-          );
-        });
+    // showDialog(
+    //     context: context,
+    //     builder: (context) {
+    //       return AddExpenseForm(
+    //         ledger: ledger!,
+    //       );
+    //     });
   }
 
   void addEarning() {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AddEarningForm(
-            ledger: ledger!,
-          );
-        });
+    Navigator.pushNamed(context, "addentity");
   }
 
   void addAccount() {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AddAccountForm(
-            ledger: ledger!,
-          );
-        });
+    Navigator.pushNamed(context, "addaccount");
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: MyAppBar(),
+      appBar: MyAppBar(
+        onSettingsClick: () {
+          Navigator.pushNamed(context, "settings");
+        },
+      ),
       body: Padding(
           padding: const EdgeInsets.all(10),
           child: Column(
@@ -295,7 +291,7 @@ class _HomeState extends State<Home> {
                       children: [
                         Text("Net Balance"),
                         Text(
-                          "${ledger == null ? 0 : (ledger!.ledger.cashBalance + ledger!.ledger.bankBalance)}/-",
+                          "${ledger == null ? 0 : (!ledger!.is_loaded ? "?" : (ledger!.ledger.cashBalance + ledger!.ledger.bankBalance))}/-",
                           style: TextStyle(
                               color: Colors.green.shade500,
                               fontWeight: FontWeight.w700),
