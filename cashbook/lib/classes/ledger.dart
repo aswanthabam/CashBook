@@ -14,7 +14,7 @@ class Ledger {
   static late Database _database;
   late LedgerModel ledger;
 
-  double expense = 0, earning = 0;
+  double expense = 0, earning = 0, savings = 0;
   Map<String, Function(Ledger)> changeNotifier = {};
   late Future<bool> loaded;
   bool is_loaded = false;
@@ -57,16 +57,20 @@ class Ledger {
         ledger = model;
         for (var acc in ledger.accounts) {
           print(acc.toMap());
-          if (acc.expenseAccount) {
+          if (acc.type == "expense") {
             expense += acc.currentBalance;
-          } else {
+          } else if (acc.type == "earning") {
+            // -------------------- NEED CHANGE
             earning += acc.currentBalance;
+          } else {
+            savings += acc.currentBalance;
           }
         }
       }
       Global.log.t("""Loaded Ledger:\n
   expense : $expense
   earning : $earning
+  savings : $savings
   Ledger : $ledger
   Accounts :
     ${ledger.accounts.toString().replaceAll("[", "").replaceAll(']', '')}""");
@@ -85,15 +89,21 @@ class Ledger {
     CashData month = CashData();
     if (data != null) {
       for (var element in data) {
-        if (element.toAccount.expenseAccount) {
+        if (element.toAccount.type == "expense") {
           month.expense += element.amount;
+        } else if (element.toAccount.type == "earning") {
+          month.earning += element.amount;
+          Global.log.f("Rare condition : toAccout Earning");
         } else {
+          month.savings += element.amount;
+        }
+        if (element.fromAccount.type == "earning") {
           month.earning += element.amount;
         }
       }
     }
-    Global.log.i(
-        "Calculated total month Total\nTotal records in time period : ${data!.length}\nEarnings : ${month.earning}\nExpense : ${month.expense}");
+    Global.log.t(
+        "Calculated total month Total\nTotal records in time period : ${data!.length}\nEarnings : ${month.earning}\nExpense : ${month.expense}\nSavings: ${month.savings}");
     return month;
   }
 
@@ -126,10 +136,12 @@ class Ledger {
       if (account.openingBalance != 0 && account.currentBalance == 0) {
         account.currentBalance = account.openingBalance;
       }
-      if (account.expenseAccount) {
+      if (account.type == "expense") {
         expense += account.currentBalance;
-      } else {
+      } else if (account.type == "earning") {
         earning += account.currentBalance;
+      } else {
+        savings += account.currentBalance;
       }
       int? l = await account.insert();
       Global.log.t("Created Account : $account");
@@ -147,19 +159,41 @@ class Ledger {
       Global.log.w("Ledger not loaded : insertEntity : loaded");
     }
     try {
-      if (entity.toAccount.expenseAccount) {
+      if (entity.toAccount.type == "expense") {
         expense += entity.amount;
-      } else {
+        if (entity.fromAccount.type == "savings") {
+          savings -= entity.amount; // debit amount from savings
+        }
+      } else if (entity.toAccount.type == "earning") {
         earning += entity.amount;
+        Global.log.f("""A rare condition occured:
+        Received to an earning account
+        $entity
+        fromaccount:${entity.fromAccount}
+        toaccount:${entity.toAccount}
+        This may cause huge error in future""");
+      } else {
+        if (entity.fromAccount.type != "savings") {
+          savings += entity.amount; // dont want to do twise
+        }
       }
       entity.toAccount.currentBalance += entity.amount;
-      Global.log.t(
-          """Adding a new entity (type : ${entity.toAccount.expenseAccount ? "Expense" : "Earning"})
+
+      if (entity.fromAccount.type == "earning") {
+        entity.fromAccount.currentBalance += entity
+            .amount; // in case of receive from earning,want to add the amount to current balance
+        earning += entity.amount;
+      } else {
+        entity.fromAccount.currentBalance -= entity.amount;
+      }
+      Global.log.t("""Adding a new entity (type : ${entity.toAccount.type})
           to : ${entity.toAccount.name}
           amount : ${entity.amount}
           Entity : $entity
-          account : ${entity.toAccount}""");
+          from account : ${entity.fromAccount}
+          to account : ${entity.toAccount}""");
       int? l = await entity.insert();
+      await entity.fromAccount.update();
       await entity.toAccount.update();
       notify();
       return l;

@@ -1,8 +1,9 @@
+import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 import '../global.dart';
 
 class CashData {
-  double earning = 0, expense = 0;
+  double earning = 0, expense = 0, savings = 0;
 }
 
 // Database models
@@ -107,31 +108,29 @@ class EntityModel extends Model {
   String modelName = "Entity";
   final int? id;
   final double amount;
-  final bool bank;
+  final AccountModel fromAccount;
   final AccountModel toAccount;
   final DateTime datetime;
   final String? notes;
   final int ledgerId;
-  final int accountId;
   EntityModel(
       {required super.db,
       required this.id,
       required this.amount,
-      required this.bank,
+      required this.fromAccount,
       required this.toAccount,
       required this.datetime,
       required this.ledgerId,
-      required this.accountId,
       this.notes});
   Map<String, dynamic> toMap() {
     return {
       'id': id,
       'amount': amount,
-      'bank': bank,
+      'fromAccount': fromAccount.id,
       'datetime': datetime.toIso8601String(),
       'notes': notes,
       'ledger_id': ledgerId,
-      'account_id': accountId
+      'toAccount': toAccount.id
     };
   }
 
@@ -184,11 +183,10 @@ class EntityModel extends Model {
           db: db,
           id: id,
           amount: res[0]['amount'],
-          bank: res[0]['bank'] == 0 ? false : true,
-          toAccount: (await AccountModel.get(db, res[0]['account_id']))!,
+          fromAccount: (await AccountModel.get(db, res[0]['fromAccount']))!,
+          toAccount: (await AccountModel.get(db, res[0]['toAccount']))!,
           datetime: DateTime.parse(res[0]['datetime']),
-          ledgerId: res[0]['ledger_id'],
-          accountId: res[0]['account_id']);
+          ledgerId: res[0]['ledger_id']);
     }
   }
 
@@ -203,11 +201,10 @@ class EntityModel extends Model {
             db: db,
             id: r['id'],
             amount: r['amount'],
-            bank: r['bank'] == 0 ? false : true,
-            toAccount: (await AccountModel.get(db, r['account_id']))!,
+            fromAccount: (await AccountModel.get(db, r['fromAccount']))!,
+            toAccount: (await AccountModel.get(db, r['toAccount']))!,
             datetime: DateTime.parse(r['datetime']),
-            ledgerId: r['ledger_id'],
-            accountId: r['account_id']));
+            ledgerId: r['ledger_id']));
       }
       return e;
     }
@@ -221,11 +218,10 @@ class EntityModel extends Model {
           db: db,
           id: res['id'],
           amount: res['amount'],
-          bank: res['bank'] == 0 ? false : true,
-          toAccount: (await AccountModel.get(db, res['account_id']))!,
+          fromAccount: (await AccountModel.get(db, res['fromAccount']))!,
+          toAccount: (await AccountModel.get(db, res['toAccount']))!,
           datetime: DateTime.parse(res['datetime']),
-          ledgerId: res['ledger_id'],
-          accountId: res['account_id']));
+          ledgerId: res['ledger_id']));
     }
     return d;
   }
@@ -236,27 +232,33 @@ class AccountModel extends Model {
   String modelName = "Account";
   int? id;
   String name;
-  bool expenseAccount;
+  String type;
   double openingBalance;
+  DateTime openingDate;
   double currentBalance;
+  Color color;
   String? notes;
   int ledgerId;
   AccountModel(
       {required super.db,
       required this.id,
       required this.name,
-      required this.expenseAccount,
+      required this.type,
       required this.openingBalance,
+      required this.openingDate,
       required this.currentBalance,
       required this.ledgerId,
+      required this.color,
       this.notes});
   Map<String, dynamic> toMap() {
     return {
       'id': id,
       'name': name,
-      'expenseAccount': expenseAccount,
+      'type': type,
       'openingBalance': openingBalance,
       'currentBalance': currentBalance,
+      'openingDate': openingDate.toIso8601String(),
+      'color': color.value,
       'notes': notes,
       'ledger_id': ledgerId
     };
@@ -301,6 +303,15 @@ class AccountModel extends Model {
     }
   }
 
+  static Future<List<AccountModel>> getOfType(
+      Database db, List<String> type) async {
+    List<Map<String, dynamic>> res = [];
+    for (var i in type) {
+      res.addAll(await db.query("Account", where: "type=?", whereArgs: [i]));
+    }
+    return loadData(db, res);
+  }
+
   static Future<AccountModel?> get(Database db, int id) async {
     List<Map<String, dynamic>> res =
         await db.query("Account", where: "id=?", whereArgs: [id]);
@@ -311,9 +322,12 @@ class AccountModel extends Model {
           db: db,
           id: id,
           name: res[0]['name'],
-          expenseAccount: res[0]['expenseAccount'] == 0 ? false : true,
+          type: res[0]['type'],
           openingBalance: res[0]['openingBalance'],
+          openingDate: DateTime.parse(res[0]['openingDate']),
           currentBalance: res[0]['currentBalance'],
+          notes: res[0]['notes'],
+          color: Color(res[0]['color']),
           ledgerId: res[0]['ledger_id']);
     }
   }
@@ -329,9 +343,12 @@ class AccountModel extends Model {
             db: db,
             id: r['id'],
             name: r['name'],
-            expenseAccount: r['expenseAccount'] == 0 ? false : true,
+            type: r['type'],
             openingBalance: r['openingBalance'],
+            openingDate: DateTime.parse(r['openingDate']),
             currentBalance: r['currentBalance'],
+            notes: r['notes'],
+            color: Color(r['color']),
             ledgerId: r['ledger_id']));
       }
       return e;
@@ -346,9 +363,12 @@ class AccountModel extends Model {
           db: db,
           id: res['id'],
           name: res['name'],
-          expenseAccount: res['expenseAccount'] == 0 ? false : true,
+          type: res['type'],
           openingBalance: res['openingBalance'],
+          openingDate: DateTime.parse(res['openingDate']),
           currentBalance: res['currentBalance'],
+          notes: res['notes'],
+          color: Color(res['color']),
           ledgerId: res['ledger_id']));
     }
     return d;
@@ -357,9 +377,9 @@ class AccountModel extends Model {
   Future<List<EntityModel>?> getStatment(
       Database db, DateTime from, DateTime to) async {
     try {
-      CashData data = CashData();
+      // CashData data = CashData();
       List<Map<String, dynamic>> m = await db.rawQuery(
-          "select * from Entity where account_id=? and datetime between ? and ?",
+          "select * from Entity where toAccount=? and datetime between ? and ?",
           [
             id,
             from.toLocal().toIso8601String(),
@@ -371,11 +391,10 @@ class AccountModel extends Model {
             db: db,
             id: element['id'],
             amount: element['amount'],
-            bank: element['bank'] == 0 ? false : true,
+            fromAccount: (await AccountModel.get(db, element['fromAccount']))!,
             toAccount: this,
             datetime: DateTime.parse(element['datetime']),
-            ledgerId: element['ledger_id'],
-            accountId: element['account_id']));
+            ledgerId: element['ledger_id']));
       }
       return ens;
     } catch (err) {

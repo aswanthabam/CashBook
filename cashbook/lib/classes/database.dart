@@ -41,22 +41,25 @@ class DatabaseHelper {
         CREATE TABLE IF NOT EXISTS Entity (
         id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE,
         amount REAL NOT NULL,
-        bank BOOLEAN NOT NULL,
         datetime DATETIME NOT NULL,
         notes TEXT,
         ledger_id INTEGER NOT NULL,
-        account_id INTEGER NOT NULL,
+        fromAccount INTEGER NOT NULL,
+        toAccount INTEGER NOT NULL,
         FOREIGN KEY(ledger_id) REFERENCES Ledger(id),
-        FOREIGN KEY(account_id) REFERENCES Account(id));
+        FOREIGN KEY(toAccount) REFERENCES Account(id));
+        FOREIGN KEY(fromAccount) REFERENCES Account(id));
       """);
     await db.execute(""" 
         CREATE TABLE IF NOT EXISTS Account (
         id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE,
         name TEXT NOT NULL,
-        expenseAccount BOOLEAN NOT NULL,
+        type TEXT NOT NULL,
         openingBalance REAL NOT NULL DEFAULT 0,
         currentBalance REAL NOT NULL DEFAULT 0,
         notes TEXT,
+        color INTEGER NOT NULL,
+        openingDate DATETIME NOT NULL,
         ledger_id INTEGER NOT NULL,
         FOREIGN KEY(ledger_id) REFERENCES Ledger(id));
       """);
