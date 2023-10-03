@@ -97,24 +97,6 @@ class _PageMainState extends State<PageMain> {
     });
   }
 
-  void addExpense() {
-    // showDialog(
-    //     context: context,
-    //     builder: (context) {
-    //       return AddExpenseForm(
-    //         ledger: ledger!,
-    //       );
-    //     });
-  }
-
-  void addEarning() {
-    Navigator.pushNamed(context, "addentity");
-  }
-
-  void addAccount() {
-    Navigator.pushNamed(context, "addaccount");
-  }
-
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -122,17 +104,34 @@ class _PageMainState extends State<PageMain> {
           padding: const EdgeInsets.all(10),
           child: Column(
             children: <Widget>[
-              Text("Current Status"),
+              const SizedBox(height: 15),
+              Row(
+                children: [
+                  const SizedBox(width: 10),
+                  Text("Statment", style: TextStyle(fontSize: 17)),
+                  Spacer(),
+                  Row(
+                    children: [
+                      Text("June 2023",
+                          style: TextStyle(fontSize: 17, color: Colors.grey)),
+                      Icon(Icons.keyboard_arrow_down_rounded)
+                    ],
+                  ),
+                  const SizedBox(width: 10),
+                ],
+              ),
               Container(
-                padding: EdgeInsets.all(10),
+                padding: EdgeInsets.only(top: 15),
                 decoration:
                     BoxDecoration(borderRadius: BorderRadius.circular(30)),
+                height: 110,
                 child: Column(
                   children: [
                     Container(
+                      height: 90,
                       padding: EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                          color: Colors.lightBlue.shade100,
+                          color: Color.fromARGB(61, 10, 155, 128),
                           borderRadius: BorderRadius.circular(20)),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -144,24 +143,33 @@ class _PageMainState extends State<PageMain> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Text(
-                                  "Expence",
+                                  "Income",
                                   style: TextStyle(
                                       fontSize: 15,
-                                      color: Colors.red.shade600,
+                                      color: Color(0xFF0C772A),
                                       fontWeight: FontWeight.w800),
                                 ),
                                 const SizedBox(height: 10),
-                                Text(
-                                  "${ledger == null ? 0 : ledger!.expense}",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      fontSize: 30,
-                                      color: Colors.red.shade400,
-                                      fontWeight: FontWeight.w600),
-                                ),
+                                FittedBox(
+                                    fit: BoxFit.scaleDown,
+                                    child: Text(
+                                      "${ledger == null ? 0 : ledger!.earning}",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontSize: 17,
+                                        fontFamily: "Dela",
+                                        color: Color(0xFF0C772A),
+                                      ),
+                                    )),
                               ],
                             ),
                           ),
+                          Container(
+                              margin: EdgeInsets.only(left: 8, right: 8),
+                              width: 2,
+                              height: 60,
+                              decoration:
+                                  BoxDecoration(color: Color(0x7FAE770D))),
                           Expanded(
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -169,21 +177,58 @@ class _PageMainState extends State<PageMain> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Text(
-                                  "Earnings",
+                                  "Expense",
                                   style: TextStyle(
                                       fontSize: 15,
-                                      color: Colors.green.shade600,
+                                      color: Color(0xFFC33030),
                                       fontWeight: FontWeight.w800),
                                 ),
                                 const SizedBox(height: 10),
+                                FittedBox(
+                                    fit: BoxFit.scaleDown,
+                                    child: Text(
+                                      "${ledger == null ? 0 : ledger!.expense}",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontSize: 17,
+                                        fontFamily: "Dela",
+                                        color: Color(0xFFC33030),
+                                      ),
+                                    )),
+                              ],
+                            ),
+                          ),
+                          Container(
+                              margin: EdgeInsets.only(left: 8, right: 8),
+                              width: 2,
+                              height: 60,
+                              decoration:
+                                  BoxDecoration(color: Color(0x7FAE770D))),
+                          Expanded(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.max,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
                                 Text(
-                                  "${ledger == null ? 0 : ledger!.earning}",
-                                  textAlign: TextAlign.center,
+                                  "Savings",
                                   style: TextStyle(
-                                      fontSize: 30,
-                                      color: Colors.green.shade400,
-                                      fontWeight: FontWeight.w600),
+                                      fontSize: 15,
+                                      color: Color(0xFF007981),
+                                      fontWeight: FontWeight.w800),
                                 ),
+                                const SizedBox(height: 10),
+                                FittedBox(
+                                    fit: BoxFit.scaleDown,
+                                    child: Text(
+                                      "${ledger == null ? 0 : ledger!.savings}",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontSize: 17,
+                                        fontFamily: "Dela",
+                                        color: Color(0xFF007981),
+                                      ),
+                                    )),
                               ],
                             ),
                           ),
@@ -194,18 +239,18 @@ class _PageMainState extends State<PageMain> {
                 ),
               ),
               const SizedBox(height: 10),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  EntityButton(
-                      onClick: addExpense, text: "Expence", icon: Icons.add),
-                  EntityButton(
-                      onClick: addEarning, text: "Earnings", icon: Icons.add),
-                  EntityButton(
-                      onClick: addAccount, text: "Account", icon: Icons.add)
-                ],
-              ),
-              const SizedBox(height: 20),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.center,
+              //   children: [
+              //     // EntityButton(
+              //     //     onClick: addExpense, text: "Expence", icon: Icons.add),
+              //     // EntityButton(
+              //     //     onClick: addEarning, text: "Earnings", icon: Icons.add),
+              //     // EntityButton(
+              //     //     onClick: addAccount, text: "Account", icon: Icons.add)
+              //   ],
+              // ),
+              // const SizedBox(height: 20),
               Container(
                 padding: EdgeInsets.all(10),
                 decoration: BoxDecoration(

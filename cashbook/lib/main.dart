@@ -39,7 +39,7 @@ class _MainState extends State<Main> {
       initialRoute: "home",
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-          fontFamily: "poppins",
+          fontFamily: "DM Serif",
           textButtonTheme: const TextButtonThemeData(
               style: ButtonStyle(
             backgroundColor: MaterialStatePropertyAll<Color>(Colors.green),
