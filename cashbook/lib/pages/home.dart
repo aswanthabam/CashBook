@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cashbook/components/appbar.dart';
 import 'page-account.dart';
 import 'page-main.dart';
+import 'page-statistics.dart';
 
 class Home extends StatefulWidget {
   Home({super.key});
@@ -11,7 +12,13 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   int pageIndex = 0;
-  List<Widget> pages = [PageMain(), PageAccount()];
+  List<Widget> pages = [
+    PageMain(),
+    PageAccount(),
+    Container(),
+    PageStatistics(),
+    PageStatistics()
+  ];
 
   void setPage(int id) {
     if (pageIndex != id) {
@@ -50,7 +57,12 @@ class _HomeState extends State<Home> {
               top: 0,
               left: 0,
               width: MediaQuery.of(context).size.width,
-              child: pages[pageIndex]),
+              child: Column(children: [
+                Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height,
+                    child: pages[pageIndex]),
+              ])),
           Positioned(
             bottom: 15,
             height: 95,

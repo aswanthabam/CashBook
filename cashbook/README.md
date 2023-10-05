@@ -1,16 +1,36 @@
-# cashbook
+## Storage type:
 
-A new Flutter project.
+#### Ledger DB
 
-## Getting Started
+Stores a ledger in db to store the details of a ledger
 
-This project is a starting point for a Flutter application.
+The ledger db contains the following details:
 
-A few resources to get you started if this is your first Flutter project:
+- current balance in cash and in bank
+- list of ledger entities in that ledger
+- list of accounts in that ledger
+- notes
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+#### Entity DB
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Contains all entitites
+
+It contains the following details
+
+- amount
+- fromBank (bool)
+- toAccount (account id)
+- datetime
+- notes
+- id (representing datetime and amount)
+
+#### Account DB
+
+It contains the list of accounts
+
+- Name
+- Expence account / earning account
+- opening balance
+- current balance
+- id
+- notes

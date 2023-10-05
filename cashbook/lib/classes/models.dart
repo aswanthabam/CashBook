@@ -2,8 +2,35 @@ import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 import '../global.dart';
 
+class AccountTypes {
+  static String earning = "earning";
+  static String expense = "expense";
+  static String savings = "savings";
+}
+
 class CashData {
   double earning = 0, expense = 0, savings = 0;
+}
+
+class AccountStatment {
+  DateTime from;
+  DateTime to;
+  AccountModel account;
+  double balance;
+  List<EntityModel> received;
+  List<EntityModel> send;
+  double totalSend;
+  double totalReceived;
+  AccountStatment({
+    required this.from,
+    required this.to,
+    required this.received,
+    required this.send,
+    required this.balance,
+    required this.account,
+    required this.totalReceived,
+    required this.totalSend,
+  });
 }
 
 // Database models
@@ -374,20 +401,31 @@ class AccountModel extends Model {
     return d;
   }
 
-  Future<List<EntityModel>?> getStatment(
+  Future<AccountStatment?> getStatment(
       Database db, DateTime from, DateTime to) async {
     try {
-      // CashData data = CashData();
-      List<Map<String, dynamic>> m = await db.rawQuery(
+      List<EntityModel> received = [];
+      List<EntityModel> sended = [];
+      double receivedBal = 0;
+      double sendBal = 0;
+
+      List<Map<String, dynamic>> receivedData = await db.rawQuery(
           "select * from Entity where toAccount=? and datetime between ? and ?",
           [
             id,
             from.toLocal().toIso8601String(),
             to.toLocal().toIso8601String()
           ]);
-      List<EntityModel> ens = [];
-      for (var element in m) {
-        ens.add(EntityModel(
+      List<Map<String, dynamic>> sendData = await db.rawQuery(
+          "select * from Entity where fromAccount=? and datetime between ? and ?",
+          [
+            id,
+            from.toLocal().toIso8601String(),
+            to.toLocal().toIso8601String()
+          ]);
+      for (var element in receivedData) {
+        receivedBal += element['amount'];
+        received.add(EntityModel(
             db: db,
             id: element['id'],
             amount: element['amount'],
@@ -396,7 +434,45 @@ class AccountModel extends Model {
             datetime: DateTime.parse(element['datetime']),
             ledgerId: element['ledger_id']));
       }
-      return ens;
+      for (var element in sendData) {
+        sendBal += element['amount'];
+        sended.add(EntityModel(
+            db: db,
+            id: element['id'],
+            amount: element['amount'],
+            fromAccount: (await AccountModel.get(db, element['fromAccount']))!,
+            toAccount: this,
+            datetime: DateTime.parse(element['datetime']),
+            ledgerId: element['ledger_id']));
+      }
+      // after date substraction
+      List<Map<String, dynamic>> receivedDataAfter = await db.rawQuery(
+          "select * from Entity where toAccount=? and datetime > ?",
+          [id, to.toLocal().toIso8601String()]);
+      List<Map<String, dynamic>> sendDataAfter = await db.rawQuery(
+          "select * from Entity where fromAccount=? and datetime > ?",
+          [id, to.toLocal().toIso8601String()]);
+      double recAfter = 0, sendAfter = 0;
+      if (receivedDataAfter.isNotEmpty) {
+        for (var i in receivedDataAfter) {
+          recAfter += i['amount'];
+        }
+      }
+      if (sendDataAfter.isNotEmpty) {
+        for (var i in sendDataAfter) {
+          sendAfter += i['amount'];
+        }
+      }
+      double balance = currentBalance - (recAfter - sendAfter);
+      return AccountStatment(
+          from: from,
+          to: to,
+          received: received,
+          send: sended,
+          balance: balance,
+          account: this,
+          totalReceived: receivedBal,
+          totalSend: sendBal);
     } catch (err) {
       print("GET ACCOUNT STATMENT : $err");
       return null;

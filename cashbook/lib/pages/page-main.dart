@@ -4,6 +4,7 @@ import 'package:cashbook/classes/ledger.dart';
 import 'package:cashbook/pages/addentityform.dart';
 import 'package:cashbook/global.dart';
 import '../classes/models.dart';
+import '../components/pie_chart.dart';
 
 class PageMain extends StatefulWidget {
   const PageMain({super.key});
@@ -13,12 +14,20 @@ class PageMain extends StatefulWidget {
 }
 
 class _PageMainState extends State<PageMain> {
-  Ledger? ledger;
+  Ledger ledger = Ledger();
   bool expenseAccount = false;
   double totalEarning = 0;
   String topExpenceAC = "---";
   String topEarningAC = "---";
   double expense = 0, earning = 0;
+
+  List<AccountStatment> monthEarnings = [];
+  List<AccountStatment> monthExpenses = [];
+  List<AccountStatment> monthSavings = [];
+
+  List<AccountModel> earnings = [];
+  List<AccountModel> expenses = [];
+  List<AccountModel> savings = [];
 
   void ledgerChanged(Ledger l) {
     setState(() {
@@ -32,14 +41,15 @@ class _PageMainState extends State<PageMain> {
         totalEarning = val.earning - val.expense;
       });
     });
-    AccountModel.all(ledger!.getDatabase()).then((value) async {
+    AccountModel.all(ledger.getDatabase()).then((value) async {
       Map<String, double> ear = {};
       Map<String, double> exp = {};
       for (var x in value) {
         for (var i in (await x.getStatment(
-            ledger!.getDatabase(),
-            Ledger.getMonthRange(DateTime.now())[0],
-            Ledger.getMonthRange(DateTime.now())[1]))!) {
+                ledger!.getDatabase(),
+                Ledger.getMonthRange(DateTime.now())[0],
+                Ledger.getMonthRange(DateTime.now())[1]))!
+            .received) {
           if (x.type == "expense") {
             exp[x.name] = exp.putIfAbsent(x.name, () => 0) + i.amount;
           } else if (x.type == "earning") {
@@ -66,14 +76,44 @@ class _PageMainState extends State<PageMain> {
         topExpenceAC = expGR;
       });
     });
+    collectMonthData();
+  }
+
+  void collectMonthData() async {
+    earnings = await AccountModel.getOfType(ledger.getDatabase(), ["earning"]);
+    expenses = await AccountModel.getOfType(ledger.getDatabase(), ["expense"]);
+    savings = await AccountModel.getOfType(ledger.getDatabase(), ["savings"]);
+    setState(() {
+      earnings = earnings;
+      expenses = expenses;
+      savings = savings;
+    });
+    for (var i in earnings) {
+      var lst = Ledger.getMonthRange(DateTime.now());
+      monthEarnings
+          .add((await i.getStatment(ledger.getDatabase(), lst[0], lst[1]))!);
+    }
+    for (var i in expenses) {
+      var lst = Ledger.getMonthRange(DateTime.now());
+      monthExpenses
+          .add((await i.getStatment(ledger.getDatabase(), lst[0], lst[1]))!);
+    }
+    for (var i in savings) {
+      var lst = Ledger.getMonthRange(DateTime.now());
+      monthSavings
+          .add((await i.getStatment(ledger.getDatabase(), lst[0], lst[1]))!);
+    }
+    setState(() {
+      monthEarnings = monthEarnings;
+      monthExpenses = monthExpenses;
+      monthSavings = monthSavings;
+    });
   }
 
   @override
   void initState() {
     super.initState();
-    // ledger = widget.ledger;
-    ledger = Ledger();
-    ledger!.loaded.then((value) {
+    ledger.loaded.then((value) {
       if (!value) {
         Global.log.w("Ledger not created!");
       } else {
@@ -94,7 +134,18 @@ class _PageMainState extends State<PageMain> {
 
         Global.log.i("LEDGER CREATED or loaded");
       }
+
+      collectMonthData();
     });
+  }
+
+  List<MapData> getMapData(List<AccountStatment> acc) {
+    return acc
+        .map<MapData>((e) => MapData(
+            name: e.account.name,
+            value: e.totalReceived - e.totalSend,
+            color: e.account.color))
+        .toList();
   }
 
   @override
@@ -239,196 +290,26 @@ class _PageMainState extends State<PageMain> {
                 ),
               ),
               const SizedBox(height: 10),
-              // Row(
-              //   mainAxisAlignment: MainAxisAlignment.center,
-              //   children: [
-              //     // EntityButton(
-              //     //     onClick: addExpense, text: "Expence", icon: Icons.add),
-              //     // EntityButton(
-              //     //     onClick: addEarning, text: "Earnings", icon: Icons.add),
-              //     // EntityButton(
-              //     //     onClick: addAccount, text: "Account", icon: Icons.add)
-              //   ],
-              // ),
-              // const SizedBox(height: 20),
-              Container(
-                padding: EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                    color: Colors.grey.withAlpha(100),
-                    borderRadius: BorderRadius.circular(30)),
-                child: Column(children: [
-                  Container(
-                    margin: EdgeInsets.all(10),
-                    padding: EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                        border: Border(
-                            bottom: BorderSide(color: Colors.black, width: 1))),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text("Total This Month"),
-                        Text(
-                          "${totalEarning}",
-                          style: TextStyle(
-                              color: totalEarning > 0
-                                  ? Colors.green.shade500
-                                  : Colors.red.shade500,
-                              fontWeight: FontWeight.w700),
-                        )
-                      ],
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.all(10),
-                    padding: EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                        border: Border(
-                            bottom: BorderSide(color: Colors.black, width: 1))),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text("Total Savings"),
-                        Text(
-                          "${ledger!.savings}",
-                          style: TextStyle(
-                              color: totalEarning > 0
-                                  ? Colors.green.shade500
-                                  : Colors.red.shade500,
-                              fontWeight: FontWeight.w700),
-                        )
-                      ],
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.all(10),
-                    padding: EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                        border: Border(
-                            bottom: BorderSide(color: Colors.black, width: 1))),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text("Major Spending on "),
-                        Text(
-                          topExpenceAC,
-                          style: TextStyle(
-                              color: Colors.red.shade500,
-                              fontWeight: FontWeight.w700),
-                        )
-                      ],
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.all(10),
-                    padding: EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                        border: Border(
-                            bottom: BorderSide(color: Colors.black, width: 1))),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text("Major Earnings Threw"),
-                        Text(
-                          topEarningAC,
-                          style: TextStyle(
-                              color: Colors.green.shade500,
-                              fontWeight: FontWeight.w700),
-                        )
-                      ],
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.all(10),
-                    padding: EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                        border: Border(
-                            bottom: BorderSide(color: Colors.black, width: 1))),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text("Net Balance"),
-                        Text(
-                          "${ledger == null ? 0 : (!ledger!.is_loaded ? "?" : (ledger!.ledger.cashBalance + ledger!.ledger.bankBalance))}/-",
-                          style: TextStyle(
-                              color: Colors.green.shade500,
-                              fontWeight: FontWeight.w700),
-                        )
-                      ],
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.all(10),
-                    padding: EdgeInsets.all(10),
-                    decoration: BoxDecoration(),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Text(
-                          "More Details >>",
-                          style: TextStyle(
-                              color: Colors.blue.shade400,
-                              fontWeight: FontWeight.w700),
-                        )
-                      ],
-                    ),
-                  ),
-                ]),
-              )
+              Column(children: [
+                PieChart(
+                    data: getMapData(monthEarnings),
+                    title: "Earnings",
+                    titleVisible: true,
+                    height: 200),
+                PieChart(
+                    data: getMapData(monthExpenses),
+                    title: "Expenses",
+                    titleVisible: true,
+                    height: 200),
+                PieChart(
+                    data: getMapData(monthSavings),
+                    title: "Savings",
+                    titleVisible: true,
+                    height: 200)
+              ]),
+              const SizedBox(height: 160)
             ],
           )),
     );
-  }
-}
-
-class EntityButton extends StatelessWidget {
-  EntityButton(
-      {super.key,
-      required this.onClick,
-      required this.text,
-      required this.icon,
-      this.iconOnly = false,
-      this.width = 80,
-      this.height = 80,
-      this.iconColor = const Color.fromRGBO(100, 181, 246, 1),
-      this.textColor = const Color.fromRGBO(100, 181, 246, 1),
-      this.background = Colors.white});
-  void Function() onClick;
-  late String text = "";
-  late IconData icon;
-  bool iconOnly = false;
-  double width, height;
-  Color background, textColor, iconColor;
-  @override
-  Widget build(BuildContext context) {
-    return TextButton(
-        onPressed: onClick,
-        child: Container(
-          padding: EdgeInsets.all(10),
-          width: width,
-          height: height,
-          decoration: BoxDecoration(boxShadow: [
-            BoxShadow(
-                color: iconColor.withAlpha(100),
-                blurRadius: 5,
-                offset: Offset(1, 0))
-          ], color: background, borderRadius: BorderRadius.circular(20)),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Icon(
-                icon,
-                color: iconColor,
-                size: 30,
-              ),
-              iconOnly
-                  ? Text("")
-                  : Text(
-                      text,
-                      style: TextStyle(color: textColor, fontSize: 15),
-                    ),
-            ],
-          ),
-        ));
   }
 }
