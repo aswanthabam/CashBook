@@ -5,6 +5,7 @@ import 'package:cashbook/pages/addentityform.dart';
 import 'package:cashbook/pages/settings.dart';
 import 'package:cashbook/classes/ledger.dart';
 import 'pages/addaccountform.dart';
+import 'pages/splashscreen.dart';
 
 void main() {
   runApp(Main());
@@ -34,9 +35,10 @@ class _MainState extends State<Main> {
         "home": (context) => Home(),
         "settings": (context) => Settings(),
         "addentity": (context) => AddEntityForm(),
-        "addaccount": (context) => AddAccountForm()
+        "addaccount": (context) => AddAccountForm(),
+        "splashscreen": (context) => SplashScreen()
       },
-      initialRoute: "home",
+      initialRoute: "splashscreen",
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
           fontFamily: "DM Serif",

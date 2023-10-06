@@ -5,6 +5,7 @@ import 'package:cashbook/pages/addentityform.dart';
 import 'package:cashbook/global.dart';
 import '../classes/models.dart';
 import '../components/pie_chart.dart';
+import '../components/linechart.dart';
 
 class PageMain extends StatefulWidget {
   const PageMain({super.key});
@@ -88,16 +89,19 @@ class _PageMainState extends State<PageMain> {
       expenses = expenses;
       savings = savings;
     });
+    monthEarnings = [];
     for (var i in earnings) {
       var lst = Ledger.getMonthRange(DateTime.now());
       monthEarnings
           .add((await i.getStatment(ledger.getDatabase(), lst[0], lst[1]))!);
     }
+    monthExpenses = [];
     for (var i in expenses) {
       var lst = Ledger.getMonthRange(DateTime.now());
       monthExpenses
           .add((await i.getStatment(ledger.getDatabase(), lst[0], lst[1]))!);
     }
+    monthSavings = [];
     for (var i in savings) {
       var lst = Ledger.getMonthRange(DateTime.now());
       monthSavings
@@ -108,6 +112,26 @@ class _PageMainState extends State<PageMain> {
       monthExpenses = monthExpenses;
       monthSavings = monthSavings;
     });
+  }
+
+  List<ChartSet> getChartData(List<AccountStatment> d) {
+    List<ChartSet> da = [];
+    for (var i in d) {
+      List<ChartData> da2 = [];
+      List<EntityModel> dd =
+          (i.account.type == "earning") ? i.send : i.received;
+      if (dd.isEmpty) continue;
+      // if (dd.length < 2) {
+      // da2.add(ChartData(i.account.name, i.from, 0));
+      // }
+      for (var j in dd) {
+        da2.add(ChartData(j.datetime, j.amount));
+      }
+      // da2.add(ChartData(i.account.name, i.to, 0));
+      da.add(ChartSet(da2, i.account.name, i.account.color));
+    }
+    print(da);
+    return da;
   }
 
   @override
@@ -291,21 +315,12 @@ class _PageMainState extends State<PageMain> {
               ),
               const SizedBox(height: 10),
               Column(children: [
-                PieChart(
-                    data: getMapData(monthEarnings),
-                    title: "Earnings",
-                    titleVisible: true,
-                    height: 200),
-                PieChart(
-                    data: getMapData(monthExpenses),
-                    title: "Expenses",
-                    titleVisible: true,
-                    height: 200),
-                PieChart(
-                    data: getMapData(monthSavings),
-                    title: "Savings",
-                    titleVisible: true,
-                    height: 200)
+                LineChart(
+                  data: getChartData(monthExpenses),
+                  title: "Expenses",
+                  titleVisible: true,
+                  dateRange: Ledger.getMonthRange(DateTime.now()),
+                )
               ]),
               const SizedBox(height: 160)
             ],
