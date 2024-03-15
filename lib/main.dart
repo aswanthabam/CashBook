@@ -1,20 +1,22 @@
+import 'package:cashbook/core/providers/theme_provider.dart';
+import 'package:cashbook/core/theme/theme.dart';
+import 'package:cashbook/features/main_app/presentation/page/home.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const MainApp());
-}
-
-class MainApp extends StatelessWidget {
-  const MainApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: Text('Hello World!'),
-        ),
-      ),
-    );
-  }
+  WidgetsFlutterBinding.ensureInitialized();
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => ModelTheme(),
+      child: Consumer<ModelTheme>(
+          builder: (context, ModelTheme themeNotifier, child) {
+            return MaterialApp(
+      home: const Home(),
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+      themeMode: themeNotifier.isDark ? ThemeMode.dark : ThemeMode.light,
+      debugShowCheckedModeBanner: false,
+    );}))
+  );
 }
