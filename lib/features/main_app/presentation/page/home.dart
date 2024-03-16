@@ -1,3 +1,4 @@
+import 'package:cashbook/core/theme/app_palatte.dart';
 import 'package:cashbook/core/widgets/appbar/main_appbar.dart';
 import 'package:cashbook/core/widgets/buttons/add_button.dart';
 import 'package:cashbook/core/widgets/pagination_indicator/indicator.dart';
@@ -16,10 +17,10 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: const MainAppBar(),
         body: SingleChildScrollView(
           child: Column(
             children: [
+              const MainAppBar(),
               Container(
                 padding: const EdgeInsets.all(25),
                 width: MediaQuery.of(context).size.width,
@@ -34,15 +35,17 @@ class _HomeState extends State<Home> {
                       height: 30,
                     ),
                     Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                      const Expanded(
-                        child: MoneyDisplay(
-                            text: "+ 54,500 ₹", subText: "Net earnings this month"),
-                      ),
-                      AddButton(onPressed: (){},)
-                      
-                    ]),
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          const Expanded(
+                            child: MoneyDisplay(
+                                text: "+ 54,500 ₹",
+                                subText: "Net earnings this month"),
+                          ),
+                          AddButton(
+                            onPressed: () {},
+                          )
+                        ]),
                     const SizedBox(
                       height: 0,
                     ),
@@ -73,17 +76,124 @@ class _HomeState extends State<Home> {
               ),
               Container(
                 width: MediaQuery.of(context).size.width,
-                height: 900,
-                padding:const EdgeInsets.all(25),
+                padding: const EdgeInsets.all(5),
                 // decoration: BoxDecoration(
                 //   color: Colors.green,
                 // ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      "History"
-                    )
+                    const Padding(
+                      padding:
+                          EdgeInsets.symmetric(vertical: 10, horizontal: 25),
+                      child: Text("History"),
+                    ),
+                    ListTile(
+                      shape: Border(
+                          top: BorderSide(color: Colors.grey[300]!, width: 2)),
+                      leading: const Icon(
+                        Icons.arrow_upward,
+                        color: AppPalatte.green,
+                      ),
+                      title:  Text(
+                        "Received Money From freelancing",
+                        style: TextStyle(fontSize: 14,color:Theme.of(context).textTheme.headline1!.color),
+                      ),
+                      subtitle:  Text("5th May 2021",
+                          style: TextStyle(fontSize: 12,color:Theme.of(context).textTheme.headline1!.color)),
+                      trailing: const Text(
+                        "+1000",
+                        style: TextStyle(
+                            color: AppPalatte.green,
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    ListTile(
+                      shape: Border(
+                          top: BorderSide(color: Colors.grey[300]!, width: 2)),
+                      leading: const Icon(
+                        Icons.arrow_upward,
+                        color: AppPalatte.green,
+                      ),
+                      title:  Text(
+                        "Received Money From freelancing",
+                        style: TextStyle(fontSize: 14,color:Theme.of(context).textTheme.headline1!.color),
+                      ),
+                      subtitle:  Text("5th May 2021",
+                          style: TextStyle(fontSize: 12,color:Theme.of(context).textTheme.headline1!.color)),
+                      trailing: const Text(
+                        "+1000",
+                        style: TextStyle(
+                            color: AppPalatte.green,
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    ListTile(
+                      shape: Border(
+                          top: BorderSide(color: Colors.grey[300]!, width: 2)),
+                      leading: const Icon(
+                        Icons.arrow_upward,
+                        color: AppPalatte.green,
+                      ),
+                      title:  Text(
+                        "Received Money From freelancing",
+                        style: TextStyle(fontSize: 14,color:Theme.of(context).textTheme.headline1!.color),
+                      ),
+                      subtitle:  Text("5th May 2021",
+                          style: TextStyle(fontSize: 12,color:Theme.of(context).textTheme.headline1!.color)),
+                      trailing: const Text(
+                        "+1000",
+                        style: TextStyle(
+                            color: AppPalatte.green,
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    ListTile(
+                      shape: Border(
+                          top: BorderSide(color: Colors.grey[300]!, width: 2)),
+                      leading: const Icon(
+                        Icons.arrow_upward,
+                        color: AppPalatte.green,
+                      ),
+                      title:  Text(
+                        "Received Money From freelancing",
+                        style: TextStyle(fontSize: 14,color:Theme.of(context).textTheme.headline1!.color),
+                      ),
+                      subtitle:  Text("5th May 2021",
+                          style: TextStyle(fontSize: 12,color:Theme.of(context).textTheme.headline1!.color)),
+                      trailing: const Text(
+                        "+1000",
+                        style: TextStyle(
+                            color: AppPalatte.green,
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    ListTile(
+                      shape: Border(
+                          top: BorderSide(color: Colors.grey[300]!, width: 2)),
+                      leading: const Icon(
+                        Icons.arrow_upward,
+                        color: AppPalatte.green,
+                      ),
+                      title:  Text(
+                        "Received Money From freelancing",
+                        style: TextStyle(fontSize: 14,color:Theme.of(context).textTheme.headline1!.color),
+                      ),
+                      subtitle:  Text("5th May 2021",
+                          style: TextStyle(fontSize: 12,color:Theme.of(context).textTheme.headline1!.color)),
+                      trailing: const Text(
+                        "+1000",
+                        style: TextStyle(
+                            color: AppPalatte.green,
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    
                   ],
                 ),
               )

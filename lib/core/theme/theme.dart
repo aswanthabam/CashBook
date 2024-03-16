@@ -11,8 +11,8 @@ class AppTheme {
   );
   static final darkTheme = ThemeData.light().copyWith(
     scaffoldBackgroundColor: AppPalatteDark.background,
-    textTheme: ThemeData.dark().textTheme.apply(
-      fontFamily: GoogleFonts.roboto().fontFamily
-    ),
+    textTheme: GoogleFonts.robotoTextTheme(ThemeData.dark().textTheme).apply(
+          fontFamily: GoogleFonts.roboto().fontFamily,
+        ),
   );
 }
