@@ -1,4 +1,5 @@
 import 'package:cashbook/core/widgets/appbar/main_appbar.dart';
+import 'package:cashbook/core/widgets/buttons/add_button.dart';
 import 'package:cashbook/core/widgets/pagination_indicator/indicator.dart';
 import 'package:cashbook/features/main_app/presentation/widgets/charts/main_chart.dart';
 import 'package:cashbook/features/main_app/presentation/widgets/money_display.dart';
@@ -22,19 +23,27 @@ class _HomeState extends State<Home> {
               Container(
                 padding: const EdgeInsets.all(25),
                 width: MediaQuery.of(context).size.width,
-                child: const Column(
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    PaginationIndicator(
+                    const PaginationIndicator(
                       count: 3,
                       index: 1,
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 30,
                     ),
-                    MoneyDisplay(
-                        text: "+ 15,000 ₹", subText: "Net earnings this month"),
-                    SizedBox(
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                      const Expanded(
+                        child: MoneyDisplay(
+                            text: "+ 54,500 ₹", subText: "Net earnings this month"),
+                      ),
+                      AddButton(onPressed: (){},)
+                      
+                    ]),
+                    const SizedBox(
                       height: 0,
                     ),
                   ],

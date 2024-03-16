@@ -15,8 +15,8 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return Consumer<ModelTheme>(
         builder: (context, ModelTheme themeNotifier, child) { return Container(
-      padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-      height: preferredSize.height + MediaQuery.of(context).padding.top,
+      padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top + 25),
+      height: preferredSize.height + MediaQuery.of(context).padding.top + 25,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
