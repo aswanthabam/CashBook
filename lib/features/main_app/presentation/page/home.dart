@@ -1,4 +1,5 @@
 import 'package:cashbook/core/theme/theme.dart';
+import 'package:cashbook/core/widgets/appbar/bottom_bar.dart';
 import 'package:cashbook/core/widgets/appbar/main_appbar.dart';
 import 'package:cashbook/core/widgets/buttons/add_button.dart';
 import 'package:cashbook/core/widgets/pagination_indicator/indicator.dart';
@@ -19,6 +20,7 @@ class _HomeState extends State<Home> {
     // final double height = MediaQuery.of(context).size.height;
     final double width = MediaQuery.of(context).size.width;
     return Scaffold(
+        bottomNavigationBar: const BottomBar(),
         body: SingleChildScrollView(
       child: Column(
         children: [

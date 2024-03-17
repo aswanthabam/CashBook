@@ -14,6 +14,7 @@ class AppColorsExtension extends ThemeExtension<AppColorsExtension>{
     required this.transparent,
     required this.white,
     required this.black,
+    this.primaryLightTextColor = AppPalatte.primaryLightTextColor,
   });
 
   final Color primary;
@@ -26,6 +27,7 @@ class AppColorsExtension extends ThemeExtension<AppColorsExtension>{
   final Color transparent;
   final Color white;
   final Color black;
+  final Color primaryLightTextColor;
 
   @override
   ThemeExtension<AppColorsExtension> copyWith({
