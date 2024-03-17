@@ -19,9 +19,31 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.0
+  flutter_launcher_icons: "^0.13.1"
+
+flutter_launcher_icons:
+  android: "ic_launcher"
+  ios: true
+  image_path: "assets/icons/app_icon/icon_rounded.png"
+  # min_sdk_android: 21 # android min sdk min:16, default 21
+  web:
+    generate: true
+    image_path: "assets/icons/app_icon/icon.png"
+    background_color: "#fff"
+    theme_color: "#fff"
+  windows:
+    generate: true
+    image_path: "assets/icons/app_icon/icon_rounded.png"
+    icon_size: 48 # min:48, max:256, default: 48
+  macos:
+    generate: true
+    image_path: "assets/icons/app_icon/icon_rounded.png"
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/icons/add_button/
+    - assets/icons/app_icon/
   # fonts:
   #   - family: Roboto
   #     fonts:

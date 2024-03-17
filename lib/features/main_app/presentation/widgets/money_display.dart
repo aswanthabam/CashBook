@@ -1,4 +1,4 @@
-import 'package:cashbook/core/theme/app_palatte.dart';
+import 'package:cashbook/core/theme/theme.dart';
 import 'package:flutter/material.dart';
 
 class MoneyDisplay extends StatefulWidget {
@@ -18,14 +18,14 @@ class _MoneyDisplayState extends State<MoneyDisplay> {
       child:  Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(widget.text, style: const TextStyle(
+        Text(widget.text, style:  TextStyle(
           fontSize: 40,
-          color: AppPalatte.primary
+          color: Theme.of(context).extension<AppColorsExtension>()!.primary
         ),),
-        Text(widget.subText, style: const TextStyle(
+        Text(widget.subText, style:  TextStyle(
           fontSize: 15,
           fontWeight: FontWeight.bold,
-          color: AppPalatte.primarySemiDark
+          color: Theme.of(context).extension<AppColorsExtension>()!.primarySemiDark
         ),),
       ],
     ),);
