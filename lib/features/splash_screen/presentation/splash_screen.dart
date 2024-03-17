@@ -17,6 +17,8 @@ class _SplashScreenState extends State<SplashScreen> {
   }
   @override
   Widget build(BuildContext context) {
+    // final double height = MediaQuery.of(context).size.height;
+    final double width = MediaQuery.of(context).size.width;
     return Scaffold(
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -24,15 +26,15 @@ class _SplashScreenState extends State<SplashScreen> {
         children: [
           Image.asset(
             "assets/icons/app_icon/icon.png",
-            width: 100,
-            height: 100,
+            width: width * 0.15,
+            height: width * 0.15,
           ),
           const SizedBox(height: 20,),
-          const Center(
+          Center(
             child: SizedBox(
-              width: 30,
-              height: 30,
-              child: CircularProgressIndicator(),
+              width: width * 0.05,
+              height: width * 0.05,
+              child: const CircularProgressIndicator(),
             ),
           ),
         ],

@@ -1,4 +1,4 @@
-import 'package:cashbook/core/theme/app_palatte.dart';
+import 'package:cashbook/core/theme/theme.dart';
 import 'package:flutter/material.dart';
 
 class PaginationIndicator extends StatefulWidget {
@@ -13,30 +13,32 @@ class PaginationIndicator extends StatefulWidget {
 class _PaginationIndicatorState extends State<PaginationIndicator> {
   @override
   Widget build(BuildContext context) {
+    final double height = MediaQuery.of(context).size.height;
+    final double width = MediaQuery.of(context).size.width;
     return SizedBox(
-      height: 20,
-      width: 70,
+      height: height * 0.017,
+      width: width * 0.14,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: widget.count,
         itemBuilder: (context, index) {
           if (index == widget.index) {
             return Container(
-              margin: const EdgeInsets.all(5),
-              width: 20,
-              height: 10,
+              margin:  EdgeInsets.all(width * 0.01),
+              width: width * 0.04,
+              height: height * 0.02,
               decoration: BoxDecoration(
-                color: AppPalatte.primaryDark,
+                color: Theme.of(context).extension<AppColorsExtension>()!.primaryDark,
                 borderRadius: BorderRadius.circular(50),
               ),
             );
           }
           return Container(
-            margin: const EdgeInsets.all(5),
-            width: 10,
-            height: 10,
+            margin: EdgeInsets.all(width * 0.01),
+            width: width * 0.02,
+            height: height * 0.02,
             decoration: BoxDecoration(
-              color: AppPalatte.primaryLight,
+              color: Theme.of(context).extension<AppColorsExtension>()!.primaryLight,
               shape: BoxShape.circle,
             ),
           );

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class AppPalatte {
+abstract class AppPalatte {
   static const Color primary = Color(0xFF6A85DE);
   static const Color primaryLight = Color.fromRGBO(124, 147, 195, 1);
   static const Color primarySemiDark = Color(0xff5A7A8E);
@@ -26,5 +26,5 @@ class AppPalatteDark {
   static const Color background = Color(0xff111111);
   static const Color transparent = Color(0x00000000);
   static const Color white = Color(0xff000000);
-  static const Color black = Color.fromARGB(255, 121, 58, 58);
+  static const Color black = Color(0xffc5c5c5);
 }
