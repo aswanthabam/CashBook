@@ -40,11 +40,19 @@ class _BottomBarState extends State<BottomBar> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      BottomBarButton(onPressed:() {}, icon: BootstrapIcons.bank2, text: "Home",),
-                      BottomBarButton(onPressed:() {}, icon: BootstrapIcons.clock_history, text: "History",),
+                      BottomBarButton(onPressed:() {
+                        // TODO : IMPLEMENT HOME BUTTON
+                      }, icon: BootstrapIcons.bank2, text: "Home",),
+                      BottomBarButton(onPressed:() {
+                        // TODO : IMPLEMENT HISTORY BUTTON
+                      }, icon: BootstrapIcons.clock_history, text: "History",),
                       SizedBox(width: width * 0.05,),
-                      BottomBarButton(onPressed:() {}, icon: BootstrapIcons.currency_exchange, text: "Assets &\nLiabilities",),
-                      BottomBarButton(onPressed:() {}, icon: BootstrapIcons.gear_fill, text: "Settings",),
+                      BottomBarButton(onPressed:() {
+                        // TODO : IMPLEMENT ASSETS & LIABILITIES BUTTON
+                      }, icon: BootstrapIcons.currency_exchange, text: "Assets &\nLiabilities",),
+                      BottomBarButton(onPressed:() {
+                        // TODO : IMPLEMENT SETTINGS BUTTON
+                      }, icon: BootstrapIcons.gear_fill, text: "Settings",),
                     ],
                   ))),
           SizedBox(
