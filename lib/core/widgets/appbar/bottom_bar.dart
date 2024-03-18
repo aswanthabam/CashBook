@@ -1,6 +1,7 @@
 import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:cashbook/core/theme/theme.dart';
 import 'package:cashbook/core/widgets/buttons/add_button.dart';
+import 'package:cashbook/features/main_app/presentation/widgets/add_entity/add_entity_popup.dart';
 import 'package:flutter/material.dart';
 
 class BottomBar extends StatefulWidget {
@@ -26,7 +27,7 @@ class _BottomBarState extends State<BottomBar> {
               bottom: 0,
               child: Container(
                   width: width,
-                  height: height * 0.07,
+                  height: height * 0.09,
                   decoration: BoxDecoration(
                     color: Theme.of(context)
                         .extension<AppColorsExtension>()!
@@ -56,7 +57,7 @@ class _BottomBarState extends State<BottomBar> {
                     ],
                   ))),
           SizedBox(
-            height: (height * 0.07) + (width * 0.06),
+            height: (height * 0.09) + (width * 0.06),
           ),
           Positioned(
             left: width * 0.425,
@@ -79,7 +80,7 @@ class _BottomBarState extends State<BottomBar> {
                   )),
               child: AddButton(
                 onPressed: () {
-                  // TODO : IMPLEMENT ADD BUTTON
+                  showAddEntityPopup(context);
                 },
               ),
             ),

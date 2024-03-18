@@ -2,7 +2,7 @@ import 'package:cashbook/core/theme/app_palatte.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class AppColorsExtension extends ThemeExtension<AppColorsExtension>{
+class AppColorsExtension extends ThemeExtension<AppColorsExtension> {
   AppColorsExtension({
     required this.primary,
     required this.primaryLight,
@@ -58,9 +58,9 @@ class AppColorsExtension extends ThemeExtension<AppColorsExtension>{
 
   @override
   ThemeExtension<AppColorsExtension> lerp(
-      covariant ThemeExtension<AppColorsExtension>? other,
-      double t,
-      ) {
+    covariant ThemeExtension<AppColorsExtension>? other,
+    double t,
+  ) {
     if (other is! AppColorsExtension) {
       return this;
     }
@@ -82,46 +82,74 @@ class AppColorsExtension extends ThemeExtension<AppColorsExtension>{
 
 class AppTheme {
   static final lightTheme = ThemeData.light().copyWith(
-    scaffoldBackgroundColor: AppPalatte.background,
-    textTheme: ThemeData.light().textTheme.apply(
-      fontFamily: GoogleFonts.roboto().fontFamily
-    ),
-    extensions: [
-      AppColorsExtension(
-        primary: AppPalatte.primary,
-        primaryLight: AppPalatte.primaryLight,
-        primarySemiDark: AppPalatte.primarySemiDark,
-        primaryDark: AppPalatte.primaryDark,
-        red: AppPalatte.red,
-        green: AppPalatte.green,
-        background: AppPalatte.background,
-        transparent: AppPalatte.transparent,
-        white: AppPalatte.white,
-        black: AppPalatte.black,
-      )
-    ]
-  );
+      scaffoldBackgroundColor: AppPalatte.background,
+      textTheme: ThemeData.light()
+          .textTheme
+          .apply(fontFamily: GoogleFonts.roboto().fontFamily),
+      bottomSheetTheme: const BottomSheetThemeData(
+        modalBackgroundColor: AppPalatte.white,
+        modalBarrierColor: AppPalatte.transparent,
+        backgroundColor: AppPalatte.white,
+      ),
+      dialogTheme: const DialogTheme(
+        backgroundColor: AppPalatte.white,
+      ),
+      appBarTheme: const AppBarTheme(
+        backgroundColor: AppPalatte.white,
+        iconTheme: IconThemeData(color: AppPalatte.black),
+        actionsIconTheme: IconThemeData(color: AppPalatte.black),
+      ),
+      extensions: [
+        AppColorsExtension(
+          primary: AppPalatte.primary,
+          primaryLight: AppPalatte.primaryLight,
+          primarySemiDark: AppPalatte.primarySemiDark,
+          primaryDark: AppPalatte.primaryDark,
+          red: AppPalatte.red,
+          green: AppPalatte.green,
+          background: AppPalatte.background,
+          transparent: AppPalatte.transparent,
+          white: AppPalatte.white,
+          black: AppPalatte.black,
+        )
+      ]);
   static final darkTheme = ThemeData.light().copyWith(
-    scaffoldBackgroundColor: AppPalatteDark.background,
-    textTheme: ThemeData.dark().textTheme.apply(
-          fontFamily: GoogleFonts.roboto().fontFamily,
-        ).copyWith(
-    ),
-    extensions: [
-      AppColorsExtension(
-        primary: AppPalatteDark.primary,
-        primaryLight: AppPalatteDark.primaryLight,
-        primarySemiDark: AppPalatteDark.primarySemiDark,
-        primaryDark: AppPalatteDark.primaryDark,
-        red: AppPalatteDark.red,
-        green: AppPalatteDark.green,
-        background: AppPalatteDark.background,
-        transparent: AppPalatteDark.transparent,
-        white: AppPalatteDark.white,
-        black: AppPalatteDark.black,
-      )
-    ]
-  );
+      scaffoldBackgroundColor: AppPalatteDark.background,
+      textTheme: ThemeData.dark()
+          .textTheme
+          .apply(
+            fontFamily: GoogleFonts.roboto().fontFamily,
+          )
+          .copyWith(),
+      bottomSheetTheme: const BottomSheetThemeData(
+        modalBackgroundColor: AppPalatteDark.white,
+        modalBarrierColor: AppPalatteDark.transparent,
+        backgroundColor: AppPalatteDark.white,
+      ),
+      dialogTheme: const DialogTheme(
+        backgroundColor: AppPalatteDark.white,
+      ),
+      appBarTheme: const AppBarTheme(
+        backgroundColor: AppPalatteDark.white,
+        iconTheme: IconThemeData(color: AppPalatteDark.black),
+        actionsIconTheme: IconThemeData(color: AppPalatteDark.black),
+        titleTextStyle: TextStyle(color: AppPalatteDark.black),
+      ),
+
+      extensions: [
+        AppColorsExtension(
+          primary: AppPalatteDark.primary,
+          primaryLight: AppPalatteDark.primaryLight,
+          primarySemiDark: AppPalatteDark.primarySemiDark,
+          primaryDark: AppPalatteDark.primaryDark,
+          red: AppPalatteDark.red,
+          green: AppPalatteDark.green,
+          background: AppPalatteDark.background,
+          transparent: AppPalatteDark.transparent,
+          white: AppPalatteDark.white,
+          black: AppPalatteDark.black,
+        )
+      ]);
 }
 
 class BrandColors {
