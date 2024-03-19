@@ -2,7 +2,9 @@ import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:cashbook/core/theme/theme.dart';
 import 'package:cashbook/features/main_app/presentation/widgets/bottom_button.dart';
 import 'package:cashbook/features/main_app/presentation/widgets/money_input.dart';
+import 'package:cashbook/features/main_app/presentation/widgets/tag.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_layout_grid/flutter_layout_grid.dart';
 
 class AddEntityPage extends StatefulWidget {
   const AddEntityPage({
@@ -87,7 +89,86 @@ class _AddEntityPageState extends State<AddEntityPage> {
                     children: [
                       BottomButton(
                         onPressed: () {
-                          // TODO : IMPLEMENT ADD TAG
+                          showDialog(
+                              context: context,
+                              builder: (context) => Dialog(
+                                    child: Container(
+                                        height: height * 0.45,
+                                        width: width,
+                                        padding: EdgeInsets.all(width * 0.05),
+                                        decoration: BoxDecoration(
+                                          color: Theme.of(context)
+                                              .extension<AppColorsExtension>()!
+                                              .white,
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                        ),
+                                        child: LayoutGrid(
+                                            columnSizes: [1.fr, 1.fr, 1.fr],
+                                            rowSizes: [1.fr, 1.fr, 1.fr],
+                                            children: [
+                                              Tag(
+                                                onPressed: () {},
+                                                name: "Food",
+                                                color: Theme.of(context)
+                                                    .extension<AppColorsExtension>()!
+                                                    .primaryLight,
+                                                highlightColor: Theme.of(context)
+                                                    .extension<AppColorsExtension>()!
+                                                    .primaryDark,
+                                              ),
+                                              Tag(
+                                                onPressed: () {},
+                                                name: "Transport",
+                                                color: Theme.of(context)
+                                                    .extension<AppColorsExtension>()!
+                                                    .primaryLight,
+                                                highlightColor: Theme.of(context)
+                                                    .extension<AppColorsExtension>()!
+                                                    .primaryDark,
+                                              ),
+                                              Tag(
+                                                onPressed: () {},
+                                                name: "Entertainment",
+                                                color: Theme.of(context)
+                                                    .extension<AppColorsExtension>()!
+                                                    .primaryLight,
+                                                highlightColor: Theme.of(context)
+                                                    .extension<AppColorsExtension>()!
+                                                    .primaryDark,
+                                              ),
+                                              Tag(
+                                                onPressed: () {},
+                                                name: "Health",
+                                                color: Theme.of(context)
+                                                    .extension<AppColorsExtension>()!
+                                                    .primaryLight,
+                                                highlightColor: Theme.of(context)
+                                                    .extension<AppColorsExtension>()!
+                                                    .primaryDark,
+                                              ),
+                                              Tag(
+                                                onPressed: () {},
+                                                name: "Education",
+                                                color: Theme.of(context)
+                                                    .extension<AppColorsExtension>()!
+                                                    .primaryLight,
+                                                highlightColor: Theme.of(context)
+                                                    .extension<AppColorsExtension>()!
+                                                    .primaryDark,
+                                              ),
+                                              Tag(
+                                                onPressed: () {},
+                                                name: "Other",
+                                                color: Theme.of(context)
+                                                    .extension<AppColorsExtension>()!
+                                                    .primaryLight,
+                                                highlightColor: Theme.of(context)
+                                                    .extension<AppColorsExtension>()!
+                                                    .primaryDark,
+                                              ),
+                                            ])),
+                                  ));
                         },
                         icon: BootstrapIcons.tag_fill,
                         text: "Tag",
@@ -137,5 +218,3 @@ class _AddEntityPageState extends State<AddEntityPage> {
     );
   }
 }
-
-
