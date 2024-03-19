@@ -14,7 +14,8 @@ class AppColorsExtension extends ThemeExtension<AppColorsExtension> {
     required this.transparent,
     required this.white,
     required this.black,
-    this.primaryLightTextColor = AppPalatte.primaryLightTextColor,
+    required this.primaryTextColor,
+    this.primaryLightTextColor = AppPalate.primaryLightTextColor,
   });
 
   final Color primary;
@@ -28,6 +29,7 @@ class AppColorsExtension extends ThemeExtension<AppColorsExtension> {
   final Color white;
   final Color black;
   final Color primaryLightTextColor;
+  final Color primaryTextColor;
 
   @override
   ThemeExtension<AppColorsExtension> copyWith({
@@ -41,6 +43,7 @@ class AppColorsExtension extends ThemeExtension<AppColorsExtension> {
     Color? transparent,
     Color? white,
     Color? black,
+    Color? primaryTextColor,
   }) {
     return AppColorsExtension(
       primary: primary ?? this.primary,
@@ -53,6 +56,7 @@ class AppColorsExtension extends ThemeExtension<AppColorsExtension> {
       transparent: transparent ?? this.transparent,
       white: white ?? this.white,
       black: black ?? this.black,
+      primaryTextColor: primaryTextColor ?? this.primaryTextColor,
     );
   }
 
@@ -76,45 +80,47 @@ class AppColorsExtension extends ThemeExtension<AppColorsExtension> {
       transparent: Color.lerp(transparent, other.transparent, t)!,
       white: Color.lerp(white, other.white, t)!,
       black: Color.lerp(black, other.black, t)!,
+      primaryTextColor: Color.lerp(primaryTextColor, other.primaryTextColor, t)!,
     );
   }
 }
 
 class AppTheme {
   static final lightTheme = ThemeData.light().copyWith(
-      scaffoldBackgroundColor: AppPalatte.background,
+      scaffoldBackgroundColor: AppPalate.background,
       textTheme: ThemeData.light()
           .textTheme
           .apply(fontFamily: GoogleFonts.roboto().fontFamily),
       bottomSheetTheme: const BottomSheetThemeData(
-        modalBackgroundColor: AppPalatte.white,
-        modalBarrierColor: AppPalatte.transparent,
-        backgroundColor: AppPalatte.white,
+        modalBackgroundColor: AppPalate.white,
+        modalBarrierColor: AppPalate.transparent,
+        backgroundColor: AppPalate.white,
       ),
       dialogTheme: const DialogTheme(
-        backgroundColor: AppPalatte.white,
+        backgroundColor: AppPalate.white,
       ),
       appBarTheme: const AppBarTheme(
-        backgroundColor: AppPalatte.white,
-        iconTheme: IconThemeData(color: AppPalatte.black),
-        actionsIconTheme: IconThemeData(color: AppPalatte.black),
+        backgroundColor: AppPalate.white,
+        iconTheme: IconThemeData(color: AppPalate.black),
+        actionsIconTheme: IconThemeData(color: AppPalate.black),
       ),
       extensions: [
         AppColorsExtension(
-          primary: AppPalatte.primary,
-          primaryLight: AppPalatte.primaryLight,
-          primarySemiDark: AppPalatte.primarySemiDark,
-          primaryDark: AppPalatte.primaryDark,
-          red: AppPalatte.red,
-          green: AppPalatte.green,
-          background: AppPalatte.background,
-          transparent: AppPalatte.transparent,
-          white: AppPalatte.white,
-          black: AppPalatte.black,
+          primary: AppPalate.primary,
+          primaryLight: AppPalate.primaryLight,
+          primarySemiDark: AppPalate.primarySemiDark,
+          primaryDark: AppPalate.primaryDark,
+          red: AppPalate.red,
+          green: AppPalate.green,
+          background: AppPalate.background,
+          transparent: AppPalate.transparent,
+          white: AppPalate.white,
+          black: AppPalate.black,
+          primaryTextColor: AppPalate.primaryTextColor,
         )
       ]);
   static final darkTheme = ThemeData.light().copyWith(
-      scaffoldBackgroundColor: AppPalatteDark.background,
+      scaffoldBackgroundColor: AppPalateDark.background,
       textTheme: ThemeData.dark()
           .textTheme
           .apply(
@@ -122,32 +128,33 @@ class AppTheme {
           )
           .copyWith(),
       bottomSheetTheme: const BottomSheetThemeData(
-        modalBackgroundColor: AppPalatteDark.white,
-        modalBarrierColor: AppPalatteDark.transparent,
-        backgroundColor: AppPalatteDark.white,
+        modalBackgroundColor: AppPalateDark.white,
+        modalBarrierColor: AppPalateDark.transparent,
+        backgroundColor: AppPalateDark.white,
       ),
       dialogTheme: const DialogTheme(
-        backgroundColor: AppPalatteDark.white,
+        backgroundColor: AppPalateDark.white,
       ),
       appBarTheme: const AppBarTheme(
-        backgroundColor: AppPalatteDark.white,
-        iconTheme: IconThemeData(color: AppPalatteDark.black),
-        actionsIconTheme: IconThemeData(color: AppPalatteDark.black),
-        titleTextStyle: TextStyle(color: AppPalatteDark.black),
+        backgroundColor: AppPalateDark.white,
+        iconTheme: IconThemeData(color: AppPalateDark.black),
+        actionsIconTheme: IconThemeData(color: AppPalateDark.black),
+        titleTextStyle: TextStyle(color: AppPalateDark.black),
       ),
 
       extensions: [
         AppColorsExtension(
-          primary: AppPalatteDark.primary,
-          primaryLight: AppPalatteDark.primaryLight,
-          primarySemiDark: AppPalatteDark.primarySemiDark,
-          primaryDark: AppPalatteDark.primaryDark,
-          red: AppPalatteDark.red,
-          green: AppPalatteDark.green,
-          background: AppPalatteDark.background,
-          transparent: AppPalatteDark.transparent,
-          white: AppPalatteDark.white,
-          black: AppPalatteDark.black,
+          primary: AppPalateDark.primary,
+          primaryLight: AppPalateDark.primaryLight,
+          primarySemiDark: AppPalateDark.primarySemiDark,
+          primaryDark: AppPalateDark.primaryDark,
+          red: AppPalateDark.red,
+          green: AppPalateDark.green,
+          background: AppPalateDark.background,
+          transparent: AppPalateDark.transparent,
+          white: AppPalateDark.white,
+          black: AppPalateDark.black,
+          primaryTextColor: AppPalateDark.primaryTextColor,
         )
       ]);
 }
