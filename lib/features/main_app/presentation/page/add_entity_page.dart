@@ -1,9 +1,6 @@
-import 'dart:ui';
-
 import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:cashbook/core/theme/theme.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 class AddEntityPage extends StatefulWidget {
   const AddEntityPage({
@@ -33,10 +30,22 @@ class _AddEntityPageState extends State<AddEntityPage> {
             begin: Alignment.topLeft,
             end: Alignment.bottomCenter,
             colors: [
-              Theme.of(context).extension<AppColorsExtension>()!.red.withAlpha(100),
-              Theme.of(context).extension<AppColorsExtension>()!.red.withAlpha(20),
-              Theme.of(context).extension<AppColorsExtension>()!.red.withAlpha(20),
-              Theme.of(context).extension<AppColorsExtension>()!.red.withAlpha(0),
+              Theme.of(context)
+                  .extension<AppColorsExtension>()!
+                  .red
+                  .withAlpha(100),
+              Theme.of(context)
+                  .extension<AppColorsExtension>()!
+                  .red
+                  .withAlpha(20),
+              Theme.of(context)
+                  .extension<AppColorsExtension>()!
+                  .red
+                  .withAlpha(20),
+              Theme.of(context)
+                  .extension<AppColorsExtension>()!
+                  .red
+                  .withAlpha(0),
               Theme.of(context).extension<AppColorsExtension>()!.transparent,
             ],
           ),
@@ -47,8 +56,10 @@ class _AddEntityPageState extends State<AddEntityPage> {
               iconTheme: IconThemeData(
                 color: Theme.of(context).extension<AppColorsExtension>()!.black,
               ),
-              backgroundColor:
-              Theme.of(context).extension<AppColorsExtension>()!.red.withAlpha(0),
+              backgroundColor: Theme.of(context)
+                  .extension<AppColorsExtension>()!
+                  .red
+                  .withAlpha(0),
               title: Text(widget.heading),
             ),
             SizedBox(
@@ -91,7 +102,8 @@ class _AddEntityPageState extends State<AddEntityPage> {
                       ),
                       const Spacer(),
                       IconButton(
-                        padding: EdgeInsets.symmetric(horizontal:width * 0.035, vertical: height * 0.01),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: width * 0.035, vertical: height * 0.01),
                         style: ButtonStyle(
                           backgroundColor: MaterialStateProperty.all<Color>(
                             Theme.of(context)
