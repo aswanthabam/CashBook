@@ -1,5 +1,6 @@
 import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:cashbook/core/theme/theme.dart';
+import 'package:cashbook/features/main_app/presentation/widgets/add_entity/add_tag.dart';
 import 'package:cashbook/features/main_app/presentation/widgets/bottom_button.dart';
 import 'package:cashbook/features/main_app/presentation/widgets/money_input.dart';
 import 'package:cashbook/features/main_app/presentation/widgets/tag.dart';
@@ -21,6 +22,15 @@ class AddEntityPage extends StatefulWidget {
 }
 
 class _AddEntityPageState extends State<AddEntityPage> {
+  List<TagData> tags = [
+    TagData(name: "One", id: "one", color: Colors.green),
+    TagData(name: "One", id: "one", color: Colors.green),
+    TagData(name: "One", id: "one", color: Colors.green),
+    TagData(name: "One", id: "one", color: Colors.green),
+    TagData(name: "One", id: "one", color: Colors.green),
+    TagData(name: "One", id: "one", color: Colors.green),
+  ];
+
   @override
   Widget build(BuildContext context) {
     final double height = MediaQuery.of(context).size.height;
@@ -91,84 +101,14 @@ class _AddEntityPageState extends State<AddEntityPage> {
                         onPressed: () {
                           showDialog(
                               context: context,
-                              builder: (context) => Dialog(
-                                    child: Container(
-                                        height: height * 0.45,
-                                        width: width,
-                                        padding: EdgeInsets.all(width * 0.05),
-                                        decoration: BoxDecoration(
-                                          color: Theme.of(context)
-                                              .extension<AppColorsExtension>()!
-                                              .white,
-                                          borderRadius:
-                                              BorderRadius.circular(20),
-                                        ),
-                                        child: LayoutGrid(
-                                            columnSizes: [1.fr, 1.fr, 1.fr],
-                                            rowSizes: [1.fr, 1.fr, 1.fr],
-                                            children: [
-                                              Tag(
-                                                onPressed: () {},
-                                                name: "Food",
-                                                color: Theme.of(context)
-                                                    .extension<AppColorsExtension>()!
-                                                    .primaryLight,
-                                                highlightColor: Theme.of(context)
-                                                    .extension<AppColorsExtension>()!
-                                                    .primaryDark,
-                                              ),
-                                              Tag(
-                                                onPressed: () {},
-                                                name: "Transport",
-                                                color: Theme.of(context)
-                                                    .extension<AppColorsExtension>()!
-                                                    .primaryLight,
-                                                highlightColor: Theme.of(context)
-                                                    .extension<AppColorsExtension>()!
-                                                    .primaryDark,
-                                              ),
-                                              Tag(
-                                                onPressed: () {},
-                                                name: "Entertainment",
-                                                color: Theme.of(context)
-                                                    .extension<AppColorsExtension>()!
-                                                    .primaryLight,
-                                                highlightColor: Theme.of(context)
-                                                    .extension<AppColorsExtension>()!
-                                                    .primaryDark,
-                                              ),
-                                              Tag(
-                                                onPressed: () {},
-                                                name: "Health",
-                                                color: Theme.of(context)
-                                                    .extension<AppColorsExtension>()!
-                                                    .primaryLight,
-                                                highlightColor: Theme.of(context)
-                                                    .extension<AppColorsExtension>()!
-                                                    .primaryDark,
-                                              ),
-                                              Tag(
-                                                onPressed: () {},
-                                                name: "Education",
-                                                color: Theme.of(context)
-                                                    .extension<AppColorsExtension>()!
-                                                    .primaryLight,
-                                                highlightColor: Theme.of(context)
-                                                    .extension<AppColorsExtension>()!
-                                                    .primaryDark,
-                                              ),
-                                              Tag(
-                                                onPressed: () {},
-                                                name: "Other",
-                                                color: Theme.of(context)
-                                                    .extension<AppColorsExtension>()!
-                                                    .primaryLight,
-                                                highlightColor: Theme.of(context)
-                                                    .extension<AppColorsExtension>()!
-                                                    .primaryDark,
-                                              ),
-                                            ])),
-                                  ));
+                              builder: (context) => AddTag(
+                                  onAddTag: (TagData tag) {
+                                    // TODO : IMPLEMENT ON TAG ADD
+                                  },
+                                  onCreateTag: () {
+                                    // TODO : IMPLEMENT ON TAG CREATE
+                                  },
+                                  tags: tags));
                         },
                         icon: BootstrapIcons.tag_fill,
                         text: "Tag",

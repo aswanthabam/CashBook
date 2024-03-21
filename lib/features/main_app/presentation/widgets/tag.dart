@@ -5,18 +5,12 @@ class Tag extends StatefulWidget {
   Tag(
       {super.key,
       required this.onPressed,
-      required this.name,
-      required this.color,
-      required this.highlightColor,
-      this.textColor = Colors.white,
-      this.isHighlighted = false});
+      required this.tagData,
+      required this.highlightColor});
 
-  final String name;
-  final Color color;
   final Color highlightColor;
-  final Color textColor;
-  bool isHighlighted = false;
   final Function() onPressed;
+  final TagData tagData;
 
   @override
   State<Tag> createState() => _TagState();
@@ -27,23 +21,44 @@ class _TagState extends State<Tag> {
   Widget build(BuildContext context) {
     final double height = MediaQuery.of(context).size.height;
     final double width = MediaQuery.of(context).size.width;
-    return IntrinsicWidth(
-        child: Container(
-      height: height * 0.04,
-      padding: EdgeInsets.symmetric(horizontal: width * 0.04),
-      decoration: BoxDecoration(
-        color: widget.color,
-        borderRadius: BorderRadius.circular(width * 0.05),
-      ),
-      child: Center(
-        child: Text(
-          widget.name,
-          style: TextStyle(
-            color: widget.textColor,
-            fontSize: width * 0.035,
+    return GestureDetector(
+      onTap: widget.onPressed,
+      child: IntrinsicWidth(
+          child: Container(
+        margin: EdgeInsets.symmetric(
+            horizontal: width * 0.01, vertical: height * 0.005),
+        height: height * 0.04,
+        padding: EdgeInsets.symmetric(horizontal: width * 0.03),
+        decoration: BoxDecoration(
+          color: widget.tagData.isSelected ? widget.highlightColor : widget.tagData.color,
+          borderRadius: BorderRadius.circular(width * 0.05),
+        ),
+        child: Center(
+          child: Text(
+            widget.tagData.name,
+            style: TextStyle(
+              color: widget.tagData.textColor,
+              fontSize: width * 0.035,
+            ),
           ),
         ),
-      ),
-    ));
+      )),
+    );
   }
+}
+
+class TagData {
+  final String id;
+  final String name;
+  final Color color;
+  final Color textColor;
+  bool isSelected;
+
+  TagData({
+    required this.name,
+    required this.id,
+    required this.color,
+    this.isSelected = false,
+    this.textColor = Colors.white,
+  });
 }
