@@ -5,7 +5,6 @@ import 'package:cashbook/features/main_app/presentation/widgets/bottom_button.da
 import 'package:cashbook/features/main_app/presentation/widgets/money_input.dart';
 import 'package:cashbook/features/main_app/presentation/widgets/tag.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_layout_grid/flutter_layout_grid.dart';
 
 class AddEntityPage extends StatefulWidget {
   const AddEntityPage({

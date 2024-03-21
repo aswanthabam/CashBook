@@ -1,4 +1,3 @@
-import 'package:cashbook/core/theme/theme.dart';
 import 'package:flutter/material.dart';
 
 class Tag extends StatefulWidget {
