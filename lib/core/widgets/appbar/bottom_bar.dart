@@ -1,6 +1,7 @@
 import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:cashbook/core/theme/theme.dart';
 import 'package:cashbook/core/widgets/buttons/add_button.dart';
+import 'package:cashbook/features/main_app/presentation/widgets/add_entity/add_entity_popup.dart';
 import 'package:flutter/material.dart';
 
 class BottomBar extends StatefulWidget {
@@ -26,7 +27,7 @@ class _BottomBarState extends State<BottomBar> {
               bottom: 0,
               child: Container(
                   width: width,
-                  height: height * 0.07,
+                  height: height * 0.09,
                   decoration: BoxDecoration(
                     color: Theme.of(context)
                         .extension<AppColorsExtension>()!
@@ -40,15 +41,23 @@ class _BottomBarState extends State<BottomBar> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      BottomBarButton(onPressed:() {}, icon: BootstrapIcons.bank2, text: "Home",),
-                      BottomBarButton(onPressed:() {}, icon: BootstrapIcons.clock_history, text: "History",),
+                      BottomBarButton(onPressed:() {
+                        // TODO : IMPLEMENT HOME BUTTON
+                      }, icon: BootstrapIcons.bank2, text: "Home",),
+                      BottomBarButton(onPressed:() {
+                        // TODO : IMPLEMENT HISTORY BUTTON
+                      }, icon: BootstrapIcons.clock_history, text: "History",),
                       SizedBox(width: width * 0.05,),
-                      BottomBarButton(onPressed:() {}, icon: BootstrapIcons.currency_exchange, text: "Assets &\nLiabilities",),
-                      BottomBarButton(onPressed:() {}, icon: BootstrapIcons.gear_fill, text: "Settings",),
+                      BottomBarButton(onPressed:() {
+                        // TODO : IMPLEMENT ASSETS & LIABILITIES BUTTON
+                      }, icon: BootstrapIcons.currency_exchange, text: "Assets &\nLiabilities",),
+                      BottomBarButton(onPressed:() {
+                        // TODO : IMPLEMENT SETTINGS BUTTON
+                      }, icon: BootstrapIcons.gear_fill, text: "Settings",),
                     ],
                   ))),
           SizedBox(
-            height: (height * 0.07) + (width * 0.06),
+            height: (height * 0.09) + (width * 0.06),
           ),
           Positioned(
             left: width * 0.425,
@@ -71,7 +80,7 @@ class _BottomBarState extends State<BottomBar> {
                   )),
               child: AddButton(
                 onPressed: () {
-                  // TODO : IMPLEMENT ADD BUTTON
+                  showAddEntityPopup(context);
                 },
               ),
             ),

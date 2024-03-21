@@ -17,7 +17,7 @@ class AddButton extends StatelessWidget {
         backgroundColor: Colors.transparent,
         foregroundColor: Colors.transparent
       ),
-        onPressed: () {},
+        onPressed: onPressed,
         child: Image.asset(
           "assets/icons/add_button/add_button_light.png",
           width: 50,
