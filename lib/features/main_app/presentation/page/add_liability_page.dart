@@ -1,6 +1,5 @@
 import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:cashbook/core/theme/theme.dart';
-import 'package:cashbook/features/main_app/presentation/widgets/tag.dart';
 import 'package:flutter/material.dart';
 
 class AddLiabilityPage extends StatefulWidget {
@@ -18,15 +17,6 @@ class AddLiabilityPage extends StatefulWidget {
 }
 
 class _AddLiabilityPageState extends State<AddLiabilityPage> {
-  List<TagData> tags = [
-    TagData(name: "One", id: "one", color: Colors.green),
-    TagData(name: "One", id: "one", color: Colors.green),
-    TagData(name: "One", id: "one", color: Colors.green),
-    TagData(name: "One", id: "one", color: Colors.green),
-    TagData(name: "One", id: "one", color: Colors.green),
-    TagData(name: "One", id: "one", color: Colors.green),
-  ];
-
   TextEditingController titleController = TextEditingController();
   TextEditingController amountController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
