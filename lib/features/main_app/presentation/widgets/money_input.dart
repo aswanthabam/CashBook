@@ -2,8 +2,15 @@ import 'package:cashbook/core/theme/theme.dart';
 import 'package:flutter/material.dart';
 
 class MoneyInput extends StatefulWidget {
-  const MoneyInput({super.key});
+  const MoneyInput(
+      {super.key,
+      this.autoFocus = true,
+      this.includeTitle = true,
+      this.center = true});
 
+  final bool autoFocus;
+  final bool includeTitle;
+  final bool center;
   @override
   State<MoneyInput> createState() => _MoneyInputState();
 }
@@ -17,7 +24,7 @@ class _MoneyInputState extends State<MoneyInput> {
     final double height = MediaQuery.of(context).size.height;
     final double width = MediaQuery.of(context).size.width;
     return Container(
-      width: width,
+      width: widget.center ? width : null,
       height: height * 0.2,
       child: Column(
         children: [
@@ -31,7 +38,7 @@ class _MoneyInputState extends State<MoneyInput> {
                 padding: EdgeInsets.only(left: width * 0.067),
                 child: TextFormField(
                   textAlignVertical: TextAlignVertical.center,
-                  autofocus: true,
+                  autofocus: widget.autoFocus,
                   onTapOutside: (PointerDownEvent event) {
                     FocusScope.of(context).unfocus();
                   },
@@ -79,8 +86,9 @@ class _MoneyInputState extends State<MoneyInput> {
               ),
             ),
           ),
-          IntrinsicWidth(
-            child: ConstrainedBox(
+          widget.includeTitle
+              ? IntrinsicWidth(
+                  child: ConstrainedBox(
               constraints: BoxConstraints(
                 // maxHeight: height * 0.06,
                 minWidth: width * 0.3,
@@ -124,7 +132,8 @@ class _MoneyInputState extends State<MoneyInput> {
                 ),
               ),
             ),
-          ),
+                )
+              : const SizedBox(),
         ],
       ),
     );
