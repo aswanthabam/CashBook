@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:objectbox/objectbox.dart';
 
+@Entity()
 class TagData {
-  final String id;
-  final String name;
-  final Color color;
-  final Color textColor;
+  @Id()
+  int id;
+  String name;
+  int color;
+  int textColor;
   bool isSelected;
 
   TagData({
@@ -12,6 +15,10 @@ class TagData {
     required this.id,
     required this.color,
     this.isSelected = false,
-    this.textColor = Colors.white,
+    this.textColor = 0xffffffff,
   });
+
+  Color get colorValue => Color(color);
+
+  Color get textColorValue => Color(textColor);
 }

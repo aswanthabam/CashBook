@@ -21,14 +21,7 @@ class AddEarningPage extends StatefulWidget {
 }
 
 class _AddEarningPageState extends State<AddEarningPage> {
-  List<TagData> tags = [
-    TagData(name: "One", id: "one", color: Colors.green),
-    TagData(name: "One", id: "one", color: Colors.green),
-    TagData(name: "One", id: "one", color: Colors.green),
-    TagData(name: "One", id: "one", color: Colors.green),
-    TagData(name: "One", id: "one", color: Colors.green),
-    TagData(name: "One", id: "one", color: Colors.green),
-  ];
+  List<TagData> tags = [];
 
   @override
   Widget build(BuildContext context) {
@@ -38,31 +31,6 @@ class _AddEarningPageState extends State<AddEarningPage> {
       body: Container(
         width: width,
         height: height + MediaQuery.of(context).padding.top,
-        decoration: BoxDecoration(
-            // gradient: LinearGradient(
-            //   begin: Alignment.topLeft,
-            //   end: Alignment.bottomCenter,
-            //   colors: [
-            //     Theme.of(context)
-            //         .extension<AppColorsExtension>()!
-            //         .red
-            //         .withAlpha(100),
-            //     Theme.of(context)
-            //         .extension<AppColorsExtension>()!
-            //         .red
-            //         .withAlpha(20),
-            //     Theme.of(context)
-            //         .extension<AppColorsExtension>()!
-            //         .red
-            //         .withAlpha(20),
-            //     Theme.of(context)
-            //         .extension<AppColorsExtension>()!
-            //         .red
-            //         .withAlpha(0),
-            //     Theme.of(context).extension<AppColorsExtension>()!.transparent,
-            //   ],
-            // ),
-            ),
         child: Stack(
           children: [
             AppBar(

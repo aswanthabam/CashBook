@@ -1,5 +1,7 @@
 import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:cashbook/core/theme/theme.dart';
+import 'package:cashbook/features/main_app/data/datasource/local/database.dart';
+import 'package:cashbook/features/main_app/domain/models/expense.dart';
 import 'package:cashbook/features/main_app/domain/models/tag_data.dart';
 import 'package:cashbook/features/main_app/presentation/widgets/add_entity/add_tag.dart';
 import 'package:cashbook/features/main_app/presentation/widgets/bottom_button.dart';
@@ -22,12 +24,12 @@ class AddExpensePage extends StatefulWidget {
 
 class _AddExpensePageState extends State<AddExpensePage> {
   List<TagData> tags = [
-    TagData(name: "One", id: "one", color: Colors.green),
-    TagData(name: "One", id: "one", color: Colors.green),
-    TagData(name: "One", id: "one", color: Colors.green),
-    TagData(name: "One", id: "one", color: Colors.green),
-    TagData(name: "One", id: "one", color: Colors.green),
-    TagData(name: "One", id: "one", color: Colors.green),
+    // TagData(name: "One", id: 1, color: Colors.green),
+    // TagData(name: "One", id: "one", color: Colors.green),
+    // TagData(name: "One", id: "one", color: Colors.green),
+    // TagData(name: "One", id: "one", color: Colors.green),
+    // TagData(name: "One", id: "one", color: Colors.green),
+    // TagData(name: "One", id: "one", color: Colors.green),
   ];
 
   @override
@@ -138,8 +140,15 @@ class _AddExpensePageState extends State<AddExpensePage> {
                             ),
                           ),
                         ),
-                        onPressed: () {
+                        onPressed: () async {
                           // TODO : IMPLEMENT ADD EXPENSE
+                          AppDatabase db = await AppDatabase.create();
+                          await db.insert<Expense>(
+                              Expense(id: 0, amount: 11, description: "da"));
+                          print("Expense Added");
+                          List<Expense> exp = await db.getAll<Expense>();
+                          print("Expense");
+                          print(exp);
                         },
                         icon: Icon(
                           Icons.send_rounded,

@@ -30,14 +30,16 @@ class _TagState extends State<Tag> {
         height: height * 0.04,
         padding: EdgeInsets.symmetric(horizontal: width * 0.03),
         decoration: BoxDecoration(
-          color: widget.tagData.isSelected ? widget.highlightColor : widget.tagData.color,
+          color: widget.tagData.isSelected
+              ? widget.highlightColor
+              : widget.tagData.colorValue,
           borderRadius: BorderRadius.circular(width * 0.05),
         ),
         child: Center(
           child: Text(
             widget.tagData.name,
             style: TextStyle(
-              color: widget.tagData.textColor,
+              color: widget.tagData.textColorValue,
               fontSize: width * 0.035,
             ),
           ),
