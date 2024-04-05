@@ -6,20 +6,30 @@ import 'package:cashbook/objectbox.g.dart';
 class Expense {
   @Id()
   int id;
+  String title;
   double amount;
   String? description;
   ToMany<TagData> tags = ToMany<TagData>();
   @Property(type: PropertyType.date)
   DateTime date = DateTime.now();
 
-  Expense({required this.id,
-      required this.amount, required this.description});
+  Expense(
+      {required this.id,
+      required this.title,
+      required this.amount,
+      required this.description});
 
-  static Future<ExpenseList> getExpenseList(
-      DateTime startDate, DateTime endDate) async {
+  static Future<ExpenseList> getExpenseList(DateTime startDate,
+      DateTime endDate,
+      {bool descending = false}) async {
     AppDatabase database = await AppDatabase.create();
-    Query<Expense> query = database.box<Expense>().query(Expense_.date.between(
-        startDate.microsecondsSinceEpoch, endDate.microsecondsSinceEpoch));
+    Query<Expense> query = database
+        .box<Expense>()
+        .query(Expense_.date.between(
+            startDate.millisecondsSinceEpoch, endDate.millisecondsSinceEpoch))
+        .order(Expense_.date, flags: descending ? 1 : 0)
+        .build();
+    print("Created query");
     List<Expense> res = query.find();
     double totalAmount =
         res.fold(0, (previousValue, element) => previousValue + element.amount);
@@ -32,7 +42,7 @@ class Expense {
 
   @override
   String toString() {
-    return 'Expense{id: $id, amount: $amount, description: $description, tags: $tags}';
+    return 'Expense{id: $id, title: $title, amount: $amount, description: $description, tags: $tags, date: $date}';
   }
 }
 

@@ -33,13 +33,10 @@ class _AddEntityPopupState extends State<AddEntityPopup> {
               rightIcon: BootstrapIcons.arrow_right,
               text: "Add Expense",
               onPressed: () {
+                Navigator.of(context).pop();
                 Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => AddExpensePage(
-                        heading: "Add Expense",
-                        onSubmit: () {
-                          // TODO : IMPLEMENT ADD EXPENSE
-                          return true;
-                        })));
+                    builder: (context) =>
+                        AddExpensePage(heading: "Add Expense")));
               },
             ),
             // SizedBox(height: height * 0.01,),
@@ -62,6 +59,7 @@ class _AddEntityPopupState extends State<AddEntityPopup> {
               rightIcon: BootstrapIcons.arrow_right,
               text: "Add Asset",
               onPressed: () {
+                Navigator.of(context).pop();
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => AddAssetPage(
                         heading: "Add Asset",
@@ -79,6 +77,7 @@ class _AddEntityPopupState extends State<AddEntityPopup> {
               rightIcon: BootstrapIcons.arrow_right,
               text: "Add Liability",
               onPressed: () {
+                Navigator.of(context).pop();
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => AddLiabilityPage(
                         heading: "Add Liability",

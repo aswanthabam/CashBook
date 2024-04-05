@@ -22,6 +22,8 @@ class AddEarningPage extends StatefulWidget {
 
 class _AddEarningPageState extends State<AddEarningPage> {
   List<TagData> tags = [];
+  TextEditingController amountController = TextEditingController();
+  TextEditingController titleController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -45,10 +47,15 @@ class _AddEarningPageState extends State<AddEarningPage> {
             ),
             SizedBox(
               height: MediaQuery.of(context).size.height,
-              child: const Column(
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [MoneyInput()],
+                children: [
+                  MoneyInput(
+                    amountController: amountController,
+                    titleController: titleController,
+                  )
+                ],
               ),
             ),
             Positioned(

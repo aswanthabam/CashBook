@@ -4,20 +4,23 @@ import 'package:flutter/material.dart';
 class MoneyInput extends StatefulWidget {
   const MoneyInput(
       {super.key,
-      this.autoFocus = true,
+    required this.amountController,
+    required this.titleController,
+    this.autoFocus = true,
       this.includeTitle = true,
-      this.center = true});
+    this.center = true,
+  });
 
   final bool autoFocus;
   final bool includeTitle;
   final bool center;
+  final TextEditingController amountController;
+  final TextEditingController titleController;
   @override
   State<MoneyInput> createState() => _MoneyInputState();
 }
 
 class _MoneyInputState extends State<MoneyInput> {
-  TextEditingController controller = TextEditingController();
-  TextEditingController controller2 = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -42,6 +45,7 @@ class _MoneyInputState extends State<MoneyInput> {
                   onTapOutside: (PointerDownEvent event) {
                     FocusScope.of(context).unfocus();
                   },
+                  controller: widget.amountController,
                   textAlign: TextAlign.center,
                   showCursor: false,
                   decoration: InputDecoration(
@@ -97,8 +101,8 @@ class _MoneyInputState extends State<MoneyInput> {
                 height: height * 0.05,
                 child: TextFormField(
                   cursorHeight: 0,
-                  controller: controller2,
-                  textAlign: TextAlign.center,
+                        controller: widget.titleController,
+                        textAlign: TextAlign.center,
                   textAlignVertical: TextAlignVertical.bottom,
                   style: TextStyle(
                     fontSize: width * 0.035,

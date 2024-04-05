@@ -39,5 +39,9 @@ class AppDatabase {
     return true;
   }
 
+  void dispose() {
+    _store?.close();
+  }
+
   get box => _store!.box;
 }

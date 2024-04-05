@@ -7,16 +7,12 @@ import 'package:cashbook/features/main_app/presentation/widgets/add_entity/add_t
 import 'package:cashbook/features/main_app/presentation/widgets/bottom_button.dart';
 import 'package:cashbook/features/main_app/presentation/widgets/money_input.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class AddExpensePage extends StatefulWidget {
-  const AddExpensePage({
-    super.key,
-    required this.heading,
-    required this.onSubmit,
-  });
+  const AddExpensePage({super.key, required this.heading});
 
   final String heading;
-  final bool Function() onSubmit;
 
   @override
   State<AddExpensePage> createState() => _AddExpensePageState();
@@ -32,6 +28,34 @@ class _AddExpensePageState extends State<AddExpensePage> {
     // TagData(name: "One", id: "one", color: Colors.green),
   ];
 
+  TextEditingController amountController = TextEditingController();
+  TextEditingController titleController = TextEditingController();
+
+  void _validateAndSubmit() {
+    if (amountController.text.isEmpty) {
+      Fluttertoast.showToast(msg: "Amount cannot be empty");
+    } else if (RegExp(r'^[0-9]+(\.[0-9]+)?$').hasMatch(amountController.text) ==
+        false) {
+      Fluttertoast.showToast(msg: "Amount is not valid");
+    } else if (titleController.text.isEmpty) {
+      Fluttertoast.showToast(msg: "Title cannot be empty");
+    } else {
+      try {
+        final Expense expense = Expense(
+            id: 0,
+            amount: double.parse(amountController.text),
+            title: titleController.text,
+            description: "");
+        AppDatabase db = AppDatabase();
+        int status = db.insert<Expense>(expense);
+        Navigator.of(context).pop();
+        Fluttertoast.showToast(msg: "Successfully added expense");
+      } catch (e) {
+        Fluttertoast.showToast(msg: "Failed to add expense");
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final double height = MediaQuery.of(context).size.height;
@@ -40,31 +64,6 @@ class _AddExpensePageState extends State<AddExpensePage> {
       body: Container(
         width: width,
         height: height + MediaQuery.of(context).padding.top,
-        decoration: BoxDecoration(
-            // gradient: LinearGradient(
-            //   begin: Alignment.topLeft,
-            //   end: Alignment.bottomCenter,
-            //   colors: [
-            //     Theme.of(context)
-            //         .extension<AppColorsExtension>()!
-            //         .red
-            //         .withAlpha(100),
-            //     Theme.of(context)
-            //         .extension<AppColorsExtension>()!
-            //         .red
-            //         .withAlpha(20),
-            //     Theme.of(context)
-            //         .extension<AppColorsExtension>()!
-            //         .red
-            //         .withAlpha(20),
-            //     Theme.of(context)
-            //         .extension<AppColorsExtension>()!
-            //         .red
-            //         .withAlpha(0),
-            //     Theme.of(context).extension<AppColorsExtension>()!.transparent,
-            //   ],
-            // ),
-            ),
         child: Stack(
           children: [
             AppBar(
@@ -79,10 +78,15 @@ class _AddExpensePageState extends State<AddExpensePage> {
             ),
             SizedBox(
               height: MediaQuery.of(context).size.height,
-              child: const Column(
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [MoneyInput()],
+                children: [
+                  MoneyInput(
+                    amountController: amountController,
+                    titleController: titleController,
+                  )
+                ],
               ),
             ),
             Positioned(
@@ -141,14 +145,7 @@ class _AddExpensePageState extends State<AddExpensePage> {
                           ),
                         ),
                         onPressed: () async {
-                          // TODO : IMPLEMENT ADD EXPENSE
-                          AppDatabase db = await AppDatabase.create();
-                          await db.insert<Expense>(
-                              Expense(id: 0, amount: 11, description: "da"));
-                          print("Expense Added");
-                          List<Expense> exp = await db.getAll<Expense>();
-                          print("Expense");
-                          print(exp);
+                          _validateAndSubmit();
                         },
                         icon: Icon(
                           Icons.send_rounded,
