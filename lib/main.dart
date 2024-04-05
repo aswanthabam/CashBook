@@ -1,6 +1,7 @@
 import 'package:cashbook/core/providers/theme_provider.dart';
 import 'package:cashbook/core/theme/theme.dart';
 import 'package:cashbook/features/main_app/presentation/page/home.dart';
+import 'package:cashbook/features/settings/presentation/page/settings.dart';
 import 'package:cashbook/features/splash_screen/presentation/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -17,7 +18,8 @@ void main() {
       routes: {
         'home': (context) => const Home(),
         'splash_screen': (context) => const SplashScreen(),
-      },
+            'settings': (context) => const Settings(),
+          },
       initialRoute: "splash_screen",
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
