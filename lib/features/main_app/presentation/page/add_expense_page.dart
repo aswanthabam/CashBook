@@ -6,8 +6,8 @@ import 'package:cashbook/features/main_app/presentation/widgets/money_input.dart
 import 'package:cashbook/features/main_app/presentation/widgets/tag.dart';
 import 'package:flutter/material.dart';
 
-class AddEntityPage extends StatefulWidget {
-  const AddEntityPage({
+class AddExpensePage extends StatefulWidget {
+  const AddExpensePage({
     super.key,
     required this.heading,
     required this.onSubmit,
@@ -17,10 +17,10 @@ class AddEntityPage extends StatefulWidget {
   final bool Function() onSubmit;
 
   @override
-  State<AddEntityPage> createState() => _AddEntityPageState();
+  State<AddExpensePage> createState() => _AddExpensePageState();
 }
 
-class _AddEntityPageState extends State<AddEntityPage> {
+class _AddExpensePageState extends State<AddExpensePage> {
   List<TagData> tags = [
     TagData(name: "One", id: "one", color: Colors.green),
     TagData(name: "One", id: "one", color: Colors.green),
@@ -39,30 +39,30 @@ class _AddEntityPageState extends State<AddEntityPage> {
         width: width,
         height: height + MediaQuery.of(context).padding.top,
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomCenter,
-            colors: [
-              Theme.of(context)
-                  .extension<AppColorsExtension>()!
-                  .red
-                  .withAlpha(100),
-              Theme.of(context)
-                  .extension<AppColorsExtension>()!
-                  .red
-                  .withAlpha(20),
-              Theme.of(context)
-                  .extension<AppColorsExtension>()!
-                  .red
-                  .withAlpha(20),
-              Theme.of(context)
-                  .extension<AppColorsExtension>()!
-                  .red
-                  .withAlpha(0),
-              Theme.of(context).extension<AppColorsExtension>()!.transparent,
-            ],
-          ),
-        ),
+            // gradient: LinearGradient(
+            //   begin: Alignment.topLeft,
+            //   end: Alignment.bottomCenter,
+            //   colors: [
+            //     Theme.of(context)
+            //         .extension<AppColorsExtension>()!
+            //         .red
+            //         .withAlpha(100),
+            //     Theme.of(context)
+            //         .extension<AppColorsExtension>()!
+            //         .red
+            //         .withAlpha(20),
+            //     Theme.of(context)
+            //         .extension<AppColorsExtension>()!
+            //         .red
+            //         .withAlpha(20),
+            //     Theme.of(context)
+            //         .extension<AppColorsExtension>()!
+            //         .red
+            //         .withAlpha(0),
+            //     Theme.of(context).extension<AppColorsExtension>()!.transparent,
+            //   ],
+            // ),
+            ),
         child: Stack(
           children: [
             AppBar(
