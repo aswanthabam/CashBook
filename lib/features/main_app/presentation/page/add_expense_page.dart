@@ -47,7 +47,7 @@ class _AddExpensePageState extends State<AddExpensePage> {
             title: titleController.text,
             description: "");
         AppDatabase db = AppDatabase();
-        int status = db.insert<Expense>(expense);
+        db.insert<Expense>(expense);
         Navigator.of(context).pop();
         Fluttertoast.showToast(msg: "Successfully added expense");
       } catch (e) {
