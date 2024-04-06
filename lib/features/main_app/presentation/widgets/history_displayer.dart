@@ -59,9 +59,20 @@ class _HistoryDisplayerState extends State<HistoryDisplayer> {
                   color:
                       Theme.of(context).extension<AppColorsExtension>()!.black),
             ),
-            subtitle: Text(
-                "${formatDate(widget.expenses[widget.expenses.length - index - 1].date)} (Category : ${tag != null ? tag.title : 'Uncategorized'})",
-                style: const TextStyle(fontSize: 12)),
+            subtitle: Row(
+              children: [
+                Text(
+                    "${formatDate(widget.expenses[widget.expenses.length - index - 1].date)}",
+                    style: const TextStyle(fontSize: 12)),
+                Text(
+                  "  ⦿  ${tag != null ? tag.title : 'Uncategorized'}",
+                  style: TextStyle(
+                      color: tag != null ? Color(tag.color) : Colors.blue,
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold),
+                )
+              ],
+            ),
             trailing: Text(
               widget.expenses[widget.expenses.length - index - 1].amount
                   .toString(),
