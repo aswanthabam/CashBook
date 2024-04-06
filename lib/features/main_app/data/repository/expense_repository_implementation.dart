@@ -10,13 +10,13 @@ class ExpenseRepositoryImplementation implements ExpenseRepository {
   ExpenseRepositoryImplementation({required this.datasource});
 
   @override
-  Future<void> addExpense(
+  Future<int> addExpense(
       {required String title,
       required double amount,
       required String description,
       required DateTime date,
       required List<int> tags}) async {
-    await datasource.addExpense(
+    return await datasource.addExpense(
         title: title,
         amount: amount,
         description: description,

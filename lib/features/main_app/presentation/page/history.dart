@@ -1,28 +1,24 @@
 import 'package:bootstrap_icons/bootstrap_icons.dart';
+import 'package:cashbook/core/theme/theme.dart';
 import 'package:cashbook/core/widgets/appbar/bottom_bar.dart';
 import 'package:cashbook/core/widgets/appbar/main_appbar.dart';
-import 'package:cashbook/core/widgets/buttons/add_button.dart';
-import 'package:cashbook/core/widgets/buttons/icon_button.dart';
-import 'package:cashbook/core/widgets/pagination_indicator/indicator.dart';
 import 'package:cashbook/features/main_app/data/models/expense.dart';
 import 'package:cashbook/features/main_app/presentation/bloc/expense_bloc.dart';
-import 'package:cashbook/features/main_app/presentation/widgets/add_entity/add_entity_popup.dart';
 import 'package:cashbook/features/main_app/presentation/widgets/charts/main_chart.dart';
-import 'package:cashbook/features/main_app/presentation/widgets/money_display.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
-class Home extends StatefulWidget {
-  const Home({super.key});
+class History extends StatefulWidget {
+  const History({super.key});
 
   @override
-  State<Home> createState() => _HomeState();
+  State<History> createState() => _HistoryState();
 }
 
-class _HomeState extends State<Home> {
+class _HistoryState extends State<History> {
   // late Future<List<MainChartRow>> graphData;
-  static int homePageHistoryCount = 5;
+  static int historyPageHistoryCount = 30;
 
   List<MainChartRow> _getChartData(List<Expense> expenses) {
     if (expenses.isEmpty) {
@@ -63,10 +59,6 @@ class _HomeState extends State<Home> {
       if (event is ExpenseAdded) {
         _emitHistoryEvent(bloc);
       }
-      if (event is ExpenseHistoryError) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("Error: ${event.message}")));
-      }
     });
   }
 
@@ -81,65 +73,23 @@ class _HomeState extends State<Home> {
             children: [
               const MainAppBar(),
               Container(
-                padding: EdgeInsets.all(width * 0.035),
-                width: MediaQuery.of(context).size.width,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const PaginationIndicator(
-                      count: 3,
-                      index: 1,
-                    ),
-                    SizedBox(
-                      height: width * 0.05,
-                    ),
-                    Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          const Expanded(
-                            child: MoneyDisplay(
-                                text: "+ 54,500 ₹",
-                                subText: "Net earnings this month"),
-                          ),
-                          AddButton(
-                            onPressed: () {
-                              showAddEntityPopup(context);
-                            },
-                          )
-                        ]),
-                    const SizedBox(
-                      height: 0,
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                  padding: EdgeInsets.all(width * 0.035),
-                  child: BlocConsumer<ExpenseBloc, ExpenseState>(
-                    builder: (context, state) {
-                      if (state is ExpenseHistoryLoaded) {
-                        if (state.expenses.isEmpty) {
-                          return const Text("No data available to display.");
-                        }
-                        return MainChart(data: _getChartData(state.expenses));
-                      }
-                      return const SizedBox();
-                    },
-                    listener: (context, state) {},
-                  )),
-              Container(
                 width: MediaQuery.of(context).size.width,
                 padding: const EdgeInsets.all(5),
-                // decoration: BoxDecoration(
-                //   color: Colors.green,
-                // ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Padding(
-                      padding:
-                          EdgeInsets.symmetric(vertical: 10, horizontal: 25),
-                      child: Text("History"),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 10, horizontal: 10),
+                      child: Text(
+                        "All History",
+                        style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context)
+                                .extension<AppColorsExtension>()!
+                                .primary),
+                      ),
                     ),
                     BlocConsumer<ExpenseBloc, ExpenseState>(
                         builder: (context, state) {
@@ -152,10 +102,10 @@ class _HomeState extends State<Home> {
                             return ListView.builder(
                                 shrinkWrap: true,
                                 physics: const NeverScrollableScrollPhysics(),
-                                itemCount:
-                                    state.expenses.length > homePageHistoryCount
-                                        ? homePageHistoryCount
-                                        : state.expenses.length,
+                                itemCount: state.expenses.length >
+                                        historyPageHistoryCount
+                                    ? historyPageHistoryCount
+                                    : state.expenses.length,
                                 itemBuilder: (context, index) {
                                   return ListTile(
                                     shape: const Border(
@@ -204,26 +154,14 @@ class _HomeState extends State<Home> {
                                   );
                                 });
                           }
+                          if (state is ExpenseHistoryError) {
+                            return Center(
+                              child: Text(state.message),
+                            );
+                          }
                           return const SizedBox();
                         },
                         listener: (context, state) {}),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        IconButtonWidget(
-                          onPressed: () {
-                            Navigator.of(context)
-                                .pushReplacementNamed("history");
-                          },
-                          message: "View All Transactions",
-                          icon: Icons.chevron_right,
-                          alignRight: true,
-                        )
-                      ],
-                    )
                   ],
                 ),
               )

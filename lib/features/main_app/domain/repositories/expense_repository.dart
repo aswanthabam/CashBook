@@ -3,7 +3,7 @@ import 'package:cashbook/features/main_app/data/models/expense.dart';
 import 'package:fpdart/fpdart.dart%20%20';
 
 abstract interface class ExpenseRepository {
-  Future<void> addExpense({
+  Future<int> addExpense({
     required String title,
     required double amount,
     required String description,

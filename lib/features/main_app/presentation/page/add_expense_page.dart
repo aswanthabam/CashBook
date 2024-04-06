@@ -3,10 +3,12 @@ import 'package:cashbook/core/datasource/local/database.dart';
 import 'package:cashbook/core/theme/theme.dart';
 import 'package:cashbook/features/main_app/data/models/expense.dart';
 import 'package:cashbook/features/main_app/data/models/tag_data.dart';
+import 'package:cashbook/features/main_app/presentation/bloc/expense_bloc.dart';
 import 'package:cashbook/features/main_app/presentation/widgets/add_entity/add_tag.dart';
 import 'package:cashbook/features/main_app/presentation/widgets/bottom_button.dart';
 import 'package:cashbook/features/main_app/presentation/widgets/money_input.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class AddExpensePage extends StatefulWidget {
@@ -32,6 +34,7 @@ class _AddExpensePageState extends State<AddExpensePage> {
   TextEditingController titleController = TextEditingController();
 
   void _validateAndSubmit() {
+    throw UnimplementedError();
     if (amountController.text.isEmpty) {
       Fluttertoast.showToast(msg: "Amount cannot be empty");
     } else if (RegExp(r'^[0-9]+(\.[0-9]+)?$').hasMatch(amountController.text) ==
@@ -58,11 +61,25 @@ class _AddExpensePageState extends State<AddExpensePage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    ExpenseBloc bloc = context.read<ExpenseBloc>();
+    bloc.stream.listen((event) {
+      if (event is ExpenseAdded) {
+        Navigator.of(context).pop();
+        Fluttertoast.showToast(msg: "Successfully added expense");
+      } else if (event is ExpenseAddError) {
+        Fluttertoast.showToast(msg: "Failed to add expense");
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final double height = MediaQuery.of(context).size.height;
     final double width = MediaQuery.of(context).size.width;
     return Scaffold(
-      body: Container(
+      body: SizedBox(
         width: width,
         height: height + MediaQuery.of(context).padding.top,
         child: Stack(
@@ -146,7 +163,13 @@ class _AddExpensePageState extends State<AddExpensePage> {
                           ),
                         ),
                         onPressed: () async {
-                          _validateAndSubmit();
+                          context.read<ExpenseBloc>().add(AddExpenseEvent(
+                              amount: double.parse(amountController.text),
+                              title: titleController.text,
+                              description: "Unimplemented",
+                              date: DateTime.now(),
+                              // TODO : IMPLEMENT CUSTOM TIMEING
+                              tags: tags.map((e) => e.id).toList()));
                         },
                         icon: Icon(
                           Icons.send_rounded,

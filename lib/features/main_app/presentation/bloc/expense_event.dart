@@ -9,3 +9,18 @@ final class GetHistoryEvent extends ExpenseEvent {
 
   GetHistoryEvent({required this.startDate, required this.endDate});
 }
+
+final class AddExpenseEvent extends ExpenseEvent {
+  final String title;
+  final double amount;
+  final String description;
+  final DateTime date;
+  final List<int> tags;
+
+  AddExpenseEvent(
+      {required this.title,
+      required this.amount,
+      required this.description,
+      required this.date,
+      required this.tags});
+}

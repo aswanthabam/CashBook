@@ -45,6 +45,7 @@ class _MoneyInputState extends State<MoneyInput> {
                   onTapOutside: (PointerDownEvent event) {
                     FocusScope.of(context).unfocus();
                   },
+                  textInputAction: TextInputAction.next,
                   controller: widget.amountController,
                   textAlign: TextAlign.center,
                   showCursor: false,

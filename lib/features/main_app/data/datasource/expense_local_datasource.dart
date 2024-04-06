@@ -4,7 +4,7 @@ import 'package:cashbook/features/main_app/data/models/expense.dart';
 import 'package:cashbook/objectbox.g.dart';
 
 abstract interface class ExpenseLocalDatasource {
-  Future<void> addExpense({
+  Future<int> addExpense({
     required String title,
     required double amount,
     required String description,
@@ -81,6 +81,7 @@ class ExpenseLocalDatasourceImplementation implements ExpenseLocalDatasource {
           .build();
       return query.find();
     } catch (e) {
+      print(e);
       throw LocalDatabaseException(
           "Error getting expenses, an unexpected error occurred");
     }

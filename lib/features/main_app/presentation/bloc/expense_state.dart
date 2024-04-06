@@ -16,3 +16,11 @@ final class ExpenseHistoryError extends ExpenseState {
 
   ExpenseHistoryError(this.message);
 }
+
+final class ExpenseAdded extends ExpenseState {}
+
+final class ExpenseAddError extends ExpenseState {
+  final String message;
+
+  ExpenseAddError(this.message);
+}
