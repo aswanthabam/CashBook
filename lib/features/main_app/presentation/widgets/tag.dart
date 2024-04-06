@@ -6,11 +6,13 @@ class Tag extends StatefulWidget {
       {super.key,
       required this.onPressed,
       required this.tagData,
-      required this.highlightColor});
+      required this.highlightColor,
+      required this.icon});
 
   final Color highlightColor;
   final Function() onPressed;
   final TagData tagData;
+  final IconData icon;
 
   @override
   State<Tag> createState() => _TagState();
@@ -36,12 +38,22 @@ class _TagState extends State<Tag> {
           borderRadius: BorderRadius.circular(width * 0.05),
         ),
         child: Center(
-          child: Text(
-            widget.tagData.title,
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: width * 0.035,
-            ),
+          child: Row(
+            children: [
+              Icon(
+                widget.icon,
+                color: Colors.white,
+                size: width * 0.04,
+              ),
+              const SizedBox(width: 5),
+              Text(
+                widget.tagData.title,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: width * 0.035,
+                ),
+              ),
+            ],
           ),
         ),
       )),

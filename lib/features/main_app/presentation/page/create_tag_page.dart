@@ -3,6 +3,7 @@ import 'package:cashbook/features/main_app/presentation/bloc/tag/tag_bloc.dart';
 import 'package:flex_color_picker/flex_color_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_iconpicker/flutter_iconpicker.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class CreateTagPage extends StatefulWidget {
@@ -18,6 +19,7 @@ class _CreateTagPageState extends State<CreateTagPage> {
   TextEditingController titleController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   Color selectedColor = Colors.blue;
+  IconData selectedIcon = Icons.monetization_on_sharp;
 
   bool _validate() {
     if (titleController.text.isEmpty) {
@@ -34,8 +36,7 @@ class _CreateTagPageState extends State<CreateTagPage> {
       if (state is TagCreated) {
         Fluttertoast.showToast(msg: "Tag Created");
         Navigator.of(context).pop();
-      }
-      if (state is TagCreateError) {
+      } else if (state is TagCreateError) {
         Fluttertoast.showToast(msg: state.message);
       }
     });
@@ -116,6 +117,15 @@ class _CreateTagPageState extends State<CreateTagPage> {
                       ),
                       Row(
                         children: [
+                          Text(
+                            "Select a color for the tag",
+                            style: TextStyle(
+                                fontSize: 17,
+                                color: Theme.of(context)
+                                    .extension<AppColorsExtension>()!
+                                    .black),
+                          ),
+                          const Spacer(),
                           GestureDetector(
                             onTap: () {
                               showDialog(
@@ -149,17 +159,53 @@ class _CreateTagPageState extends State<CreateTagPage> {
                                   borderRadius: BorderRadius.circular(5)),
                             ),
                           ),
-                          SizedBox(
-                            width: width * 0.03,
-                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        children: [
                           Text(
-                            "Select a color for the tag",
+                            "Select an icon for the tag",
                             style: TextStyle(
                                 fontSize: 17,
                                 color: Theme.of(context)
                                     .extension<AppColorsExtension>()!
                                     .black),
-                          )
+                          ),
+                          const Spacer(),
+                          GestureDetector(
+                            onTap: () {
+                              showIconPicker(context,
+                                  iconColor: selectedColor,
+                                  iconSize: 30,
+                                  iconPackModes: const [
+                                    IconPack.allMaterial
+                                  ]).then((value) {
+                                if (value != null) {
+                                  setState(() {
+                                    selectedIcon = value;
+                                  });
+                                }
+                              });
+                            },
+                            child: Container(
+                              width: width * 0.1,
+                              height: width * 0.1,
+                              decoration: BoxDecoration(
+                                  color: Theme.of(context)
+                                      .extension<AppColorsExtension>()!
+                                      .primary,
+                                  borderRadius: BorderRadius.circular(5)),
+                              child: Icon(
+                                selectedIcon,
+                                color: Theme.of(context)
+                                    .extension<AppColorsExtension>()!
+                                    .primaryLightTextColor,
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                     ],
@@ -180,11 +226,14 @@ class _CreateTagPageState extends State<CreateTagPage> {
                           .primary,
                     ),
                     onPressed: () {
+                      print(serializeIcon(selectedIcon,
+                          iconPack: IconPack.allMaterial));
                       if (_validate()) {
                         context.read<TagBloc>().add(CreateTagEvent(
                             title: titleController.text,
                             description: descriptionController.text,
-                            color: selectedColor.value));
+                            color: selectedColor.value,
+                            icon: serializeIcon(selectedIcon)!["key"]));
                       }
                     },
                     child: Text(

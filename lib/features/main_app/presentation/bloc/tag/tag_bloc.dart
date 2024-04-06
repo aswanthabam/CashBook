@@ -27,7 +27,8 @@ class TagBloc extends Bloc<TagEvent, TagState> {
           .call(TagCreateParams(
               title: event.title,
               color: event.color,
-              description: event.description))
+              description: event.description,
+              icon: event.icon))
           .then((value) {
         value.fold((success) {
           emit(TagCreated());

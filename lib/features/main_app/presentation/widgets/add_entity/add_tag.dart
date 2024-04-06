@@ -3,14 +3,13 @@ import 'package:cashbook/features/main_app/data/models/tag_data.dart';
 import 'package:cashbook/features/main_app/presentation/widgets/tag.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_iconpicker/flutter_iconpicker.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 import '../../bloc/tag/tag_bloc.dart';
 
 class AddTag extends StatefulWidget {
-  const AddTag(
-      {super.key,
-      required this.onAddTag, required this.onCreateTag});
+  const AddTag({super.key, required this.onAddTag, required this.onCreateTag});
 
   final Function(List<TagData>) onAddTag;
   final Function() onCreateTag;
@@ -26,6 +25,7 @@ class _AddTagState extends State<AddTag> {
   @override
   void initState() {
     super.initState();
+
     TagBloc tagBloc = context.read<TagBloc>();
     tagBloc.add(GetTagsEvent());
     tagBloc.stream.listen((event) {
@@ -73,16 +73,21 @@ class _AddTagState extends State<AddTag> {
               ),
               Wrap(
                   alignment: WrapAlignment.center,
-                  children: tags
-                      .map((tag) => Tag(
-                          onPressed: () {
-                            tag.isSelected = true;
-                            selectedTags.add(tag);
-                            setState(() {});
-                          },
-                          tagData: tag,
-                          highlightColor: Colors.grey))
-                      .toList()),
+                  children: tags.map((tag) {
+                    print("Icon ${tag.icon}");
+                    return Tag(
+                        onPressed: () {
+                          tag.isSelected = true;
+                          selectedTags.add(tag);
+                          setState(() {});
+                        },
+                        tagData: tag,
+                        highlightColor: Colors.grey,
+                        icon: deserializeIcon(
+                                {"key": tag.icon, "pack": "material"},
+                                iconPack: IconPack.allMaterial) ??
+                            Icons.error);
+                  }).toList()),
               const Spacer(),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,

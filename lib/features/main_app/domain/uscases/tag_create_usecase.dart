@@ -10,7 +10,8 @@ class TagCreateUseCase implements UseCase<bool, Failure, TagCreateParams> {
 
   @override
   Future<Either<bool, Failure>> call(TagCreateParams param) async {
-    if (await repository.createTag(param.title, param.description, param.color))
+    if (await repository.createTag(
+        param.title, param.description, param.color, param.icon))
       return left(true);
     else
       return right(Failure("Error creating tag"));
@@ -21,6 +22,11 @@ class TagCreateParams {
   final String title;
   final String? description;
   final int color;
+  final String icon;
 
-  TagCreateParams({required this.title, required this.color, this.description});
+  TagCreateParams(
+      {required this.title,
+      required this.color,
+      this.description,
+      required this.icon});
 }

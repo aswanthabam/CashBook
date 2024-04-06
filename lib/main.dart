@@ -27,12 +27,12 @@ Future<void> main() async {
       BlocProvider<TagBloc>(
         create: (context) => TagBloc(
           tagCreateUseCase: TagCreateUseCase(
-            TagRepositoryImplementaion(
+            TagRepositoryImplementation(
               TagLocalDatabaseImplementation(database),
             ),
           ),
           tagListUseCase: TagListUseCase(
-            TagRepositoryImplementaion(
+            TagRepositoryImplementation(
               TagLocalDatabaseImplementation(database),
             ),
           ),

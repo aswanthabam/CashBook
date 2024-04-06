@@ -3,7 +3,8 @@ import 'package:cashbook/core/exceptions/datasource_expensions.dart';
 import 'package:cashbook/features/main_app/data/models/tag_data.dart';
 
 abstract interface class TagLocalDatabase {
-  Future<bool> createTag(String title, String? description, int color);
+  Future<bool> createTag(
+      String title, String? description, int color, String icon);
 
   Future<List<TagData>> getTags();
 }
@@ -14,14 +15,15 @@ class TagLocalDatabaseImplementation implements TagLocalDatabase {
   TagLocalDatabaseImplementation(this.database);
 
   @override
-  Future<bool> createTag(String title, String? description, int color) async {
+  Future<bool> createTag(
+      String title, String? description, int color, String icon) async {
     try {
       TagData entity = TagData(
         id: 0,
         title: title,
         description: description,
         color: color,
-      );
+          icon: icon);
       database.insert(entity);
       return true;
     } catch (e) {

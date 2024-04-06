@@ -8,14 +8,14 @@ class TagData {
   String title;
   String? description;
   int color;
-
-  // int textColor;
+  String icon;
   bool isSelected;
 
   TagData({
     required this.title,
     required this.id,
     required this.color,
+    required this.icon,
     this.description,
     this.isSelected = false,
     // this.textColor = 0xffffffff,

@@ -1,5 +1,3 @@
-import 'package:bootstrap_icons/bootstrap_icons.dart';
-import 'package:cashbook/core/theme/theme.dart';
 import 'package:cashbook/core/widgets/appbar/bottom_bar.dart';
 import 'package:cashbook/core/widgets/appbar/main_appbar.dart';
 import 'package:cashbook/core/widgets/buttons/add_button.dart';
@@ -8,6 +6,7 @@ import 'package:cashbook/features/main_app/data/models/expense.dart';
 import 'package:cashbook/features/main_app/presentation/bloc/expense/expense_bloc.dart';
 import 'package:cashbook/features/main_app/presentation/widgets/add_entity/add_entity_popup.dart';
 import 'package:cashbook/features/main_app/presentation/widgets/charts/main_chart.dart';
+import 'package:cashbook/features/main_app/presentation/widgets/history_displayer.dart';
 import 'package:cashbook/features/main_app/presentation/widgets/money_display.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -161,60 +160,9 @@ class _HomeState extends State<Home> {
                                 child: Text("No data found"),
                               );
                             }
-                            return ListView.builder(
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                padding: EdgeInsets.only(top: height * 0.02),
-                                itemCount:
-                                    state.expenses.length > homePageHistoryCount
-                                        ? homePageHistoryCount
-                                        : state.expenses.length,
-                                itemBuilder: (context, index) {
-                                  return ListTile(
-                                    shape: const Border(
-                                        top: BorderSide(
-                                            color: Colors.grey, width: 1)),
-                                    leading: const Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Icon(
-                                          BootstrapIcons.hourglass_split,
-                                          color: Colors.blue,
-                                        ),
-                                        SizedBox(
-                                          height: 3,
-                                        )
-                                      ],
-                                    ),
-                                    horizontalTitleGap: 25,
-                                    title: Text(
-                                      state
-                                          .expenses[
-                                              state.expenses.length - index - 1]
-                                          .title,
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          color: Theme.of(context)
-                                              .extension<AppColorsExtension>()!
-                                              .black),
-                                    ),
-                                    subtitle: Text(
-                                        "${state.expenses[state.expenses.length - index - 1].date} (${state.expenses[state.expenses.length - index - 1].tags.length > 0 ? state.expenses[state.expenses.length - index - 1].tags[0].title : 'NoTag'})",
-                                        style: const TextStyle(fontSize: 12)),
-                                    trailing: Text(
-                                      state
-                                          .expenses[
-                                              state.expenses.length - index - 1]
-                                          .amount
-                                          .toString(),
-                                      style: const TextStyle(
-                                          color: Colors.red,
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  );
-                                });
+                            return HistoryDisplayer(
+                                expenses: state.expenses,
+                                historyCount: homePageHistoryCount);
                           }
                           return const SizedBox();
                         },
