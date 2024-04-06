@@ -2,12 +2,9 @@ import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:cashbook/core/theme/theme.dart';
 import 'package:cashbook/core/widgets/appbar/bottom_bar.dart';
 import 'package:cashbook/core/widgets/appbar/main_appbar.dart';
-import 'package:cashbook/features/main_app/data/models/expense.dart';
 import 'package:cashbook/features/main_app/presentation/bloc/expense_bloc.dart';
-import 'package:cashbook/features/main_app/presentation/widgets/charts/main_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 
 class History extends StatefulWidget {
   const History({super.key});
@@ -20,27 +17,27 @@ class _HistoryState extends State<History> {
   // late Future<List<MainChartRow>> graphData;
   static int historyPageHistoryCount = 30;
 
-  List<MainChartRow> _getChartData(List<Expense> expenses) {
-    if (expenses.isEmpty) {
-      return [];
-    }
-    if (expenses.length == 1) {
-      return [
-        MainChartRow(
-            value: 0,
-            date: DateFormat("d MMM").format(DateTime.now().copyWith(day: 1))),
-        MainChartRow(
-            value: expenses[0].amount,
-            date: DateFormat("d MMM").format(expenses[0].date))
-      ];
-    }
-    var data = <MainChartRow>[];
-    for (var x in expenses) {
-      data.add(MainChartRow(
-          value: x.amount, date: DateFormat("d MMM").format(x.date)));
-    }
-    return data;
-  }
+  // List<MainChartRow> _getChartData(List<Expense> expenses) {
+  //   if (expenses.isEmpty) {
+  //     return [];
+  //   }
+  //   if (expenses.length == 1) {
+  //     return [
+  //       MainChartRow(
+  //           value: 0,
+  //           date: DateFormat("d MMM").format(DateTime.now().copyWith(day: 1))),
+  //       MainChartRow(
+  //           value: expenses[0].amount,
+  //           date: DateFormat("d MMM").format(expenses[0].date))
+  //     ];
+  //   }
+  //   var data = <MainChartRow>[];
+  //   for (var x in expenses) {
+  //     data.add(MainChartRow(
+  //         value: x.amount, date: DateFormat("d MMM").format(x.date)));
+  //   }
+  //   return data;
+  // }
 
   void _emitHistoryEvent(ExpenseBloc bloc) {
     bloc.add(GetHistoryEvent(
@@ -65,7 +62,7 @@ class _HistoryState extends State<History> {
   @override
   Widget build(BuildContext context) {
     // final double height = MediaQuery.of(context).size.height;
-    final double width = MediaQuery.of(context).size.width;
+    // final double width = MediaQuery.of(context).size.width;
     return Scaffold(
         bottomNavigationBar: const BottomBar(),
         body: SingleChildScrollView(

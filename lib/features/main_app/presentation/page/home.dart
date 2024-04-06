@@ -55,10 +55,6 @@ class _HomeState extends State<Home> {
             day: 30, hour: 23, minute: 59, second: 59, millisecond: 999)));
   }
 
-  void _emitTotalExpenseEvent(ExpenseBloc bloc) {
-    bloc.add(TotalExpenseEvent());
-  }
-
   @override
   void initState() {
     super.initState();
