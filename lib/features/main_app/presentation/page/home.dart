@@ -11,6 +11,7 @@ import 'package:cashbook/features/main_app/presentation/widgets/charts/main_char
 import 'package:cashbook/features/main_app/presentation/widgets/money_display.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 
 class Home extends StatefulWidget {
@@ -54,18 +55,22 @@ class _HomeState extends State<Home> {
             day: 30, hour: 23, minute: 59, second: 59, millisecond: 999)));
   }
 
+  void _emitTotalExpenseEvent(ExpenseBloc bloc) {
+    bloc.add(TotalExpenseEvent());
+  }
+
   @override
   void initState() {
     super.initState();
     ExpenseBloc bloc = context.read<ExpenseBloc>();
     _emitHistoryEvent(bloc);
+    // _emitTotalExpenseEvent(bloc);
     bloc.stream.listen((event) {
       if (event is ExpenseAdded) {
         _emitHistoryEvent(bloc);
       }
-      if (event is ExpenseHistoryError) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("Error: ${event.message}")));
+      if (event is ExpenseDataError) {
+        Fluttertoast.showToast(msg: event.message);
       }
     });
   }
@@ -96,11 +101,19 @@ class _HomeState extends State<Home> {
                     Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          const Expanded(
-                            child: MoneyDisplay(
-                                text: "+ 54,500 ₹",
-                                subText: "Net earnings this month"),
-                          ),
+                          Expanded(
+                              child: BlocConsumer<ExpenseBloc, ExpenseState>(
+                            builder: (context, state) {
+                              if (state is ExpenseDataLoaded) {
+                                return MoneyDisplay(
+                                    text: state.total.toString(),
+                                    subText: "Net expense this month");
+                              }
+                              return const SizedBox();
+                            },
+                            listener:
+                                (BuildContext context, ExpenseState state) {},
+                          )),
                           AddButton(
                             onPressed: () {
                               showAddEntityPopup(context);
@@ -117,13 +130,17 @@ class _HomeState extends State<Home> {
                   padding: EdgeInsets.all(width * 0.035),
                   child: BlocConsumer<ExpenseBloc, ExpenseState>(
                     builder: (context, state) {
-                      if (state is ExpenseHistoryLoaded) {
+                      if (state is ExpenseDataLoaded) {
                         if (state.expenses.isEmpty) {
                           return const Text("No data available to display.");
                         }
                         return MainChart(data: _getChartData(state.expenses));
                       }
-                      return const SizedBox();
+                      if (state is ExpenseDataError) {
+                        Fluttertoast.showToast(msg: state.message);
+                        return Text(state.message);
+                      }
+                      return const Placeholder();
                     },
                     listener: (context, state) {},
                   )),
@@ -143,7 +160,7 @@ class _HomeState extends State<Home> {
                     ),
                     BlocConsumer<ExpenseBloc, ExpenseState>(
                         builder: (context, state) {
-                          if (state is ExpenseHistoryLoaded) {
+                          if (state is ExpenseDataLoaded) {
                             if (state.expenses.isEmpty) {
                               return const Center(
                                 child: Text("No data found"),

@@ -1,6 +1,4 @@
-import 'package:cashbook/core/types/reponse_types.dart';
 import 'package:cashbook/features/main_app/data/models/expense.dart';
-import 'package:fpdart/fpdart.dart%20%20';
 
 abstract interface class ExpenseRepository {
   Future<int> addExpense({
@@ -22,7 +20,7 @@ abstract interface class ExpenseRepository {
     List<int>? tags,
   });
 
-  Future<Either<Success<List<Expense>>, Failure>> getExpensesFilter(
+  Future<List<Expense>> getExpensesFilter(
       {required DateTime startDate,
       required DateTime endDate,
       bool descending = false});

@@ -8,11 +8,10 @@ part 'expense_event.dart';
 part 'expense_state.dart';
 
 class ExpenseBloc extends Bloc<ExpenseEvent, ExpenseState> {
-  final ExpenseHistoryUseCase _expenseHistoryUseCase;
+  final ExpenseDataUseCase _expenseHistoryUseCase;
   final ExpenseAddUseCase _expenseAddUseCase;
 
-  ExpenseBloc(
-      {required ExpenseHistoryUseCase expenseHistoryUseCase,
+  ExpenseBloc({required ExpenseDataUseCase expenseHistoryUseCase,
       required ExpenseAddUseCase expenseAddUseCase})
       : _expenseHistoryUseCase = expenseHistoryUseCase,
         _expenseAddUseCase = expenseAddUseCase,
@@ -38,9 +37,10 @@ class ExpenseBloc extends Bloc<ExpenseEvent, ExpenseState> {
               startDate: event.startDate, endDate: event.endDate))
           .then((value) {
         value.fold((success) {
-          emit(ExpenseHistoryLoaded(success.payload));
+          emit(ExpenseDataLoaded(
+              success.payload.expenses, success.payload.total));
         }, (failure) {
-          emit(ExpenseHistoryError(failure.message));
+          emit(ExpenseDataError(failure.message));
         });
       });
     });

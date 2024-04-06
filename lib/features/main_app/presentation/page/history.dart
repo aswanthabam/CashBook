@@ -93,7 +93,7 @@ class _HistoryState extends State<History> {
                     ),
                     BlocConsumer<ExpenseBloc, ExpenseState>(
                         builder: (context, state) {
-                          if (state is ExpenseHistoryLoaded) {
+                          if (state is ExpenseDataLoaded) {
                             if (state.expenses.isEmpty) {
                               return const Center(
                                 child: Text("No data found"),
@@ -154,7 +154,7 @@ class _HistoryState extends State<History> {
                                   );
                                 });
                           }
-                          if (state is ExpenseHistoryError) {
+                          if (state is ExpenseDataError) {
                             return Center(
                               child: Text(state.message),
                             );

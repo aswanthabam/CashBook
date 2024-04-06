@@ -20,19 +20,18 @@ Future<void> main() async {
   runApp(MultiBlocProvider(
     providers: [
       BlocProvider<ExpenseBloc>(
-        create: (context) => ExpenseBloc(
-          expenseHistoryUseCase: ExpenseHistoryUseCase(
-            ExpenseRepositoryImplementation(
-              datasource: ExpenseLocalDatasourceImplementation(database),
-            ),
-          ),
-          expenseAddUseCase: ExpenseAddUseCase(
-            ExpenseRepositoryImplementation(
-              datasource: ExpenseLocalDatasourceImplementation(database),
-            ),
-          ),
-        ),
-      ),
+          create: (context) => ExpenseBloc(
+                expenseHistoryUseCase: ExpenseDataUseCase(
+                  ExpenseRepositoryImplementation(
+                    datasource: ExpenseLocalDatasourceImplementation(database),
+                  ),
+                ),
+                expenseAddUseCase: ExpenseAddUseCase(
+                  ExpenseRepositoryImplementation(
+                    datasource: ExpenseLocalDatasourceImplementation(database),
+                  ),
+                ),
+              )),
     ],
     child: ChangeNotifierProvider(
         create: (_) => ModelTheme(),

@@ -4,18 +4,33 @@ import 'package:cashbook/features/main_app/data/models/expense.dart';
 import 'package:cashbook/features/main_app/domain/repositories/expense_repository.dart';
 import 'package:fpdart/src/either.dart';
 
-class ExpenseHistoryUseCase
-    implements UseCase<Success<List<Expense>>, Failure, ExpenseHistoryParams> {
+class ExpenseDataUseCase
+    implements
+        UseCase<Success<ExpenseListResult>, Failure, ExpenseHistoryParams> {
   final ExpenseRepository repository;
 
-  ExpenseHistoryUseCase(this.repository);
+  ExpenseDataUseCase(this.repository);
 
   @override
-  Future<Either<Success<List<Expense>>, Failure>> call(
+  Future<Either<Success<ExpenseListResult>, Failure>> call(
       ExpenseHistoryParams params) async {
-    return await repository.getExpensesFilter(
-        startDate: params.startDate, endDate: params.endDate);
+    try {
+      List<Expense> expenses = await repository.getExpensesFilter(
+          startDate: params.startDate, endDate: params.endDate);
+      double total = repository.totalExpense();
+      return left(
+          Success("", ExpenseListResult(expenses: expenses, total: total)));
+    } catch (e) {
+      return right(Failure(e.toString()));
+    }
   }
+}
+
+class ExpenseListResult {
+  final List<Expense> expenses;
+  final double total;
+
+  ExpenseListResult({required this.expenses, required this.total});
 }
 
 class ExpenseHistoryParams {

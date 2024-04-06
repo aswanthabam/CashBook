@@ -24,3 +24,5 @@ final class AddExpenseEvent extends ExpenseEvent {
       required this.date,
       required this.tags});
 }
+
+final class TotalExpenseEvent extends ExpenseEvent {}

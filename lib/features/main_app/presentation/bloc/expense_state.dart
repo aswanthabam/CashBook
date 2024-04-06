@@ -5,16 +5,17 @@ sealed class ExpenseState {}
 
 final class ExpenseInitial extends ExpenseState {}
 
-final class ExpenseHistoryLoaded extends ExpenseState {
+final class ExpenseDataLoaded extends ExpenseState {
   final List<Expense> expenses;
+  final double total;
 
-  ExpenseHistoryLoaded(this.expenses);
+  ExpenseDataLoaded(this.expenses, this.total);
 }
 
-final class ExpenseHistoryError extends ExpenseState {
+final class ExpenseDataError extends ExpenseState {
   final String message;
 
-  ExpenseHistoryError(this.message);
+  ExpenseDataError(this.message);
 }
 
 final class ExpenseAdded extends ExpenseState {}
@@ -23,4 +24,16 @@ final class ExpenseAddError extends ExpenseState {
   final String message;
 
   ExpenseAddError(this.message);
+}
+
+final class GotTotalExpense extends ExpenseState {
+  final double value;
+
+  GotTotalExpense(this.value);
+}
+
+final class TotalExpenseError extends ExpenseState {
+  final String message;
+
+  TotalExpenseError(this.message);
 }

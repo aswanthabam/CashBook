@@ -1,8 +1,6 @@
-import 'package:cashbook/core/types/reponse_types.dart';
 import 'package:cashbook/features/main_app/data/datasource/expense_local_datasource.dart';
 import 'package:cashbook/features/main_app/data/models/expense.dart';
 import 'package:cashbook/features/main_app/domain/repositories/expense_repository.dart';
-import 'package:fpdart/fpdart.dart%20%20';
 
 class ExpenseRepositoryImplementation implements ExpenseRepository {
   final ExpenseLocalDatasource datasource;
@@ -31,18 +29,12 @@ class ExpenseRepositoryImplementation implements ExpenseRepository {
   }
 
   @override
-  Future<Either<Success<List<Expense>>, Failure>> getExpensesFilter(
+  Future<List<Expense>> getExpensesFilter(
       {required DateTime startDate,
       required DateTime endDate,
       bool descending = false}) async {
-    try {
-      return left(Success<List<Expense>>(
-          "Successfully Fetched History",
-          await datasource.getExpensesFilter(
-              startDate: startDate, endDate: endDate)));
-    } catch (e) {
-      return right(Failure("An error occurred"));
-    }
+    return await datasource.getExpensesFilter(
+        startDate: startDate, endDate: endDate);
   }
 
   @override
