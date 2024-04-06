@@ -2,32 +2,22 @@ import 'package:cashbook/core/theme/theme.dart';
 import 'package:flutter/material.dart';
 
 class MoneyInput extends StatefulWidget {
-  const MoneyInput(
-      {super.key,
-    required this.amountController,
-    required this.titleController,
-    this.autoFocus = true,
-      this.includeTitle = true,
-    this.center = true,
-  });
+  const MoneyInput({super.key});
 
-  final bool autoFocus;
-  final bool includeTitle;
-  final bool center;
-  final TextEditingController amountController;
-  final TextEditingController titleController;
   @override
   State<MoneyInput> createState() => _MoneyInputState();
 }
 
 class _MoneyInputState extends State<MoneyInput> {
+  TextEditingController controller = TextEditingController();
+  TextEditingController controller2 = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     final double height = MediaQuery.of(context).size.height;
     final double width = MediaQuery.of(context).size.width;
     return Container(
-      width: widget.center ? width : null,
+      width: width,
       height: height * 0.2,
       child: Column(
         children: [
@@ -41,12 +31,10 @@ class _MoneyInputState extends State<MoneyInput> {
                 padding: EdgeInsets.only(left: width * 0.067),
                 child: TextFormField(
                   textAlignVertical: TextAlignVertical.center,
-                  autofocus: widget.autoFocus,
+                  autofocus: true,
                   onTapOutside: (PointerDownEvent event) {
                     FocusScope.of(context).unfocus();
                   },
-                  textInputAction: TextInputAction.next,
-                  controller: widget.amountController,
                   textAlign: TextAlign.center,
                   showCursor: false,
                   decoration: InputDecoration(
@@ -91,9 +79,8 @@ class _MoneyInputState extends State<MoneyInput> {
               ),
             ),
           ),
-          widget.includeTitle
-              ? IntrinsicWidth(
-                  child: ConstrainedBox(
+          IntrinsicWidth(
+            child: ConstrainedBox(
               constraints: BoxConstraints(
                 // maxHeight: height * 0.06,
                 minWidth: width * 0.3,
@@ -102,8 +89,8 @@ class _MoneyInputState extends State<MoneyInput> {
                 height: height * 0.05,
                 child: TextFormField(
                   cursorHeight: 0,
-                        controller: widget.titleController,
-                        textAlign: TextAlign.center,
+                  controller: controller2,
+                  textAlign: TextAlign.center,
                   textAlignVertical: TextAlignVertical.bottom,
                   style: TextStyle(
                     fontSize: width * 0.035,
@@ -137,8 +124,7 @@ class _MoneyInputState extends State<MoneyInput> {
                 ),
               ),
             ),
-                )
-              : const SizedBox(),
+          ),
         ],
       ),
     );

@@ -1,13 +1,13 @@
 import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:cashbook/core/theme/theme.dart';
-import 'package:cashbook/features/main_app/data/models/tag_data.dart';
 import 'package:cashbook/features/main_app/presentation/widgets/add_entity/add_tag.dart';
 import 'package:cashbook/features/main_app/presentation/widgets/bottom_button.dart';
 import 'package:cashbook/features/main_app/presentation/widgets/money_input.dart';
+import 'package:cashbook/features/main_app/presentation/widgets/tag.dart';
 import 'package:flutter/material.dart';
 
-class AddEarningPage extends StatefulWidget {
-  const AddEarningPage({
+class AddEntityPage extends StatefulWidget {
+  const AddEntityPage({
     super.key,
     required this.heading,
     required this.onSubmit,
@@ -17,13 +17,18 @@ class AddEarningPage extends StatefulWidget {
   final bool Function() onSubmit;
 
   @override
-  State<AddEarningPage> createState() => _AddEarningPageState();
+  State<AddEntityPage> createState() => _AddEntityPageState();
 }
 
-class _AddEarningPageState extends State<AddEarningPage> {
-  List<TagData> tags = [];
-  TextEditingController amountController = TextEditingController();
-  TextEditingController titleController = TextEditingController();
+class _AddEntityPageState extends State<AddEntityPage> {
+  List<TagData> tags = [
+    TagData(name: "One", id: "one", color: Colors.green),
+    TagData(name: "One", id: "one", color: Colors.green),
+    TagData(name: "One", id: "one", color: Colors.green),
+    TagData(name: "One", id: "one", color: Colors.green),
+    TagData(name: "One", id: "one", color: Colors.green),
+    TagData(name: "One", id: "one", color: Colors.green),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +38,31 @@ class _AddEarningPageState extends State<AddEarningPage> {
       body: Container(
         width: width,
         height: height + MediaQuery.of(context).padding.top,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomCenter,
+            colors: [
+              Theme.of(context)
+                  .extension<AppColorsExtension>()!
+                  .red
+                  .withAlpha(100),
+              Theme.of(context)
+                  .extension<AppColorsExtension>()!
+                  .red
+                  .withAlpha(20),
+              Theme.of(context)
+                  .extension<AppColorsExtension>()!
+                  .red
+                  .withAlpha(20),
+              Theme.of(context)
+                  .extension<AppColorsExtension>()!
+                  .red
+                  .withAlpha(0),
+              Theme.of(context).extension<AppColorsExtension>()!.transparent,
+            ],
+          ),
+        ),
         child: Stack(
           children: [
             AppBar(
@@ -47,15 +77,10 @@ class _AddEarningPageState extends State<AddEarningPage> {
             ),
             SizedBox(
               height: MediaQuery.of(context).size.height,
-              child: Column(
+              child: const Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  MoneyInput(
-                    amountController: amountController,
-                    titleController: titleController,
-                  )
-                ],
+                children: [MoneyInput()],
               ),
             ),
             Positioned(
