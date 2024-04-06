@@ -75,14 +75,12 @@ class _AddEarningPageState extends State<AddEarningPage> {
                         onPressed: () {
                           showDialog(
                               context: context,
-                              builder: (context) => AddTag(
-                                  onAddTag: (TagData tag) {
+                              builder: (context) => AddTag(onAddTag: (tags) {
                                     // TODO : IMPLEMENT ON TAG ADD
                                   },
                                   onCreateTag: () {
                                     // TODO : IMPLEMENT ON TAG CREATE
-                                  },
-                                  tags: tags));
+                                  }));
                         },
                         icon: BootstrapIcons.tag_fill,
                         text: "Tag",

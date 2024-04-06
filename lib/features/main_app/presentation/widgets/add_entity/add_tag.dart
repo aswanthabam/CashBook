@@ -2,17 +2,18 @@ import 'package:cashbook/core/theme/theme.dart';
 import 'package:cashbook/features/main_app/data/models/tag_data.dart';
 import 'package:cashbook/features/main_app/presentation/widgets/tag.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+
+import '../../bloc/tag/tag_bloc.dart';
 
 class AddTag extends StatefulWidget {
   const AddTag(
       {super.key,
-      required this.onAddTag,
-      required this.onCreateTag,
-      required this.tags});
+      required this.onAddTag, required this.onCreateTag});
 
-  final Function(TagData) onAddTag;
+  final Function(List<TagData>) onAddTag;
   final Function() onCreateTag;
-  final List<TagData> tags;
 
   @override
   State<AddTag> createState() => _AddTagState();
@@ -20,6 +21,24 @@ class AddTag extends StatefulWidget {
 
 class _AddTagState extends State<AddTag> {
   List<TagData> selectedTags = [];
+  List<TagData> tags = [];
+
+  @override
+  void initState() {
+    super.initState();
+    TagBloc tagBloc = context.read<TagBloc>();
+    tagBloc.add(GetTagsEvent());
+    tagBloc.stream.listen((event) {
+      if (event is TagDataLoaded) {
+        tags = event.tags;
+        setState(() {});
+      } else if (event is TagDataError) {
+        Fluttertoast.showToast(msg: event.message);
+      } else if (event is TagCreated) {
+        tagBloc.add(GetTagsEvent());
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +73,7 @@ class _AddTagState extends State<AddTag> {
               ),
               Wrap(
                   alignment: WrapAlignment.center,
-                  children: widget.tags
+                  children: tags
                       .map((tag) => Tag(
                           onPressed: () {
                             tag.isSelected = true;
@@ -69,9 +88,7 @@ class _AddTagState extends State<AddTag> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   TextButton(
-                      onPressed: () {
-                        // TODO : CREATE NEW TAG
-                      },
+                      onPressed: widget.onCreateTag,
                       child: Text(
                         "Create New Tag",
                         style: TextStyle(
@@ -86,7 +103,7 @@ class _AddTagState extends State<AddTag> {
                             .primaryLight,
                       ),
                       onPressed: () {
-                        // TODO : IMPLEMENT ADD TAG
+                        widget.onAddTag(selectedTags);
                       },
                       child: Row(
                         children: [

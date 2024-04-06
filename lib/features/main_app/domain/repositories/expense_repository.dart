@@ -1,4 +1,5 @@
 import 'package:cashbook/features/main_app/data/models/expense.dart';
+import 'package:cashbook/features/main_app/data/models/tag_data.dart';
 
 abstract interface class ExpenseRepository {
   Future<int> addExpense({
@@ -6,7 +7,7 @@ abstract interface class ExpenseRepository {
     required double amount,
     required String description,
     required DateTime date,
-    required List<int> tags,
+    required List<TagData> tags,
   });
 
   Future<void> deleteExpense({required int id});

@@ -15,7 +15,7 @@ final class AddExpenseEvent extends ExpenseEvent {
   final double amount;
   final String description;
   final DateTime date;
-  final List<int> tags;
+  final List<TagData> tags;
 
   AddExpenseEvent(
       {required this.title,

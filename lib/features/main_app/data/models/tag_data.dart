@@ -5,20 +5,23 @@ import 'package:objectbox/objectbox.dart';
 class TagData {
   @Id()
   int id;
-  String name;
+  String title;
+  String? description;
   int color;
-  int textColor;
+
+  // int textColor;
   bool isSelected;
 
   TagData({
-    required this.name,
+    required this.title,
     required this.id,
     required this.color,
+    this.description,
     this.isSelected = false,
-    this.textColor = 0xffffffff,
+    // this.textColor = 0xffffffff,
   });
 
   Color get colorValue => Color(color);
 
-  Color get textColorValue => Color(textColor);
+// Color get textColorValue => Color(textColor);
 }

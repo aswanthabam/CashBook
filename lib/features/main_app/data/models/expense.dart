@@ -18,7 +18,8 @@ class Expense {
       required this.title,
       required this.amount,
       required this.description,
-      required this.date});
+    required this.date,
+  });
 
   static Future<ExpenseList> getExpenseList(
       DateTime startDate, DateTime endDate,

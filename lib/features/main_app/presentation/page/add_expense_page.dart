@@ -1,9 +1,8 @@
 import 'package:bootstrap_icons/bootstrap_icons.dart';
-import 'package:cashbook/core/datasource/local/database.dart';
 import 'package:cashbook/core/theme/theme.dart';
-import 'package:cashbook/features/main_app/data/models/expense.dart';
 import 'package:cashbook/features/main_app/data/models/tag_data.dart';
-import 'package:cashbook/features/main_app/presentation/bloc/expense_bloc.dart';
+import 'package:cashbook/features/main_app/presentation/bloc/expense/expense_bloc.dart';
+import 'package:cashbook/features/main_app/presentation/page/create_tag_page.dart';
 import 'package:cashbook/features/main_app/presentation/widgets/add_entity/add_tag.dart';
 import 'package:cashbook/features/main_app/presentation/widgets/bottom_button.dart';
 import 'package:cashbook/features/main_app/presentation/widgets/money_input.dart';
@@ -22,36 +21,8 @@ class AddExpensePage extends StatefulWidget {
 
 class _AddExpensePageState extends State<AddExpensePage> {
   List<TagData> tags = [];
-
   TextEditingController amountController = TextEditingController();
   TextEditingController titleController = TextEditingController();
-
-  void _validateAndSubmit() {
-    throw UnimplementedError();
-    if (amountController.text.isEmpty) {
-      Fluttertoast.showToast(msg: "Amount cannot be empty");
-    } else if (RegExp(r'^[0-9]+(\.[0-9]+)?$').hasMatch(amountController.text) ==
-        false) {
-      Fluttertoast.showToast(msg: "Amount is not valid");
-    } else if (titleController.text.isEmpty) {
-      Fluttertoast.showToast(msg: "Title cannot be empty");
-    } else {
-      try {
-        final Expense expense = Expense(
-            id: 0,
-            amount: double.parse(amountController.text),
-            title: titleController.text,
-            description: "",
-            date: DateTime.now());
-        AppDatabase db = AppDatabase();
-        db.insert<Expense>(expense);
-        Navigator.of(context).pop();
-        Fluttertoast.showToast(msg: "Successfully added expense");
-      } catch (e) {
-        Fluttertoast.showToast(msg: "Failed to add expense");
-      }
-    }
-  }
 
   @override
   void initState() {
@@ -117,14 +88,20 @@ class _AddExpensePageState extends State<AddExpensePage> {
                         onPressed: () {
                           showDialog(
                               context: context,
-                              builder: (context) => AddTag(
-                                  onAddTag: (TagData tag) {
-                                    // TODO : IMPLEMENT ON TAG ADD
-                                  },
-                                  onCreateTag: () {
-                                    // TODO : IMPLEMENT ON TAG CREATE
-                                  },
-                                  tags: tags));
+                              builder: (context) =>
+                                  AddTag(onAddTag: (selectedTags) {
+                                    setState(() {
+                                      tags = selectedTags;
+                                    });
+                                    Navigator.of(context).pop();
+                                  }, onCreateTag: () {
+                                    Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                const CreateTagPage(
+                                                    heading:
+                                                        "Create new Tag")));
+                                  }));
                         },
                         icon: BootstrapIcons.tag_fill,
                         text: "Tag",
@@ -162,7 +139,7 @@ class _AddExpensePageState extends State<AddExpensePage> {
                               description: "Unimplemented",
                               date: DateTime.now(),
                               // TODO : IMPLEMENT CUSTOM TIMEING
-                              tags: tags.map((e) => e.id).toList()));
+                              tags: tags));
                         },
                         icon: Icon(
                           Icons.send_rounded,

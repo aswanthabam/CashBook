@@ -1,5 +1,6 @@
 import 'package:cashbook/core/types/reponse_types.dart';
 import 'package:cashbook/core/usecase/usecase.dart';
+import 'package:cashbook/features/main_app/data/models/tag_data.dart';
 import 'package:cashbook/features/main_app/domain/repositories/expense_repository.dart';
 import 'package:fpdart/fpdart.dart%20%20';
 
@@ -31,7 +32,7 @@ class ExpenseAddParams {
   final double amount;
   final String description;
   final DateTime date;
-  final List<int> tags;
+  final List<TagData> tags;
 
   ExpenseAddParams(
       {required this.title,

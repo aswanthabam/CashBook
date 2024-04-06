@@ -5,7 +5,7 @@ import 'package:cashbook/core/widgets/appbar/main_appbar.dart';
 import 'package:cashbook/core/widgets/buttons/add_button.dart';
 import 'package:cashbook/core/widgets/buttons/icon_button.dart';
 import 'package:cashbook/features/main_app/data/models/expense.dart';
-import 'package:cashbook/features/main_app/presentation/bloc/expense_bloc.dart';
+import 'package:cashbook/features/main_app/presentation/bloc/expense/expense_bloc.dart';
 import 'package:cashbook/features/main_app/presentation/widgets/add_entity/add_entity_popup.dart';
 import 'package:cashbook/features/main_app/presentation/widgets/charts/main_chart.dart';
 import 'package:cashbook/features/main_app/presentation/widgets/money_display.dart';
@@ -200,12 +200,7 @@ class _HomeState extends State<Home> {
                                               .black),
                                     ),
                                     subtitle: Text(
-                                        state
-                                            .expenses[state.expenses.length -
-                                                index -
-                                                1]
-                                            .date
-                                            .toString(),
+                                        "${state.expenses[state.expenses.length - index - 1].date} (${state.expenses[state.expenses.length - index - 1].tags.length > 0 ? state.expenses[state.expenses.length - index - 1].tags[0].title : 'NoTag'})",
                                         style: const TextStyle(fontSize: 12)),
                                     trailing: Text(
                                       state
