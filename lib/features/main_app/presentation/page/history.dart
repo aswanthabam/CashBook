@@ -16,6 +16,11 @@ class History extends StatefulWidget {
 class _HistoryState extends State<History> {
   // late Future<List<MainChartRow>> graphData;
   static int historyPageHistoryCount = 30;
+  DateTime startDate = DateTime.now()
+      .copyWith(day: 1, hour: 0, minute: 0, second: 0, millisecond: 0);
+  DateTime endDate = DateTime.now()
+      .copyWith(day: 30, hour: 23, minute: 59, second: 59, millisecond: 999);
+  TextEditingController searchController = TextEditingController();
 
   // List<MainChartRow> _getChartData(List<Expense> expenses) {
   //   if (expenses.isEmpty) {
@@ -61,8 +66,8 @@ class _HistoryState extends State<History> {
 
   @override
   Widget build(BuildContext context) {
-    // final double height = MediaQuery.of(context).size.height;
-    // final double width = MediaQuery.of(context).size.width;
+    final double height = MediaQuery.of(context).size.height;
+    final double width = MediaQuery.of(context).size.width;
     return Scaffold(
         bottomNavigationBar: const BottomBar(),
         body: SingleChildScrollView(
@@ -71,13 +76,13 @@ class _HistoryState extends State<History> {
               const MainAppBar(),
               Container(
                 width: MediaQuery.of(context).size.width,
-                padding: const EdgeInsets.all(5),
+                padding: const EdgeInsets.all(10),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
                       padding: const EdgeInsets.symmetric(
-                          vertical: 10, horizontal: 10),
+                          vertical: 10, horizontal: 0),
                       child: Text(
                         "All History",
                         style: TextStyle(
@@ -87,6 +92,96 @@ class _HistoryState extends State<History> {
                                 .extension<AppColorsExtension>()!
                                 .primary),
                       ),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    SizedBox(
+                      height: height * 0.05,
+                      child: TextField(
+                        controller: searchController,
+                        onChanged: (value) {
+                          // TODO : IMPLEMENT ON SEARCH
+                          // BlocProvider.of<ExpenseBloc>(context).add(SearchEvent(search: value));
+                        },
+                        decoration: InputDecoration(
+                            hintText: "Search",
+                            hintStyle: const TextStyle(fontSize: 12),
+                            contentPadding: EdgeInsets.all(height * 0.025),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10)),
+                            prefixIcon: const Icon(Icons.search)),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        SizedBox(
+                          width: width / 2 - 20,
+                          height: height * 0.05,
+                          child: TextField(
+                            onTap: () {
+                              showDatePicker(
+                                      context: context,
+                                      firstDate: DateTime(1999),
+                                      lastDate: DateTime.now())
+                                  .then((value) {
+                                if (value != null) {
+                                  setState(() {
+                                    startDate = value;
+                                  });
+                                }
+                                FocusScope.of(context).unfocus();
+                              });
+                            },
+                            onTapOutside: (e) {
+                              FocusScope.of(context).unfocus();
+                            },
+                            keyboardType: TextInputType.datetime,
+                            decoration: InputDecoration(
+                                hintText: "Start Date",
+                                hintStyle: const TextStyle(fontSize: 12),
+                                contentPadding: EdgeInsets.all(height * 0.025),
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10)),
+                                prefixIcon: const Icon(Icons.calendar_today)),
+                          ),
+                        ),
+                        SizedBox(
+                          width: width / 2 - 20,
+                          height: height * 0.05,
+                          child: TextField(
+                            onTap: () {
+                              showDatePicker(
+                                      context: context,
+                                      firstDate: DateTime(1999),
+                                      lastDate: DateTime.now())
+                                  .then((value) {
+                                if (value != null) {
+                                  setState(() {
+                                    startDate = value;
+                                  });
+                                }
+                                FocusScope.of(context).unfocus();
+                              });
+                            },
+                            onTapOutside: (e) {
+                              FocusScope.of(context).unfocus();
+                            },
+                            keyboardType: TextInputType.datetime,
+                            decoration: InputDecoration(
+                                hintText: "Start Date",
+                                hintStyle: const TextStyle(fontSize: 12),
+                                contentPadding: EdgeInsets.all(height * 0.025),
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10)),
+                                prefixIcon: const Icon(Icons.calendar_today)),
+                          ),
+                        ),
+                      ],
                     ),
                     BlocConsumer<ExpenseBloc, ExpenseState>(
                         builder: (context, state) {
@@ -99,6 +194,7 @@ class _HistoryState extends State<History> {
                             return ListView.builder(
                                 shrinkWrap: true,
                                 physics: const NeverScrollableScrollPhysics(),
+                                padding: EdgeInsets.only(top: height * 0.02),
                                 itemCount: state.expenses.length >
                                         historyPageHistoryCount
                                     ? historyPageHistoryCount

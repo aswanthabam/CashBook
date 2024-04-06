@@ -1,9 +1,9 @@
 import 'package:bootstrap_icons/bootstrap_icons.dart';
+import 'package:cashbook/core/theme/theme.dart';
 import 'package:cashbook/core/widgets/appbar/bottom_bar.dart';
 import 'package:cashbook/core/widgets/appbar/main_appbar.dart';
 import 'package:cashbook/core/widgets/buttons/add_button.dart';
 import 'package:cashbook/core/widgets/buttons/icon_button.dart';
-import 'package:cashbook/core/widgets/pagination_indicator/indicator.dart';
 import 'package:cashbook/features/main_app/data/models/expense.dart';
 import 'package:cashbook/features/main_app/presentation/bloc/expense_bloc.dart';
 import 'package:cashbook/features/main_app/presentation/widgets/add_entity/add_entity_popup.dart';
@@ -73,7 +73,7 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    // final double height = MediaQuery.of(context).size.height;
+    final double height = MediaQuery.of(context).size.height;
     final double width = MediaQuery.of(context).size.width;
     return Scaffold(
         bottomNavigationBar: const BottomBar(),
@@ -87,10 +87,10 @@ class _HomeState extends State<Home> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    const PaginationIndicator(
-                      count: 3,
-                      index: 1,
-                    ),
+                    // const PaginationIndicator(
+                    //   count: 3,
+                    //   index: 1,
+                    // ),
                     SizedBox(
                       height: width * 0.05,
                     ),
@@ -102,7 +102,7 @@ class _HomeState extends State<Home> {
                             builder: (context, state) {
                               if (state is ExpenseDataLoaded) {
                                 return MoneyDisplay(
-                                    text: state.total.toString(),
+                                    text: "- ${state.total.toString()} ₹",
                                     subText: "Net expense this month");
                               }
                               return const SizedBox();
@@ -165,6 +165,7 @@ class _HomeState extends State<Home> {
                             return ListView.builder(
                                 shrinkWrap: true,
                                 physics: const NeverScrollableScrollPhysics(),
+                                padding: EdgeInsets.only(top: height * 0.02),
                                 itemCount:
                                     state.expenses.length > homePageHistoryCount
                                         ? homePageHistoryCount
@@ -193,7 +194,11 @@ class _HomeState extends State<Home> {
                                           .expenses[
                                               state.expenses.length - index - 1]
                                           .title,
-                                      style: const TextStyle(fontSize: 14),
+                                      style: TextStyle(
+                                          fontSize: 14,
+                                          color: Theme.of(context)
+                                              .extension<AppColorsExtension>()!
+                                              .black),
                                     ),
                                     subtitle: Text(
                                         state
@@ -234,6 +239,9 @@ class _HomeState extends State<Home> {
                           message: "View All Transactions",
                           icon: Icons.chevron_right,
                           alignRight: true,
+                        ),
+                        const SizedBox(
+                          width: 15,
                         )
                       ],
                     )

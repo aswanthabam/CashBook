@@ -20,7 +20,8 @@ class _MoneyDisplayState extends State<MoneyDisplay> {
       children: [
         Text(widget.text, style:  TextStyle(
           fontSize: 40,
-          color: Theme.of(context).extension<AppColorsExtension>()!.primary
+                fontWeight: FontWeight.w600,
+                color: Theme.of(context).extension<AppColorsExtension>()!.primary
         ),),
         Text(widget.subText, style:  TextStyle(
           fontSize: 15,
