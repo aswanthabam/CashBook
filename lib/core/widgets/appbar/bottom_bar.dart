@@ -42,18 +42,19 @@ class _BottomBarState extends State<BottomBar> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       BottomBarButton(onPressed:() {
-                        // TODO : IMPLEMENT HOME BUTTON
-                      }, icon: BootstrapIcons.bank2, text: "Home",),
+                          Navigator.of(context).pushReplacementNamed('home');
+                        }, icon: BootstrapIcons.bank2, text: "Home",),
                       BottomBarButton(onPressed:() {
-                        // TODO : IMPLEMENT HISTORY BUTTON
-                      }, icon: BootstrapIcons.clock_history, text: "History",),
+                          Navigator.of(context).pushReplacementNamed('history');
+                        }, icon: BootstrapIcons.clock_history, text: "History",),
                       SizedBox(width: width * 0.05,),
                       BottomBarButton(onPressed:() {
                         // TODO : IMPLEMENT ASSETS & LIABILITIES BUTTON
                       }, icon: BootstrapIcons.currency_exchange, text: "Assets &\nLiabilities",),
                       BottomBarButton(onPressed:() {
-                        // TODO : IMPLEMENT SETTINGS BUTTON
-                      }, icon: BootstrapIcons.gear_fill, text: "Settings",),
+                          Navigator.of(context)
+                              .pushReplacementNamed('settings');
+                        }, icon: BootstrapIcons.gear_fill, text: "Settings",),
                     ],
                   ))),
           SizedBox(
