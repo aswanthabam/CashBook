@@ -1,5 +1,4 @@
 import 'package:bootstrap_icons/bootstrap_icons.dart';
-import 'package:cashbook/core/theme/theme.dart';
 import 'package:cashbook/core/widgets/buttons/full_size_button.dart';
 import 'package:cashbook/features/main_app/presentation/page/add_asset_page.dart';
 import 'package:cashbook/features/main_app/presentation/page/add_expense_page.dart';
@@ -19,11 +18,11 @@ class _AddEntityPopupState extends State<AddEntityPopup> {
     final double height = MediaQuery.of(context).size.height;
     final double width = MediaQuery.of(context).size.width;
     return Container(
-        height: height * 0.45,
+        height: height * 0.35,
         width: width,
         padding: EdgeInsets.all(width * 0.05),
         decoration: BoxDecoration(
-          color: Theme.of(context).extension<AppColorsExtension>()!.white,
+          // color: Theme.of(context).extension<AppColorsExtension>()!.white,
           borderRadius: BorderRadius.circular(20),
         ),
         child: Column(

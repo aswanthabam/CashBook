@@ -60,7 +60,6 @@ class _HomeState extends State<Home> {
     super.initState();
     ExpenseBloc bloc = context.read<ExpenseBloc>();
     _emitHistoryEvent(bloc);
-    // _emitTotalExpenseEvent(bloc);
     bloc.stream.listen((event) {
       if (event is ExpenseAdded) {
         _emitHistoryEvent(bloc);

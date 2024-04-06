@@ -106,7 +106,11 @@ class _HistoryState extends State<History> {
                         },
                         decoration: InputDecoration(
                             hintText: "Search",
-                            hintStyle: const TextStyle(fontSize: 12),
+                            hintStyle: TextStyle(
+                                fontSize: 12,
+                                color: Theme.of(context)
+                                    .extension<AppColorsExtension>()!
+                                    .black),
                             contentPadding: EdgeInsets.all(height * 0.025),
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10)),
@@ -143,7 +147,11 @@ class _HistoryState extends State<History> {
                             keyboardType: TextInputType.datetime,
                             decoration: InputDecoration(
                                 hintText: "Start Date",
-                                hintStyle: const TextStyle(fontSize: 12),
+                                hintStyle: TextStyle(
+                                    fontSize: 12,
+                                    color: Theme.of(context)
+                                        .extension<AppColorsExtension>()!
+                                        .black),
                                 contentPadding: EdgeInsets.all(height * 0.025),
                                 border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(10)),
@@ -174,7 +182,11 @@ class _HistoryState extends State<History> {
                             keyboardType: TextInputType.datetime,
                             decoration: InputDecoration(
                                 hintText: "Start Date",
-                                hintStyle: const TextStyle(fontSize: 12),
+                                hintStyle: TextStyle(
+                                    fontSize: 12,
+                                    color: Theme.of(context)
+                                        .extension<AppColorsExtension>()!
+                                        .black),
                                 contentPadding: EdgeInsets.all(height * 0.025),
                                 border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(10)),
@@ -223,7 +235,11 @@ class _HistoryState extends State<History> {
                                           .expenses[
                                               state.expenses.length - index - 1]
                                           .title,
-                                      style: const TextStyle(fontSize: 14),
+                                      style: TextStyle(
+                                          fontSize: 14,
+                                          color: Theme.of(context)
+                                              .extension<AppColorsExtension>()!
+                                              .black),
                                     ),
                                     subtitle: Text(
                                         state

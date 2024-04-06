@@ -21,14 +21,7 @@ class AddExpensePage extends StatefulWidget {
 }
 
 class _AddExpensePageState extends State<AddExpensePage> {
-  List<TagData> tags = [
-    // TagData(name: "One", id: 1, color: Colors.green),
-    // TagData(name: "One", id: "one", color: Colors.green),
-    // TagData(name: "One", id: "one", color: Colors.green),
-    // TagData(name: "One", id: "one", color: Colors.green),
-    // TagData(name: "One", id: "one", color: Colors.green),
-    // TagData(name: "One", id: "one", color: Colors.green),
-  ];
+  List<TagData> tags = [];
 
   TextEditingController amountController = TextEditingController();
   TextEditingController titleController = TextEditingController();

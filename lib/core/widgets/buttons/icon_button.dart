@@ -1,4 +1,5 @@
-import 'package:flutter/cupertino.dart';
+import 'package:cashbook/core/theme/theme.dart';
+import 'package:flutter/material.dart';
 
 class IconButtonWidget extends StatelessWidget {
   const IconButtonWidget(
@@ -19,9 +20,21 @@ class IconButtonWidget extends StatelessWidget {
       onTap: onPressed,
       child: Row(
         children: [
-          !alignRight && icon != null ? Icon(icon) : const SizedBox(),
+          !alignRight && icon != null
+              ? Icon(
+                  icon,
+                  color:
+                      Theme.of(context).extension<AppColorsExtension>()!.black,
+                )
+              : const SizedBox(),
           Text(message),
-          alignRight && icon != null ? Icon(icon) : const SizedBox()
+          alignRight && icon != null
+              ? Icon(
+                  icon,
+                  color:
+                      Theme.of(context).extension<AppColorsExtension>()!.black,
+                )
+              : const SizedBox()
         ],
       ),
     );
