@@ -1,9 +1,9 @@
 import 'package:bootstrap_icons/bootstrap_icons.dart';
+import 'package:cashbook/core/datasource/local/database.dart';
 import 'package:cashbook/core/theme/theme.dart';
 import 'package:cashbook/core/widgets/appbar/bottom_bar.dart';
 import 'package:cashbook/core/widgets/appbar/main_appbar.dart';
 import 'package:cashbook/core/widgets/buttons/full_size_button.dart';
-import 'package:cashbook/features/main_app/data/datasource/local/database.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 

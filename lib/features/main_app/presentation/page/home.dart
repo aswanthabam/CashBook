@@ -4,11 +4,13 @@ import 'package:cashbook/core/widgets/appbar/bottom_bar.dart';
 import 'package:cashbook/core/widgets/appbar/main_appbar.dart';
 import 'package:cashbook/core/widgets/buttons/add_button.dart';
 import 'package:cashbook/core/widgets/pagination_indicator/indicator.dart';
-import 'package:cashbook/features/main_app/domain/models/expense.dart';
+import 'package:cashbook/features/main_app/data/models/expense.dart';
+import 'package:cashbook/features/main_app/presentation/bloc/expense_bloc.dart';
 import 'package:cashbook/features/main_app/presentation/widgets/add_entity/add_entity_popup.dart';
 import 'package:cashbook/features/main_app/presentation/widgets/charts/main_chart.dart';
 import 'package:cashbook/features/main_app/presentation/widgets/money_display.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
 class Home extends StatefulWidget {
@@ -50,6 +52,7 @@ class _HomeState extends State<Home> {
   }
 
   Future<List<ListTile>> _getHistoryData() async {
+    throw UnimplementedError();
     ExpenseList list = await Expense.getExpenseList(
         DateTime.now()
             .copyWith(day: 1, hour: 0, minute: 0, second: 0, millisecond: 0),
@@ -104,6 +107,11 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
+    context.read<ExpenseBloc>().add(GetHistoryEvent(
+        startDate: DateTime.now()
+            .copyWith(day: 1, hour: 0, minute: 0, second: 0, millisecond: 0),
+        endDate: DateTime.now().copyWith(
+            day: 30, hour: 23, minute: 59, second: 59, millisecond: 999)));
     // graphData = _getChartData();
     // AppDatabase.create().then((db) async {
     //   expenses = await db.getAll<Expense>();
@@ -193,30 +201,80 @@ class _HomeState extends State<Home> {
                           EdgeInsets.symmetric(vertical: 10, horizontal: 25),
                       child: Text("History"),
                     ),
-                    FutureBuilder(
-                        future: _getHistoryData(),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return const Center(
-                              child: CircularProgressIndicator(),
-                            );
+                    BlocConsumer<ExpenseBloc, ExpenseState>(
+                        builder: (context, state) {
+                          if (state is ExpenseHistoryLoaded) {
+                            if (state.expenses.isEmpty) {
+                              return const Center(
+                                child: Text("No data found"),
+                              );
+                            }
+                            return ListView.builder(
+                                shrinkWrap: true,
+                                itemCount: state.expenses.length,
+                                itemBuilder: (context, index) {
+                                  return ListTile(
+                                    shape: const Border(
+                                        top: BorderSide(
+                                            color: Colors.grey, width: 1)),
+                                    leading: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        const Icon(
+                                          BootstrapIcons.hourglass_split,
+                                          color: Colors.blue,
+                                        ),
+                                        const SizedBox(
+                                          height: 3,
+                                        )
+                                      ],
+                                    ),
+                                    horizontalTitleGap: 25,
+                                    title: Text(
+                                      state.expenses[index].title,
+                                      style: const TextStyle(fontSize: 14),
+                                    ),
+                                    subtitle: Text(
+                                        state.expenses[index].date.toString(),
+                                        style: const TextStyle(fontSize: 12)),
+                                    trailing: Text(
+                                      state.expenses[index].amount.toString(),
+                                      style: const TextStyle(
+                                          color: Colors.red,
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  );
+                                });
                           }
-                          if (snapshot.data == null) {
-                            return const Center(
-                              child: Text("No data found"),
-                            );
-                          }
-                          if (snapshot.data!.isEmpty) {
-                            return const Center(
-                              child: Text("No data found"),
-                            );
-                          }
-                          return ListView(
-                            shrinkWrap: true,
-                            children: snapshot.data as List<Widget>,
-                          );
-                        }),
+                          return const SizedBox();
+                        },
+                        listener: (context, state) {}),
+                    // FutureBuilder(
+                    //     future: _getHistoryData(),
+                    //     builder: (context, snapshot) {
+                    //       if (snapshot.connectionState ==
+                    //           ConnectionState.waiting) {
+                    //         return const Center(
+                    //           child: CircularProgressIndicator(),
+                    //         );
+                    //       }
+                    //       if (snapshot.data == null) {
+                    //         return const Center(
+                    //           child: Text("No data found"),
+                    //         );
+                    //       }
+                    //       if (snapshot.data!.isEmpty) {
+                    //         return const Center(
+                    //           child: Text("No data found"),
+                    //         );
+                    //       }
+                    //       return ListView(
+                    //         shrinkWrap: true,
+                    //         children: snapshot.data as List<Widget>,
+                    //       );
+                    //     }),
                   ],
                 ),
               )

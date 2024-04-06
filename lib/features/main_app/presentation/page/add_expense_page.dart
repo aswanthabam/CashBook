@@ -1,8 +1,8 @@
 import 'package:bootstrap_icons/bootstrap_icons.dart';
+import 'package:cashbook/core/datasource/local/database.dart';
 import 'package:cashbook/core/theme/theme.dart';
-import 'package:cashbook/features/main_app/data/datasource/local/database.dart';
-import 'package:cashbook/features/main_app/domain/models/expense.dart';
-import 'package:cashbook/features/main_app/domain/models/tag_data.dart';
+import 'package:cashbook/features/main_app/data/models/expense.dart';
+import 'package:cashbook/features/main_app/data/models/tag_data.dart';
 import 'package:cashbook/features/main_app/presentation/widgets/add_entity/add_tag.dart';
 import 'package:cashbook/features/main_app/presentation/widgets/bottom_button.dart';
 import 'package:cashbook/features/main_app/presentation/widgets/money_input.dart';
@@ -45,7 +45,8 @@ class _AddExpensePageState extends State<AddExpensePage> {
             id: 0,
             amount: double.parse(amountController.text),
             title: titleController.text,
-            description: "");
+            description: "",
+            date: DateTime.now());
         AppDatabase db = AppDatabase();
         db.insert<Expense>(expense);
         Navigator.of(context).pop();

@@ -1,4 +1,4 @@
-import 'package:cashbook/features/main_app/domain/models/tag_data.dart';
+import 'package:cashbook/features/main_app/data/models/tag_data.dart';
 import 'package:flutter/material.dart';
 
 class Tag extends StatefulWidget {

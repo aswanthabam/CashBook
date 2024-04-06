@@ -1,5 +1,5 @@
-import 'package:cashbook/features/main_app/data/datasource/local/database.dart';
-import 'package:cashbook/features/main_app/domain/models/tag_data.dart';
+import 'package:cashbook/core/datasource/local/database.dart';
+import 'package:cashbook/features/main_app/data/models/tag_data.dart';
 import 'package:cashbook/objectbox.g.dart';
 
 @Entity()
@@ -17,10 +17,11 @@ class Expense {
       {required this.id,
       required this.title,
       required this.amount,
-      required this.description});
+      required this.description,
+      required this.date});
 
-  static Future<ExpenseList> getExpenseList(DateTime startDate,
-      DateTime endDate,
+  static Future<ExpenseList> getExpenseList(
+      DateTime startDate, DateTime endDate,
       {bool descending = false}) async {
     AppDatabase database = await AppDatabase.create();
     Query<Expense> query = database
