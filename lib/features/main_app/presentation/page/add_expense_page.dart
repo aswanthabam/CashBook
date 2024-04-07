@@ -4,6 +4,7 @@ import 'package:cashbook/features/main_app/data/models/expense.dart';
 import 'package:cashbook/features/main_app/data/models/tag_data.dart';
 import 'package:cashbook/features/main_app/presentation/bloc/expense/expense_bloc.dart';
 import 'package:cashbook/features/main_app/presentation/page/create_tag_page.dart';
+import 'package:cashbook/features/main_app/presentation/widgets/add_entity/add_description.dart';
 import 'package:cashbook/features/main_app/presentation/widgets/add_entity/add_tag.dart';
 import 'package:cashbook/features/main_app/presentation/widgets/bottom_button.dart';
 import 'package:cashbook/features/main_app/presentation/widgets/money_input.dart';
@@ -26,6 +27,7 @@ class _AddExpensePageState extends State<AddExpensePage> {
   TagData? tag;
   TextEditingController amountController = TextEditingController();
   TextEditingController titleController = TextEditingController();
+  TextEditingController descriptionController = TextEditingController();
 
   bool _validate() {
     if (amountController.text.isEmpty) {
@@ -70,6 +72,7 @@ class _AddExpensePageState extends State<AddExpensePage> {
           .replaceAll(',', '');
       titleController.text = widget.entity!.title;
       tag = widget.entity!.tag.target;
+      descriptionController.text = widget.entity!.description ?? "";
     }
   }
 
@@ -148,7 +151,12 @@ class _AddExpensePageState extends State<AddExpensePage> {
                       ),
                       BottomButton(
                         onPressed: () {
-                          // TODO : IMPLEMENT ADD DESCRIPTION
+                          showDialog(
+                              context: context,
+                              builder: (context) => AddDescription(
+                                    descriptionController:
+                                        descriptionController,
+                                  ));
                         },
                         icon: BootstrapIcons.plus_circle_dotted,
                         text: "Description",
@@ -177,7 +185,7 @@ class _AddExpensePageState extends State<AddExpensePage> {
                             context.read<ExpenseBloc>().add(AddExpenseEvent(
                                 amount: double.parse(amountController.text),
                                 title: titleController.text,
-                                description: "Unimplemented",
+                                description: descriptionController.text,
                                 date: DateTime.now(),
                                 // TODO : IMPLEMENT CUSTOM TIMEING
                                 tag: tag));
@@ -185,7 +193,7 @@ class _AddExpensePageState extends State<AddExpensePage> {
                             context.read<ExpenseBloc>().add(EditExpenseEvent(
                                 title: titleController.text,
                                 amount: double.parse(amountController.text),
-                                description: "Unimplemented",
+                                description: descriptionController.text,
                                 date: widget.entity!.date,
                                 tag: tag,
                                 // TODO : IMPLEMENT CUSTOM TIMEING
