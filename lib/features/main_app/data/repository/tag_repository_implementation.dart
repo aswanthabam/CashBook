@@ -19,7 +19,7 @@ class TagRepositoryImplementation implements TagRepository {
     try {
       return tagLocalDatabaseImplementation.getTags();
     } catch (e) {
-      throw e;
+      rethrow;
     }
   }
 }

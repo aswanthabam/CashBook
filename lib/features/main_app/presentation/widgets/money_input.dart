@@ -26,7 +26,7 @@ class _MoneyInputState extends State<MoneyInput> {
   Widget build(BuildContext context) {
     final double height = MediaQuery.of(context).size.height;
     final double width = MediaQuery.of(context).size.width;
-    return Container(
+    return SizedBox(
       width: widget.center ? width : null,
       height: height * 0.2,
       child: Column(

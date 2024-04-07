@@ -126,9 +126,6 @@ class ExpenseLocalDatasourceImplementation implements ExpenseLocalDatasource {
       List<TagData>? tags}) async {
     try {
       Expense entity = database.box<Expense>().get(id);
-      if (entity == null) {
-        throw LocalDatabaseException("Expense not found");
-      }
       if (title != null) {
         entity.title = title;
       }

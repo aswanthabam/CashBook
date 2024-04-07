@@ -68,7 +68,7 @@ class _SettingsState extends State<Settings> {
                                           onPressed: () {
                                             Navigator.of(context).pop();
                                           },
-                                          child: Text("No, Cancel")),
+                                          child: const Text("No, Cancel")),
                                     ],
                                   )
                                 ],

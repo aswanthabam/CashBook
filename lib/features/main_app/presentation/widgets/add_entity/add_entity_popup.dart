@@ -35,7 +35,7 @@ class _AddEntityPopupState extends State<AddEntityPopup> {
                 Navigator.of(context).pop();
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) =>
-                        AddExpensePage(heading: "Add Expense")));
+                        const AddExpensePage(heading: "Add Expense")));
               },
             ),
             // SizedBox(height: height * 0.01,),
