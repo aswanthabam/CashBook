@@ -35,11 +35,11 @@ class _AddTagState extends State<AddTag> {
     tagBloc.add(GetTagsEvent());
     tagBloc.stream.listen((event) {
       if (event is TagDataLoaded) {
+        tags = [];
         for (var tag in event.tags) {
           tag.isSelected = selectedTags.any((t) => t.id == tag.id);
           tags.add(tag);
         }
-        // tags = event.tags;
         setState(() {});
       } else if (event is TagDataError) {
         Fluttertoast.showToast(msg: event.message);
@@ -47,7 +47,6 @@ class _AddTagState extends State<AddTag> {
         tagBloc.add(GetTagsEvent());
       }
     });
-    print("TAGS : ${widget.tags}");
     selectedTags = widget.tags ?? [];
   }
 
@@ -91,7 +90,9 @@ class _AddTagState extends State<AddTag> {
                           if (tag.isSelected) {
                             selectedTags.add(tag);
                           } else {
-                            selectedTags.remove(tag);
+                            int index = selectedTags
+                                .indexWhere((element) => element.id == tag.id);
+                            selectedTags.removeAt(index);
                           }
                           setState(() {});
                         },

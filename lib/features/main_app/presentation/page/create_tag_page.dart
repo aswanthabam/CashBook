@@ -226,14 +226,13 @@ class _CreateTagPageState extends State<CreateTagPage> {
                           .primary,
                     ),
                     onPressed: () {
-                      print(serializeIcon(selectedIcon,
-                          iconPack: IconPack.allMaterial));
                       if (_validate()) {
                         context.read<TagBloc>().add(CreateTagEvent(
                             title: titleController.text,
                             description: descriptionController.text,
                             color: selectedColor.value,
-                            icon: serializeIcon(selectedIcon)!["key"]));
+                            icon: serializeIcon(selectedIcon,
+                                iconPack: IconPack.allMaterial)!["key"]));
                       }
                     },
                     child: Text(
