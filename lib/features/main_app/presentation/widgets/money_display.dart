@@ -1,6 +1,6 @@
 import 'package:cashbook/core/theme/theme.dart';
+import 'package:cashbook/core/utils/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 class MoneyDisplay extends StatefulWidget {
   const MoneyDisplay(
@@ -20,19 +20,7 @@ class MoneyDisplay extends StatefulWidget {
 class _MoneyDisplayState extends State<MoneyDisplay> {
   @override
   Widget build(BuildContext context) {
-    double num = (widget.amount >= 10000000000
-        ? (widget.amount / 1000000000)
-        : ((widget.amount >= 10000000
-            ? (widget.amount / 1000000)
-            : (widget.amount))));
-    String postfix = (widget.amount >= 10000000000
-        ? " B"
-        : ((widget.amount >= 10000000 ? " M" : "")));
-    String amount = widget.prefix +
-        NumberFormat.currency(locale: 'en_IN', symbol: '₹ ')
-            .format(num)
-            .replaceAll(',', '') +
-        postfix;
+    String amount = formatMoney(amount: widget.amount, prefix: widget.prefix);
     return SizedBox(
       width: MediaQuery.of(context).size.width,
       child: Column(
