@@ -1,7 +1,10 @@
+import 'package:bootstrap_icons/bootstrap_icons.dart';
+import 'package:cashbook/core/theme/theme.dart';
 import 'package:cashbook/core/widgets/appbar/bottom_bar.dart';
 import 'package:cashbook/core/widgets/appbar/main_appbar.dart';
 import 'package:cashbook/core/widgets/buttons/add_button.dart';
 import 'package:cashbook/core/widgets/buttons/icon_button.dart';
+import 'package:cashbook/core/widgets/error/error_display.dart';
 import 'package:cashbook/features/main_app/data/models/expense.dart';
 import 'package:cashbook/features/main_app/presentation/bloc/expense/expense_bloc.dart';
 import 'package:cashbook/features/main_app/presentation/widgets/add_entity/add_entity_popup.dart';
@@ -86,10 +89,6 @@ class _HomeState extends State<Home> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    // const PaginationIndicator(
-                    //   count: 3,
-                    //   index: 1,
-                    // ),
                     SizedBox(
                       height: width * 0.05,
                     ),
@@ -104,7 +103,8 @@ class _HomeState extends State<Home> {
                                     amount: state.total,
                                     subText: "Net expense this month");
                               }
-                              return const SizedBox();
+                              return const MoneyDisplay(
+                                  amount: 0, subText: "Net expense this month");
                             },
                             listener:
                                 (BuildContext context, ExpenseState state) {},
@@ -127,15 +127,40 @@ class _HomeState extends State<Home> {
                     builder: (context, state) {
                       if (state is ExpenseDataLoaded) {
                         if (state.expenses.isEmpty) {
-                          return const Text("No data available to display.");
+                          return const ErrorDisplay(
+                              title: "No Data Found!",
+                              description:
+                                  "No data found to display for this month!",
+                              icon: BootstrapIcons.database_slash);
                         }
                         return MainChart(data: _getChartData(state.expenses));
                       }
                       if (state is ExpenseDataError) {
                         Fluttertoast.showToast(msg: state.message);
-                        return Text(state.message);
+                        return ErrorDisplay(
+                          title: "Error Occurred !",
+                          description:
+                              "There was an error getting transactional data.",
+                          icon: BootstrapIcons.bug,
+                          mainColor: Theme.of(context)
+                              .extension<AppColorsExtension>()!
+                              .red
+                              .withAlpha(190),
+                        );
                       }
-                      return const Placeholder();
+                      return const AspectRatio(
+                          aspectRatio: 1.4,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                  width: 30,
+                                  height: 30,
+                                  child: CircularProgressIndicator()),
+                              SizedBox(height: 20),
+                              Text("Loading...")
+                            ],
+                          ));
                     },
                     listener: (context, state) {},
                   )),
@@ -157,8 +182,26 @@ class _HomeState extends State<Home> {
                         builder: (context, state) {
                           if (state is ExpenseDataLoaded) {
                             if (state.expenses.isEmpty) {
-                              return const Center(
-                                child: Text("No data found"),
+                              return Center(
+                                child: Container(
+                                    width: width * 0.9,
+                                    padding: const EdgeInsets.all(10),
+                                    decoration: BoxDecoration(
+                                        color: Theme.of(context)
+                                            .extension<AppColorsExtension>()!
+                                            .primaryLight
+                                            .withAlpha(50),
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
+                                    child: const Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Icon(BootstrapIcons.slash_circle,
+                                              size: 15),
+                                          SizedBox(width: 10),
+                                          Text("No recent transactions found!")
+                                        ])),
                               );
                             }
                             return HistoryDisplayer(

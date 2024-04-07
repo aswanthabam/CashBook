@@ -83,7 +83,6 @@ class ExpenseLocalDatasourceImplementation implements ExpenseLocalDatasource {
           .build();
       return query.find();
     } catch (e) {
-      print(e);
       throw LocalDatabaseException(
           "Error getting expenses, an unexpected error occurred");
     }

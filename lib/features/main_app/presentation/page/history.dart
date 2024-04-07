@@ -1,6 +1,8 @@
+import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:cashbook/core/theme/theme.dart';
 import 'package:cashbook/core/widgets/appbar/bottom_bar.dart';
 import 'package:cashbook/core/widgets/appbar/main_appbar.dart';
+import 'package:cashbook/core/widgets/error/error_display.dart';
 import 'package:cashbook/features/main_app/presentation/bloc/expense/expense_bloc.dart';
 import 'package:cashbook/features/main_app/presentation/widgets/history_displayer.dart';
 import 'package:flutter/material.dart';
@@ -199,8 +201,27 @@ class _HistoryState extends State<History> {
                         builder: (context, state) {
                           if (state is ExpenseDataLoaded) {
                             if (state.expenses.isEmpty) {
-                              return const Center(
-                                child: Text("No data found"),
+                              return Padding(
+                                padding: const EdgeInsets.only(top: 10),
+                                child: Container(
+                                    width: width,
+                                    padding: const EdgeInsets.all(10),
+                                    decoration: BoxDecoration(
+                                        color: Theme.of(context)
+                                            .extension<AppColorsExtension>()!
+                                            .primaryLight
+                                            .withAlpha(50),
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
+                                    child: const Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Icon(BootstrapIcons.slash_circle,
+                                              size: 15),
+                                          SizedBox(width: 10),
+                                          Text("No recent transactions found!")
+                                        ])),
                               );
                             }
                             return HistoryDisplayer(
@@ -208,8 +229,15 @@ class _HistoryState extends State<History> {
                                 historyCount: historyPageHistoryCount);
                           }
                           if (state is ExpenseDataError) {
-                            return Center(
-                              child: Text(state.message),
+                            return ErrorDisplay(
+                              title: "Error Occurred !",
+                              description:
+                                  "There was an error getting transactional data.",
+                              icon: BootstrapIcons.bug,
+                              mainColor: Theme.of(context)
+                                  .extension<AppColorsExtension>()!
+                                  .red
+                                  .withAlpha(190),
                             );
                           }
                           return const SizedBox();
