@@ -2,12 +2,13 @@ import 'package:cashbook/features/main_app/data/models/tag_data.dart';
 import 'package:flutter/material.dart';
 
 class Tag extends StatefulWidget {
-  Tag(
-      {super.key,
-      required this.onPressed,
-      required this.tagData,
-      required this.highlightColor,
-      required this.icon});
+  Tag({
+    super.key,
+    required this.onPressed,
+    required this.tagData,
+    required this.highlightColor,
+    required this.icon,
+  });
 
   final Color highlightColor;
   final Function() onPressed;

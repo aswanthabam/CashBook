@@ -3,6 +3,7 @@ import 'package:cashbook/core/theme/theme.dart';
 import 'package:cashbook/core/utils/utils.dart';
 import 'package:cashbook/features/main_app/data/models/expense.dart';
 import 'package:cashbook/features/main_app/data/models/tag_data.dart';
+import 'package:cashbook/features/main_app/presentation/page/add_expense_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconpicker/flutter_iconpicker.dart';
 
@@ -34,6 +35,14 @@ class _HistoryDisplayerState extends State<HistoryDisplayer> {
               ? widget.expenses[widget.expenses.length - index - 1].tags[0]
               : null;
           return ListTile(
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => AddExpensePage(
+                        heading: "Edit Expense",
+                        entity:
+                            widget.expenses[widget.expenses.length - index - 1],
+                      )));
+            },
             shape: const Border(top: BorderSide(color: Colors.grey, width: 1)),
             leading: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -62,7 +71,8 @@ class _HistoryDisplayerState extends State<HistoryDisplayer> {
             subtitle: Row(
               children: [
                 Text(
-                    "${formatDate(widget.expenses[widget.expenses.length - index - 1].date)}",
+                    formatDate(widget
+                        .expenses[widget.expenses.length - index - 1].date),
                     style: const TextStyle(fontSize: 12)),
                 Text(
                   "  ⦿  ${tag != null ? tag.title : 'Uncategorized'}",
@@ -81,6 +91,5 @@ class _HistoryDisplayerState extends State<HistoryDisplayer> {
             ),
           );
         });
-    ;
   }
 }

@@ -12,13 +12,13 @@ abstract interface class ExpenseRepository {
 
   Future<void> deleteExpense({required int id});
 
-  Future<void> updateExpense({
+  Future<int> updateExpense({
     required int id,
     String? title,
     double? amount,
     String? description,
     DateTime? date,
-    List<int>? tags,
+    List<TagData>? tags,
   });
 
   Future<List<Expense>> getExpensesFilter(

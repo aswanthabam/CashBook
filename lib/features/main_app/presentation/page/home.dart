@@ -62,9 +62,10 @@ class _HomeState extends State<Home> {
     bloc.stream.listen((event) {
       if (event is ExpenseAdded) {
         _emitHistoryEvent(bloc);
-      }
-      if (event is ExpenseDataError) {
+      } else if (event is ExpenseDataError) {
         Fluttertoast.showToast(msg: event.message);
+      } else if (event is ExpenseEdited) {
+        _emitHistoryEvent(bloc);
       }
     });
   }
@@ -100,7 +101,7 @@ class _HomeState extends State<Home> {
                             builder: (context, state) {
                               if (state is ExpenseDataLoaded) {
                                 return MoneyDisplay(
-                                    text: "- ${state.total.toString()} ₹",
+                                    amount: state.total,
                                     subText: "Net expense this month");
                               }
                               return const SizedBox();

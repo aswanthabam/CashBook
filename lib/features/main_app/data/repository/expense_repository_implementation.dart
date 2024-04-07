@@ -52,14 +52,19 @@ class ExpenseRepositoryImplementation implements ExpenseRepository {
   }
 
   @override
-  Future<void> updateExpense(
+  Future<int> updateExpense(
       {required int id,
       String? title,
       double? amount,
       String? description,
       DateTime? date,
-      List<int>? tags}) {
-    // TODO: implement updateExpense
-    throw UnimplementedError();
+      List<TagData>? tags}) {
+    return datasource.updateExpense(
+        id: id,
+        title: title,
+        amount: amount,
+        description: description,
+        date: date,
+        tags: tags);
   }
 }

@@ -11,9 +11,11 @@ class AddEarningPage extends StatefulWidget {
     super.key,
     required this.heading,
     required this.onSubmit,
+    this.tag,
   });
 
   final String heading;
+  final TagData? tag;
   final bool Function() onSubmit;
 
   @override
@@ -30,7 +32,7 @@ class _AddEarningPageState extends State<AddEarningPage> {
     final double height = MediaQuery.of(context).size.height;
     final double width = MediaQuery.of(context).size.width;
     return Scaffold(
-      body: Container(
+      body: SizedBox(
         width: width,
         height: height + MediaQuery.of(context).padding.top,
         child: Stack(

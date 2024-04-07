@@ -15,13 +15,13 @@ abstract interface class ExpenseLocalDatasource {
 
   Future<void> deleteExpense({required int id});
 
-  Future<void> updateExpense({
+  Future<int> updateExpense({
     required int id,
     String? title,
     double? amount,
     String? description,
     DateTime? date,
-    List<int>? tags,
+    List<TagData>? tags,
   });
 
   Future<List<Expense>> getExpensesFilter(
@@ -118,14 +118,39 @@ class ExpenseLocalDatasourceImplementation implements ExpenseLocalDatasource {
   }
 
   @override
-  Future<void> updateExpense(
+  Future<int> updateExpense(
       {required int id,
       String? title,
       double? amount,
       String? description,
       DateTime? date,
-      List<int>? tags}) {
-    // TODO: implement updateExpense
-    throw UnimplementedError();
+      List<TagData>? tags}) async {
+    try {
+      Expense entity = database.box<Expense>().get(id);
+      if (entity == null) {
+        throw LocalDatabaseException("Expense not found");
+      }
+      if (title != null) {
+        entity.title = title;
+      }
+      if (amount != null) {
+        entity.amount = amount;
+      }
+      if (description != null) {
+        entity.description = description;
+      }
+      if (date != null) {
+        entity.date = date;
+      }
+      if (tags != null) {
+        entity.tags.clear();
+        entity.tags.addAll(tags);
+      }
+      database.box<Expense>().put(entity);
+      return entity.id;
+    } catch (e) {
+      throw LocalDatabaseException(
+          "Error updating expense, an unexpected error occurred");
+    }
   }
 }

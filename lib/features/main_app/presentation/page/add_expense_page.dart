@@ -1,5 +1,6 @@
 import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:cashbook/core/theme/theme.dart';
+import 'package:cashbook/features/main_app/data/models/expense.dart';
 import 'package:cashbook/features/main_app/data/models/tag_data.dart';
 import 'package:cashbook/features/main_app/presentation/bloc/expense/expense_bloc.dart';
 import 'package:cashbook/features/main_app/presentation/page/create_tag_page.dart';
@@ -9,11 +10,13 @@ import 'package:cashbook/features/main_app/presentation/widgets/money_input.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:intl/intl.dart';
 
 class AddExpensePage extends StatefulWidget {
-  const AddExpensePage({super.key, required this.heading});
+  const AddExpensePage({super.key, required this.heading, this.entity});
 
   final String heading;
+  final Expense? entity;
 
   @override
   State<AddExpensePage> createState() => _AddExpensePageState();
@@ -34,8 +37,20 @@ class _AddExpensePageState extends State<AddExpensePage> {
         Fluttertoast.showToast(msg: "Successfully added expense");
       } else if (event is ExpenseAddError) {
         Fluttertoast.showToast(msg: "Failed to add expense");
+      } else if (event is ExpenseEdited) {
+        Navigator.of(context).pop();
+        Fluttertoast.showToast(msg: "Successfully Edited expense");
+      } else if (event is ExpenseAddError) {
+        Fluttertoast.showToast(msg: "Failed to edit expense");
       }
     });
+    if (widget.entity != null) {
+      amountController.text = NumberFormat.decimalPattern()
+          .format(widget.entity!.amount)
+          .replaceAll(',', '');
+      titleController.text = widget.entity!.title;
+      tags = widget.entity!.tags;
+    }
   }
 
   @override
@@ -88,13 +103,15 @@ class _AddExpensePageState extends State<AddExpensePage> {
                         onPressed: () {
                           showDialog(
                               context: context,
-                              builder: (context) =>
-                                  AddTag(onAddTag: (selectedTags) {
+                              builder: (context) => AddTag(
+                                  tags: tags,
+                                  onAddTag: (selectedTags) {
                                     setState(() {
                                       tags = selectedTags;
                                     });
                                     Navigator.of(context).pop();
-                                  }, onCreateTag: () {
+                                  },
+                                  onCreateTag: () {
                                     Navigator.of(context).push(
                                         MaterialPageRoute(
                                             builder: (context) =>
@@ -133,13 +150,24 @@ class _AddExpensePageState extends State<AddExpensePage> {
                           ),
                         ),
                         onPressed: () async {
-                          context.read<ExpenseBloc>().add(AddExpenseEvent(
-                              amount: double.parse(amountController.text),
-                              title: titleController.text,
-                              description: "Unimplemented",
-                              date: DateTime.now(),
-                              // TODO : IMPLEMENT CUSTOM TIMEING
-                              tags: tags));
+                          if (widget.entity == null) {
+                            context.read<ExpenseBloc>().add(AddExpenseEvent(
+                                amount: double.parse(amountController.text),
+                                title: titleController.text,
+                                description: "Unimplemented",
+                                date: DateTime.now(),
+                                // TODO : IMPLEMENT CUSTOM TIMEING
+                                tags: tags));
+                          } else {
+                            context.read<ExpenseBloc>().add(EditExpenseEvent(
+                                title: titleController.text,
+                                amount: double.parse(amountController.text),
+                                description: "Unimplemented",
+                                date: widget.entity!.date,
+                                tags: tags,
+                                // TODO : IMPLEMENT CUSTOM TIMEING
+                                id: widget.entity!.id));
+                          }
                         },
                         icon: Icon(
                           Icons.send_rounded,

@@ -9,10 +9,15 @@ import 'package:fluttertoast/fluttertoast.dart';
 import '../../bloc/tag/tag_bloc.dart';
 
 class AddTag extends StatefulWidget {
-  const AddTag({super.key, required this.onAddTag, required this.onCreateTag});
+  const AddTag(
+      {super.key,
+      required this.onAddTag,
+      required this.onCreateTag,
+      this.tags});
 
   final Function(List<TagData>) onAddTag;
   final Function() onCreateTag;
+  final List<TagData>? tags;
 
   @override
   State<AddTag> createState() => _AddTagState();
@@ -30,7 +35,11 @@ class _AddTagState extends State<AddTag> {
     tagBloc.add(GetTagsEvent());
     tagBloc.stream.listen((event) {
       if (event is TagDataLoaded) {
-        tags = event.tags;
+        for (var tag in event.tags) {
+          tag.isSelected = selectedTags.any((t) => t.id == tag.id);
+          tags.add(tag);
+        }
+        // tags = event.tags;
         setState(() {});
       } else if (event is TagDataError) {
         Fluttertoast.showToast(msg: event.message);
@@ -38,6 +47,8 @@ class _AddTagState extends State<AddTag> {
         tagBloc.add(GetTagsEvent());
       }
     });
+    print("TAGS : ${widget.tags}");
+    selectedTags = widget.tags ?? [];
   }
 
   @override
@@ -74,11 +85,14 @@ class _AddTagState extends State<AddTag> {
               Wrap(
                   alignment: WrapAlignment.center,
                   children: tags.map((tag) {
-                    print("Icon ${tag.icon}");
                     return Tag(
                         onPressed: () {
-                          tag.isSelected = true;
-                          selectedTags.add(tag);
+                          tag.isSelected = !tag.isSelected;
+                          if (tag.isSelected) {
+                            selectedTags.add(tag);
+                          } else {
+                            selectedTags.remove(tag);
+                          }
                           setState(() {});
                         },
                         tagData: tag,

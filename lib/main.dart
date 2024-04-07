@@ -6,6 +6,7 @@ import 'package:cashbook/features/main_app/data/datasource/tag_local_database.da
 import 'package:cashbook/features/main_app/data/repository/expense_repository_implementation.dart';
 import 'package:cashbook/features/main_app/data/repository/tag_repository_implementation.dart';
 import 'package:cashbook/features/main_app/domain/uscases/expense_add_usecase.dart';
+import 'package:cashbook/features/main_app/domain/uscases/expense_edit_usecase.dart';
 import 'package:cashbook/features/main_app/domain/uscases/expense_history_usecase.dart';
 import 'package:cashbook/features/main_app/domain/uscases/tag_create_usecase.dart';
 import 'package:cashbook/features/main_app/domain/uscases/tag_list_usecase.dart';
@@ -46,6 +47,11 @@ Future<void> main() async {
                   ),
                 ),
                 expenseAddUseCase: ExpenseAddUseCase(
+                  ExpenseRepositoryImplementation(
+                    datasource: ExpenseLocalDatasourceImplementation(database),
+                  ),
+                ),
+                expenseEditUseCase: ExpenseEditUseCase(
                   ExpenseRepositoryImplementation(
                     datasource: ExpenseLocalDatasourceImplementation(database),
                   ),

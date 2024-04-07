@@ -24,3 +24,20 @@ final class AddExpenseEvent extends ExpenseEvent {
       required this.date,
       required this.tags});
 }
+
+final class EditExpenseEvent extends ExpenseEvent {
+  final String title;
+  final double amount;
+  final String description;
+  final DateTime date;
+  final List<TagData> tags;
+  final int id;
+
+  EditExpenseEvent(
+      {required this.title,
+      required this.amount,
+      required this.description,
+      required this.date,
+      required this.tags,
+      required this.id});
+}
