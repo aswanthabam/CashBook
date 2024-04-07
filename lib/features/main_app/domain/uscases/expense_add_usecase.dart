@@ -20,7 +20,7 @@ class ExpenseAddUseCase
               amount: params.amount,
               description: params.description,
               date: params.date,
-              tags: params.tags)));
+              tag: params.tag)));
     } catch (e) {
       return right(Failure("An error occurred"));
     }
@@ -32,12 +32,12 @@ class ExpenseAddParams {
   final double amount;
   final String description;
   final DateTime date;
-  final List<TagData> tags;
+  final TagData? tag;
 
   ExpenseAddParams(
       {required this.title,
       required this.amount,
       required this.description,
       required this.date,
-      required this.tags});
+      required this.tag});
 }

@@ -30,10 +30,8 @@ class _HistoryDisplayerState extends State<HistoryDisplayer> {
             ? widget.historyCount
             : widget.expenses.length,
         itemBuilder: (context, index) {
-          TagData? tag = widget
-                  .expenses[widget.expenses.length - index - 1].tags.isNotEmpty
-              ? widget.expenses[widget.expenses.length - index - 1].tags[0]
-              : null;
+          TagData? tag =
+              widget.expenses[widget.expenses.length - index - 1].tag.target;
           return ListTile(
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(

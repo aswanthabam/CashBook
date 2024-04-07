@@ -10,7 +10,7 @@ abstract interface class ExpenseLocalDatasource {
     required double amount,
     required String description,
     required DateTime date,
-    required List<TagData> tags,
+    required TagData? tag,
   });
 
   Future<void> deleteExpense({required int id});
@@ -21,7 +21,7 @@ abstract interface class ExpenseLocalDatasource {
     double? amount,
     String? description,
     DateTime? date,
-    List<TagData>? tags,
+    TagData? tag,
   });
 
   Future<List<Expense>> getExpensesFilter(
@@ -46,7 +46,7 @@ class ExpenseLocalDatasourceImplementation implements ExpenseLocalDatasource {
       required double amount,
       required String description,
       required DateTime date,
-      required List<TagData> tags}) async {
+      required TagData? tag}) async {
     Expense entity = Expense(
       id: 0,
       title: title,
@@ -54,10 +54,12 @@ class ExpenseLocalDatasourceImplementation implements ExpenseLocalDatasource {
       description: description,
       date: date,
     );
-    entity.tags.addAll(tags);
+    if (tag != null) entity.tag.target = tag;
+
     try {
       return database.insert<Expense>(entity);
     } catch (e) {
+      print(e);
       throw LocalDatabaseException(
           "Error adding expense, an unexpected error occurred");
     }
@@ -123,7 +125,7 @@ class ExpenseLocalDatasourceImplementation implements ExpenseLocalDatasource {
       double? amount,
       String? description,
       DateTime? date,
-      List<TagData>? tags}) async {
+      TagData? tag}) async {
     try {
       Expense entity = database.box<Expense>().get(id);
       if (title != null) {
@@ -138,10 +140,7 @@ class ExpenseLocalDatasourceImplementation implements ExpenseLocalDatasource {
       if (date != null) {
         entity.date = date;
       }
-      if (tags != null) {
-        entity.tags.clear();
-        entity.tags.addAll(tags);
-      }
+      entity.tag.target = tag;
       database.box<Expense>().put(entity);
       return entity.id;
     } catch (e) {

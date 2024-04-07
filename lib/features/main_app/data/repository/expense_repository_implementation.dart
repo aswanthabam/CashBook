@@ -15,13 +15,13 @@ class ExpenseRepositoryImplementation implements ExpenseRepository {
       required double amount,
       required String description,
       required DateTime date,
-      required List<TagData> tags}) async {
+      required TagData? tag}) async {
     return await datasource.addExpense(
         title: title,
         amount: amount,
         description: description,
         date: date,
-        tags: tags);
+        tag: tag);
   }
 
   @override
@@ -58,13 +58,13 @@ class ExpenseRepositoryImplementation implements ExpenseRepository {
       double? amount,
       String? description,
       DateTime? date,
-      List<TagData>? tags}) {
+      TagData? tag}) {
     return datasource.updateExpense(
         id: id,
         title: title,
         amount: amount,
         description: description,
         date: date,
-        tags: tags);
+        tag: tag);
   }
 }

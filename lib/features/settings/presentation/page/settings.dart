@@ -46,6 +46,7 @@ class _SettingsState extends State<Settings> {
                                           onPressed: () async {
                                             if (await AppDatabase
                                                 .dropDatabase()) {
+                                              AppDatabase.create();
                                               Fluttertoast.showToast(
                                                   msg:
                                                       "Successfully erased all data");

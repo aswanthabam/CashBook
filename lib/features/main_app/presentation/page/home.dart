@@ -34,9 +34,11 @@ class _HomeState extends State<Home> {
     if (expenses.length == 1) {
       return [
         MainChartRow(
+            color: Colors.blue,
             value: 0,
             date: DateFormat("d MMM").format(DateTime.now().copyWith(day: 1))),
         MainChartRow(
+            color: expenses[0].tag.target?.colorValue ?? Colors.blue,
             value: expenses[0].amount,
             date: DateFormat("d MMM").format(expenses[0].date))
       ];
@@ -44,7 +46,9 @@ class _HomeState extends State<Home> {
     var data = <MainChartRow>[];
     for (var x in expenses) {
       data.add(MainChartRow(
-          value: x.amount, date: DateFormat("d MMM").format(x.date)));
+          color: x.tag.target?.colorValue ?? Colors.blue,
+          value: x.amount,
+          date: DateFormat("d MMM").format(x.date)));
     }
     return data;
   }

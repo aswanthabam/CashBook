@@ -7,7 +7,7 @@ abstract interface class ExpenseRepository {
     required double amount,
     required String description,
     required DateTime date,
-    required List<TagData> tags,
+    required TagData? tag,
   });
 
   Future<void> deleteExpense({required int id});
@@ -18,7 +18,7 @@ abstract interface class ExpenseRepository {
     double? amount,
     String? description,
     DateTime? date,
-    List<TagData>? tags,
+    TagData? tag,
   });
 
   Future<List<Expense>> getExpensesFilter(

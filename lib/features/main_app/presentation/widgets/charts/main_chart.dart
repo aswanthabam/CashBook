@@ -88,7 +88,7 @@ class _MainChartState extends State<MainChart> {
                           .reduce((value, element) =>
                               value.value < element.value ? value : element)
                           .value *
-                      1.3),
+                      0),
             ]),
             LineChartBarData(
               spots: widget.data
@@ -114,8 +114,17 @@ class _MainChartState extends State<MainChart> {
                 ],
               ),
               barWidth: 2,
-              dotData: const FlDotData(
-                show: false,
+              dotData: FlDotData(
+                show: true,
+                getDotPainter: (spot, percent, barData, index) =>
+                    FlDotCirclePainter(
+                  radius: 4,
+                  color: widget.data.asMap()[index]!.color,
+                  strokeWidth: 0,
+                  strokeColor: Theme.of(context)
+                      .extension<AppColorsExtension>()!
+                      .primaryLight,
+                ),
               ),
               belowBarData: BarAreaData(
                 show: true,
@@ -191,6 +200,8 @@ class _MainChartState extends State<MainChart> {
 class MainChartRow {
   final double value;
   final String date;
+  final Color color;
 
-  MainChartRow({required this.value, required this.date});
+  MainChartRow(
+      {required this.value, required this.date, this.color = Colors.blue});
 }

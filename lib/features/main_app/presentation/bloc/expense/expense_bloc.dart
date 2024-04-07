@@ -30,7 +30,7 @@ class ExpenseBloc extends Bloc<ExpenseEvent, ExpenseState> {
               amount: event.amount,
               description: event.description,
               date: event.date,
-              tags: event.tags))
+              tag: event.tag))
           .then((value) {
         value.fold((success) {
           emit(ExpenseEdited());
@@ -46,7 +46,7 @@ class ExpenseBloc extends Bloc<ExpenseEvent, ExpenseState> {
               amount: event.amount,
               description: event.description,
               date: event.date,
-              tags: event.tags))
+              tag: event.tag))
           .then((value) {
         value.fold((success) {
           emit(ExpenseAdded());

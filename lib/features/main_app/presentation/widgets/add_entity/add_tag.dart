@@ -10,21 +10,18 @@ import '../../bloc/tag/tag_bloc.dart';
 
 class AddTag extends StatefulWidget {
   const AddTag(
-      {super.key,
-      required this.onAddTag,
-      required this.onCreateTag,
-      this.tags});
+      {super.key, required this.onAddTag, required this.onCreateTag, this.tag});
 
-  final Function(List<TagData>) onAddTag;
+  final Function(TagData?) onAddTag;
   final Function() onCreateTag;
-  final List<TagData>? tags;
+  final TagData? tag;
 
   @override
   State<AddTag> createState() => _AddTagState();
 }
 
 class _AddTagState extends State<AddTag> {
-  List<TagData> selectedTags = [];
+  TagData? selectedTag;
   List<TagData> tags = [];
 
   @override
@@ -37,7 +34,8 @@ class _AddTagState extends State<AddTag> {
       if (event is TagDataLoaded) {
         tags = [];
         for (var tag in event.tags) {
-          tag.isSelected = selectedTags.any((t) => t.id == tag.id);
+          tag.isSelected =
+              selectedTag != null ? selectedTag!.id == tag.id : false;
           tags.add(tag);
         }
         setState(() {});
@@ -47,7 +45,7 @@ class _AddTagState extends State<AddTag> {
         tagBloc.add(GetTagsEvent());
       }
     });
-    selectedTags = widget.tags ?? [];
+    selectedTag = widget.tag;
   }
 
   @override
@@ -60,7 +58,8 @@ class _AddTagState extends State<AddTag> {
           width: width,
           padding: EdgeInsets.all(width * 0.05),
           decoration: BoxDecoration(
-            color: Theme.of(context).extension<AppColorsExtension>()!.white,
+            color:
+                Theme.of(context).extension<AppColorsExtension>()!.grayishWhite,
             borderRadius: BorderRadius.circular(20),
           ),
           child: Column(
@@ -75,8 +74,7 @@ class _AddTagState extends State<AddTag> {
               Text(
                 "Select a tag for the transaction. If you can't find a tag, you can add a new one.",
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                    fontSize: width * 0.03, color: Colors.grey.shade900),
+                style: TextStyle(fontSize: width * 0.03, color: Colors.grey),
               ),
               SizedBox(
                 height: height * 0.01,
@@ -87,12 +85,15 @@ class _AddTagState extends State<AddTag> {
                     return Tag(
                         onPressed: () {
                           tag.isSelected = !tag.isSelected;
+                          if (selectedTag != null) {
+                            selectedTag?.isSelected = false;
+                          }
                           if (tag.isSelected) {
-                            selectedTags.add(tag);
+                            selectedTag = tag;
+                            widget.onAddTag(selectedTag);
+                            // Navigator.of(context).pop();
                           } else {
-                            int index = selectedTags
-                                .indexWhere((element) => element.id == tag.id);
-                            selectedTags.removeAt(index);
+                            selectedTag = null;
                           }
                           setState(() {});
                         },
@@ -109,12 +110,25 @@ class _AddTagState extends State<AddTag> {
                 children: [
                   TextButton(
                       onPressed: widget.onCreateTag,
-                      child: Text(
-                        "Create New Tag",
-                        style: TextStyle(
+                      child: Row(
+                        children: [
+                          Text(
+                            "Create Tag",
+                            style: TextStyle(
+                                color: Theme.of(context)
+                                    .extension<AppColorsExtension>()!
+                                    .primaryDark),
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          Icon(
+                            Icons.create_sharp,
                             color: Theme.of(context)
                                 .extension<AppColorsExtension>()!
-                                .primaryDark),
+                                .primaryDark,
+                          ),
+                        ],
                       )),
                   TextButton(
                       style: TextButton.styleFrom(
@@ -123,18 +137,21 @@ class _AddTagState extends State<AddTag> {
                             .primaryLight,
                       ),
                       onPressed: () {
-                        widget.onAddTag(selectedTags);
+                        widget.onAddTag(selectedTag);
                       },
                       child: Row(
                         children: [
                           Icon(
-                            Icons.add,
+                            Icons.done,
                             color: Theme.of(context)
                                 .extension<AppColorsExtension>()!
                                 .primaryLightTextColor,
                           ),
+                          const SizedBox(
+                            width: 10,
+                          ),
                           Text(
-                            "Add Tag",
+                            "Done",
                             style: TextStyle(
                                 color: Theme.of(context)
                                     .extension<AppColorsExtension>()!

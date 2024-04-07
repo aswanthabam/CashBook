@@ -22,7 +22,7 @@ class ExpenseEditUseCase
               amount: params.amount,
               description: params.description,
               date: params.date,
-              tags: params.tags)));
+              tag: params.tag)));
     } on LocalDatabaseException catch (e) {
       return right(Failure(e.message));
     }
@@ -35,7 +35,7 @@ class ExpenseEditParams {
   final double amount;
   final String description;
   final DateTime date;
-  final List<TagData> tags;
+  final TagData? tag;
 
   ExpenseEditParams(
       {required this.id,
@@ -43,5 +43,5 @@ class ExpenseEditParams {
       required this.amount,
       required this.description,
       required this.date,
-      required this.tags});
+      required this.tag});
 }

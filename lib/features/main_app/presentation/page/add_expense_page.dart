@@ -23,9 +23,29 @@ class AddExpensePage extends StatefulWidget {
 }
 
 class _AddExpensePageState extends State<AddExpensePage> {
-  List<TagData> tags = [];
+  TagData? tag;
   TextEditingController amountController = TextEditingController();
   TextEditingController titleController = TextEditingController();
+
+  bool _validate() {
+    if (amountController.text.isEmpty) {
+      Fluttertoast.showToast(msg: "Amount cannot be empty");
+      return false;
+    }
+    if (double.tryParse(amountController.text) == null) {
+      Fluttertoast.showToast(msg: "Amount must be a number");
+      return false;
+    }
+    if (titleController.text.isEmpty) {
+      Fluttertoast.showToast(msg: "Title cannot be empty");
+      return false;
+    }
+    if (titleController.text.length < 3) {
+      Fluttertoast.showToast(msg: "Title must be least 3 characters long");
+      return false;
+    }
+    return true;
+  }
 
   @override
   void initState() {
@@ -40,7 +60,7 @@ class _AddExpensePageState extends State<AddExpensePage> {
       } else if (event is ExpenseEdited) {
         Navigator.of(context).pop();
         Fluttertoast.showToast(msg: "Successfully Edited expense");
-      } else if (event is ExpenseAddError) {
+      } else if (event is ExpenseEditedError) {
         Fluttertoast.showToast(msg: "Failed to edit expense");
       }
     });
@@ -49,7 +69,7 @@ class _AddExpensePageState extends State<AddExpensePage> {
           .format(widget.entity!.amount)
           .replaceAll(',', '');
       titleController.text = widget.entity!.title;
-      tags = widget.entity!.tags;
+      tag = widget.entity!.tag.target;
     }
   }
 
@@ -104,10 +124,10 @@ class _AddExpensePageState extends State<AddExpensePage> {
                           showDialog(
                               context: context,
                               builder: (context) => AddTag(
-                                  tags: tags,
-                                  onAddTag: (selectedTags) {
+                                  tag: tag,
+                                  onAddTag: (selectedTag) {
                                     setState(() {
-                                      tags = selectedTags;
+                                      tag = selectedTag;
                                     });
                                     Navigator.of(context).pop();
                                   },
@@ -150,6 +170,9 @@ class _AddExpensePageState extends State<AddExpensePage> {
                           ),
                         ),
                         onPressed: () async {
+                          if (!_validate()) {
+                            return;
+                          }
                           if (widget.entity == null) {
                             context.read<ExpenseBloc>().add(AddExpenseEvent(
                                 amount: double.parse(amountController.text),
@@ -157,14 +180,14 @@ class _AddExpensePageState extends State<AddExpensePage> {
                                 description: "Unimplemented",
                                 date: DateTime.now(),
                                 // TODO : IMPLEMENT CUSTOM TIMEING
-                                tags: tags));
+                                tag: tag));
                           } else {
                             context.read<ExpenseBloc>().add(EditExpenseEvent(
                                 title: titleController.text,
                                 amount: double.parse(amountController.text),
                                 description: "Unimplemented",
                                 date: widget.entity!.date,
-                                tags: tags,
+                                tag: tag,
                                 // TODO : IMPLEMENT CUSTOM TIMEING
                                 id: widget.entity!.id));
                           }
