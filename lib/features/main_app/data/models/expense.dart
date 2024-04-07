@@ -9,7 +9,7 @@ class Expense {
   String title;
   double amount;
   String? description;
-  ToMany<TagData> tags = ToMany<TagData>();
+  ToOne<TagData> tag = ToOne<TagData>();
   @Property(type: PropertyType.date)
   DateTime date = DateTime.now();
 
@@ -18,7 +18,8 @@ class Expense {
       required this.title,
       required this.amount,
       required this.description,
-      required this.date});
+    required this.date,
+  });
 
   static Future<ExpenseList> getExpenseList(
       DateTime startDate, DateTime endDate,
@@ -43,7 +44,7 @@ class Expense {
 
   @override
   String toString() {
-    return 'Expense{id: $id, title: $title, amount: $amount, description: $description, tags: $tags, date: $date}';
+    return 'Expense{id: $id, title: $title, amount: $amount, description: $description, tags: $tag, date: $date}';
   }
 }
 

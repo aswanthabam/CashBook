@@ -37,3 +37,11 @@ final class TotalExpenseError extends ExpenseState {
 
   TotalExpenseError(this.message);
 }
+
+final class ExpenseEdited extends ExpenseState {}
+
+final class ExpenseEditedError extends ExpenseState {
+  final String message;
+
+  ExpenseEditedError(this.message);
+}

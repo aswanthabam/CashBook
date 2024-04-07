@@ -4,10 +4,12 @@ import 'package:cashbook/core/widgets/appbar/bottom_bar.dart';
 import 'package:cashbook/core/widgets/appbar/main_appbar.dart';
 import 'package:cashbook/core/widgets/buttons/add_button.dart';
 import 'package:cashbook/core/widgets/buttons/icon_button.dart';
+import 'package:cashbook/core/widgets/error/error_display.dart';
 import 'package:cashbook/features/main_app/data/models/expense.dart';
-import 'package:cashbook/features/main_app/presentation/bloc/expense_bloc.dart';
+import 'package:cashbook/features/main_app/presentation/bloc/expense/expense_bloc.dart';
 import 'package:cashbook/features/main_app/presentation/widgets/add_entity/add_entity_popup.dart';
 import 'package:cashbook/features/main_app/presentation/widgets/charts/main_chart.dart';
+import 'package:cashbook/features/main_app/presentation/widgets/history_displayer.dart';
 import 'package:cashbook/features/main_app/presentation/widgets/money_display.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -32,9 +34,11 @@ class _HomeState extends State<Home> {
     if (expenses.length == 1) {
       return [
         MainChartRow(
+            color: Colors.blue,
             value: 0,
             date: DateFormat("d MMM").format(DateTime.now().copyWith(day: 1))),
         MainChartRow(
+            color: expenses[0].tag.target?.colorValue ?? Colors.blue,
             value: expenses[0].amount,
             date: DateFormat("d MMM").format(expenses[0].date))
       ];
@@ -42,7 +46,9 @@ class _HomeState extends State<Home> {
     var data = <MainChartRow>[];
     for (var x in expenses) {
       data.add(MainChartRow(
-          value: x.amount, date: DateFormat("d MMM").format(x.date)));
+          color: x.tag.target?.colorValue ?? Colors.blue,
+          value: x.amount,
+          date: DateFormat("d MMM").format(x.date)));
     }
     return data;
   }
@@ -63,16 +69,17 @@ class _HomeState extends State<Home> {
     bloc.stream.listen((event) {
       if (event is ExpenseAdded) {
         _emitHistoryEvent(bloc);
-      }
-      if (event is ExpenseDataError) {
+      } else if (event is ExpenseDataError) {
         Fluttertoast.showToast(msg: event.message);
+      } else if (event is ExpenseEdited) {
+        _emitHistoryEvent(bloc);
       }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final double height = MediaQuery.of(context).size.height;
+    // final double height = MediaQuery.of(context).size.height;
     final double width = MediaQuery.of(context).size.width;
     return Scaffold(
         bottomNavigationBar: const BottomBar(),
@@ -86,10 +93,6 @@ class _HomeState extends State<Home> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    // const PaginationIndicator(
-                    //   count: 3,
-                    //   index: 1,
-                    // ),
                     SizedBox(
                       height: width * 0.05,
                     ),
@@ -101,10 +104,11 @@ class _HomeState extends State<Home> {
                             builder: (context, state) {
                               if (state is ExpenseDataLoaded) {
                                 return MoneyDisplay(
-                                    text: "- ${state.total.toString()} ₹",
+                                    amount: state.total,
                                     subText: "Net expense this month");
                               }
-                              return const SizedBox();
+                              return const MoneyDisplay(
+                                  amount: 0, subText: "Net expense this month");
                             },
                             listener:
                                 (BuildContext context, ExpenseState state) {},
@@ -127,15 +131,40 @@ class _HomeState extends State<Home> {
                     builder: (context, state) {
                       if (state is ExpenseDataLoaded) {
                         if (state.expenses.isEmpty) {
-                          return const Text("No data available to display.");
+                          return const ErrorDisplay(
+                              title: "No Data Found!",
+                              description:
+                                  "No data found to display for this month!",
+                              icon: BootstrapIcons.database_slash);
                         }
                         return MainChart(data: _getChartData(state.expenses));
                       }
                       if (state is ExpenseDataError) {
                         Fluttertoast.showToast(msg: state.message);
-                        return Text(state.message);
+                        return ErrorDisplay(
+                          title: "Error Occurred !",
+                          description:
+                              "There was an error getting transactional data.",
+                          icon: BootstrapIcons.bug,
+                          mainColor: Theme.of(context)
+                              .extension<AppColorsExtension>()!
+                              .red
+                              .withAlpha(190),
+                        );
                       }
-                      return const Placeholder();
+                      return const AspectRatio(
+                          aspectRatio: 1.4,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                  width: 30,
+                                  height: 30,
+                                  child: CircularProgressIndicator()),
+                              SizedBox(height: 20),
+                              Text("Loading...")
+                            ],
+                          ));
                     },
                     listener: (context, state) {},
                   )),
@@ -157,69 +186,31 @@ class _HomeState extends State<Home> {
                         builder: (context, state) {
                           if (state is ExpenseDataLoaded) {
                             if (state.expenses.isEmpty) {
-                              return const Center(
-                                child: Text("No data found"),
+                              return Center(
+                                child: Container(
+                                    width: width * 0.9,
+                                    padding: const EdgeInsets.all(10),
+                                    decoration: BoxDecoration(
+                                        color: Theme.of(context)
+                                            .extension<AppColorsExtension>()!
+                                            .primaryLight
+                                            .withAlpha(50),
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
+                                    child: const Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Icon(BootstrapIcons.slash_circle,
+                                              size: 15),
+                                          SizedBox(width: 10),
+                                          Text("No recent transactions found!")
+                                        ])),
                               );
                             }
-                            return ListView.builder(
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                padding: EdgeInsets.only(top: height * 0.02),
-                                itemCount:
-                                    state.expenses.length > homePageHistoryCount
-                                        ? homePageHistoryCount
-                                        : state.expenses.length,
-                                itemBuilder: (context, index) {
-                                  return ListTile(
-                                    shape: const Border(
-                                        top: BorderSide(
-                                            color: Colors.grey, width: 1)),
-                                    leading: const Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Icon(
-                                          BootstrapIcons.hourglass_split,
-                                          color: Colors.blue,
-                                        ),
-                                        SizedBox(
-                                          height: 3,
-                                        )
-                                      ],
-                                    ),
-                                    horizontalTitleGap: 25,
-                                    title: Text(
-                                      state
-                                          .expenses[
-                                              state.expenses.length - index - 1]
-                                          .title,
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          color: Theme.of(context)
-                                              .extension<AppColorsExtension>()!
-                                              .black),
-                                    ),
-                                    subtitle: Text(
-                                        state
-                                            .expenses[state.expenses.length -
-                                                index -
-                                                1]
-                                            .date
-                                            .toString(),
-                                        style: const TextStyle(fontSize: 12)),
-                                    trailing: Text(
-                                      state
-                                          .expenses[
-                                              state.expenses.length - index - 1]
-                                          .amount
-                                          .toString(),
-                                      style: const TextStyle(
-                                          color: Colors.red,
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  );
-                                });
+                            return HistoryDisplayer(
+                                expenses: state.expenses,
+                                historyCount: homePageHistoryCount);
                           }
                           return const SizedBox();
                         },

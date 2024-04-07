@@ -2,6 +2,8 @@ import 'package:cashbook/features/main_app/data/datasource/expense_local_datasou
 import 'package:cashbook/features/main_app/data/models/expense.dart';
 import 'package:cashbook/features/main_app/domain/repositories/expense_repository.dart';
 
+import '../models/tag_data.dart';
+
 class ExpenseRepositoryImplementation implements ExpenseRepository {
   final ExpenseLocalDatasource datasource;
 
@@ -13,13 +15,13 @@ class ExpenseRepositoryImplementation implements ExpenseRepository {
       required double amount,
       required String description,
       required DateTime date,
-      required List<int> tags}) async {
+      required TagData? tag}) async {
     return await datasource.addExpense(
         title: title,
         amount: amount,
         description: description,
         date: date,
-        tags: tags);
+        tag: tag);
   }
 
   @override
@@ -50,14 +52,19 @@ class ExpenseRepositoryImplementation implements ExpenseRepository {
   }
 
   @override
-  Future<void> updateExpense(
+  Future<int> updateExpense(
       {required int id,
       String? title,
       double? amount,
       String? description,
       DateTime? date,
-      List<int>? tags}) {
-    // TODO: implement updateExpense
-    throw UnimplementedError();
+      TagData? tag}) {
+    return datasource.updateExpense(
+        id: id,
+        title: title,
+        amount: amount,
+        description: description,
+        date: date,
+        tag: tag);
   }
 }

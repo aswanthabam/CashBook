@@ -14,6 +14,7 @@ abstract class AppPalate {
   static const Color black = Color(0xff000000);
   static const primaryLightTextColor = Color.fromRGBO(223, 235, 255, 1.0);
   static const primaryTextColor = Color(0xFF354D9D);
+  static const grayishWhite = Color(0xffF5F5F5);
 }
 
 
@@ -31,4 +32,5 @@ class AppPalateDark {
   static const Color black = Color(0xffc5c5c5);
   static const primaryLightTextColor = Color.fromRGBO(223, 235, 255, 1.0);
   static const primaryTextColor = Color(0xFFB1C2FC);
+  static const grayishWhite = Color(0xff1E1E1E);
 }

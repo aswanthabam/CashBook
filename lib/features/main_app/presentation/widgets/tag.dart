@@ -2,15 +2,18 @@ import 'package:cashbook/features/main_app/data/models/tag_data.dart';
 import 'package:flutter/material.dart';
 
 class Tag extends StatefulWidget {
-  Tag(
-      {super.key,
-      required this.onPressed,
-      required this.tagData,
-      required this.highlightColor});
+  const Tag({
+    super.key,
+    required this.onPressed,
+    required this.tagData,
+    required this.highlightColor,
+    required this.icon,
+  });
 
   final Color highlightColor;
   final Function() onPressed;
   final TagData tagData;
+  final IconData icon;
 
   @override
   State<Tag> createState() => _TagState();
@@ -36,12 +39,22 @@ class _TagState extends State<Tag> {
           borderRadius: BorderRadius.circular(width * 0.05),
         ),
         child: Center(
-          child: Text(
-            widget.tagData.name,
-            style: TextStyle(
-              color: widget.tagData.textColorValue,
-              fontSize: width * 0.035,
-            ),
+          child: Row(
+            children: [
+              Icon(
+                widget.icon,
+                color: Colors.white,
+                size: width * 0.04,
+              ),
+              const SizedBox(width: 5),
+              Text(
+                widget.tagData.title,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: width * 0.035,
+                ),
+              ),
+            ],
           ),
         ),
       )),

@@ -15,6 +15,7 @@ class AppColorsExtension extends ThemeExtension<AppColorsExtension> {
     required this.white,
     required this.black,
     required this.primaryTextColor,
+    required this.grayishWhite,
     this.primaryLightTextColor = AppPalate.primaryLightTextColor,
   });
 
@@ -30,6 +31,7 @@ class AppColorsExtension extends ThemeExtension<AppColorsExtension> {
   final Color black;
   final Color primaryLightTextColor;
   final Color primaryTextColor;
+  final Color grayishWhite;
 
   @override
   ThemeExtension<AppColorsExtension> copyWith({
@@ -44,6 +46,7 @@ class AppColorsExtension extends ThemeExtension<AppColorsExtension> {
     Color? white,
     Color? black,
     Color? primaryTextColor,
+    Color? grayishWhite,
   }) {
     return AppColorsExtension(
       primary: primary ?? this.primary,
@@ -56,6 +59,7 @@ class AppColorsExtension extends ThemeExtension<AppColorsExtension> {
       transparent: transparent ?? this.transparent,
       white: white ?? this.white,
       black: black ?? this.black,
+      grayishWhite: grayishWhite ?? this.grayishWhite,
       primaryTextColor: primaryTextColor ?? this.primaryTextColor,
     );
   }
@@ -80,6 +84,7 @@ class AppColorsExtension extends ThemeExtension<AppColorsExtension> {
       transparent: Color.lerp(transparent, other.transparent, t)!,
       white: Color.lerp(white, other.white, t)!,
       black: Color.lerp(black, other.black, t)!,
+      grayishWhite: Color.lerp(grayishWhite, other.grayishWhite, t)!,
       primaryTextColor: Color.lerp(primaryTextColor, other.primaryTextColor, t)!,
     );
   }
@@ -116,6 +121,7 @@ class AppTheme {
           transparent: AppPalate.transparent,
           white: AppPalate.white,
           black: AppPalate.black,
+          grayishWhite: AppPalate.grayishWhite,
           primaryTextColor: AppPalate.primaryTextColor,
         )
       ]);
@@ -154,6 +160,7 @@ class AppTheme {
           transparent: AppPalateDark.transparent,
           white: AppPalateDark.white,
           black: AppPalateDark.black,
+          grayishWhite: AppPalateDark.grayishWhite,
           primaryTextColor: AppPalateDark.primaryTextColor,
         )
       ]);

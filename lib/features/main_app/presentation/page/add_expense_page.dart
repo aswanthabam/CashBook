@@ -1,56 +1,52 @@
 import 'package:bootstrap_icons/bootstrap_icons.dart';
-import 'package:cashbook/core/datasource/local/database.dart';
 import 'package:cashbook/core/theme/theme.dart';
 import 'package:cashbook/features/main_app/data/models/expense.dart';
 import 'package:cashbook/features/main_app/data/models/tag_data.dart';
-import 'package:cashbook/features/main_app/presentation/bloc/expense_bloc.dart';
+import 'package:cashbook/features/main_app/presentation/bloc/expense/expense_bloc.dart';
+import 'package:cashbook/features/main_app/presentation/page/create_tag_page.dart';
+import 'package:cashbook/features/main_app/presentation/widgets/add_entity/add_description.dart';
 import 'package:cashbook/features/main_app/presentation/widgets/add_entity/add_tag.dart';
 import 'package:cashbook/features/main_app/presentation/widgets/bottom_button.dart';
 import 'package:cashbook/features/main_app/presentation/widgets/money_input.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:intl/intl.dart';
 
 class AddExpensePage extends StatefulWidget {
-  const AddExpensePage({super.key, required this.heading});
+  const AddExpensePage({super.key, required this.heading, this.entity});
 
   final String heading;
+  final Expense? entity;
 
   @override
   State<AddExpensePage> createState() => _AddExpensePageState();
 }
 
 class _AddExpensePageState extends State<AddExpensePage> {
-  List<TagData> tags = [];
-
+  TagData? tag;
   TextEditingController amountController = TextEditingController();
   TextEditingController titleController = TextEditingController();
+  TextEditingController descriptionController = TextEditingController();
 
-  void _validateAndSubmit() {
-    throw UnimplementedError();
+  bool _validate() {
     if (amountController.text.isEmpty) {
       Fluttertoast.showToast(msg: "Amount cannot be empty");
-    } else if (RegExp(r'^[0-9]+(\.[0-9]+)?$').hasMatch(amountController.text) ==
-        false) {
-      Fluttertoast.showToast(msg: "Amount is not valid");
-    } else if (titleController.text.isEmpty) {
-      Fluttertoast.showToast(msg: "Title cannot be empty");
-    } else {
-      try {
-        final Expense expense = Expense(
-            id: 0,
-            amount: double.parse(amountController.text),
-            title: titleController.text,
-            description: "",
-            date: DateTime.now());
-        AppDatabase db = AppDatabase();
-        db.insert<Expense>(expense);
-        Navigator.of(context).pop();
-        Fluttertoast.showToast(msg: "Successfully added expense");
-      } catch (e) {
-        Fluttertoast.showToast(msg: "Failed to add expense");
-      }
+      return false;
     }
+    if (double.tryParse(amountController.text) == null) {
+      Fluttertoast.showToast(msg: "Amount must be a number");
+      return false;
+    }
+    if (titleController.text.isEmpty) {
+      Fluttertoast.showToast(msg: "Title cannot be empty");
+      return false;
+    }
+    if (titleController.text.length < 3) {
+      Fluttertoast.showToast(msg: "Title must be least 3 characters long");
+      return false;
+    }
+    return true;
   }
 
   @override
@@ -63,8 +59,21 @@ class _AddExpensePageState extends State<AddExpensePage> {
         Fluttertoast.showToast(msg: "Successfully added expense");
       } else if (event is ExpenseAddError) {
         Fluttertoast.showToast(msg: "Failed to add expense");
+      } else if (event is ExpenseEdited) {
+        Navigator.of(context).pop();
+        Fluttertoast.showToast(msg: "Successfully Edited expense");
+      } else if (event is ExpenseEditedError) {
+        Fluttertoast.showToast(msg: "Failed to edit expense");
       }
     });
+    if (widget.entity != null) {
+      amountController.text = NumberFormat.decimalPattern()
+          .format(widget.entity!.amount)
+          .replaceAll(',', '');
+      titleController.text = widget.entity!.title;
+      tag = widget.entity!.tag.target;
+      descriptionController.text = widget.entity!.description ?? "";
+    }
   }
 
   @override
@@ -118,13 +127,21 @@ class _AddExpensePageState extends State<AddExpensePage> {
                           showDialog(
                               context: context,
                               builder: (context) => AddTag(
-                                  onAddTag: (TagData tag) {
-                                    // TODO : IMPLEMENT ON TAG ADD
+                                  tag: tag,
+                                  onAddTag: (selectedTag) {
+                                    setState(() {
+                                      tag = selectedTag;
+                                    });
+                                    Navigator.of(context).pop();
                                   },
                                   onCreateTag: () {
-                                    // TODO : IMPLEMENT ON TAG CREATE
-                                  },
-                                  tags: tags));
+                                    Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                const CreateTagPage(
+                                                    heading:
+                                                        "Create new Tag")));
+                                  }));
                         },
                         icon: BootstrapIcons.tag_fill,
                         text: "Tag",
@@ -134,7 +151,12 @@ class _AddExpensePageState extends State<AddExpensePage> {
                       ),
                       BottomButton(
                         onPressed: () {
-                          // TODO : IMPLEMENT ADD DESCRIPTION
+                          showDialog(
+                              context: context,
+                              builder: (context) => AddDescription(
+                                    descriptionController:
+                                        descriptionController,
+                                  ));
                         },
                         icon: BootstrapIcons.plus_circle_dotted,
                         text: "Description",
@@ -156,13 +178,27 @@ class _AddExpensePageState extends State<AddExpensePage> {
                           ),
                         ),
                         onPressed: () async {
-                          context.read<ExpenseBloc>().add(AddExpenseEvent(
-                              amount: double.parse(amountController.text),
-                              title: titleController.text,
-                              description: "Unimplemented",
-                              date: DateTime.now(),
-                              // TODO : IMPLEMENT CUSTOM TIMEING
-                              tags: tags.map((e) => e.id).toList()));
+                          if (!_validate()) {
+                            return;
+                          }
+                          if (widget.entity == null) {
+                            context.read<ExpenseBloc>().add(AddExpenseEvent(
+                                amount: double.parse(amountController.text),
+                                title: titleController.text,
+                                description: descriptionController.text,
+                                date: DateTime.now(),
+                                // TODO : IMPLEMENT CUSTOM TIMEING
+                                tag: tag));
+                          } else {
+                            context.read<ExpenseBloc>().add(EditExpenseEvent(
+                                title: titleController.text,
+                                amount: double.parse(amountController.text),
+                                description: descriptionController.text,
+                                date: widget.entity!.date,
+                                tag: tag,
+                                // TODO : IMPLEMENT CUSTOM TIMEING
+                                id: widget.entity!.id));
+                          }
                         },
                         icon: Icon(
                           Icons.send_rounded,
