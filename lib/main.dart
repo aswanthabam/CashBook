@@ -1,19 +1,22 @@
 import 'package:cashbook/core/bloc/theme/theme_bloc.dart';
 import 'package:cashbook/core/datasource/local/database.dart';
 import 'package:cashbook/core/theme/theme.dart';
-import 'package:cashbook/features/main_app/data/datasource/expense_local_datasource.dart';
-import 'package:cashbook/features/main_app/data/datasource/tag_local_database.dart';
-import 'package:cashbook/features/main_app/data/repository/expense_repository_implementation.dart';
-import 'package:cashbook/features/main_app/data/repository/tag_repository_implementation.dart';
-import 'package:cashbook/features/main_app/domain/uscases/expense_add_usecase.dart';
-import 'package:cashbook/features/main_app/domain/uscases/expense_edit_usecase.dart';
-import 'package:cashbook/features/main_app/domain/uscases/expense_history_usecase.dart';
-import 'package:cashbook/features/main_app/domain/uscases/tag_create_usecase.dart';
-import 'package:cashbook/features/main_app/domain/uscases/tag_list_usecase.dart';
-import 'package:cashbook/features/main_app/presentation/bloc/expense/expense_bloc.dart';
-import 'package:cashbook/features/main_app/presentation/bloc/tag/tag_bloc.dart';
-import 'package:cashbook/features/main_app/presentation/page/history.dart';
-import 'package:cashbook/features/main_app/presentation/page/home.dart';
+import 'package:cashbook/features/history/presentation/history.dart';
+import 'package:cashbook/features/home/data/datasource/expense_local_datasource.dart';
+import 'package:cashbook/features/home/data/datasource/tag_local_database.dart';
+import 'package:cashbook/features/home/data/repository/expense_history_implementation.dart';
+import 'package:cashbook/features/home/data/repository/expense_repository_implementation.dart';
+import 'package:cashbook/features/home/data/repository/tag_repository_implementation.dart';
+import 'package:cashbook/features/home/domain/uscases/expense_add_usecase.dart';
+import 'package:cashbook/features/home/domain/uscases/expense_edit_usecase.dart';
+import 'package:cashbook/features/home/domain/uscases/expense_history_usecase.dart';
+import 'package:cashbook/features/home/domain/uscases/expense_total_data_usecase.dart';
+import 'package:cashbook/features/home/domain/uscases/tag_create_usecase.dart';
+import 'package:cashbook/features/home/domain/uscases/tag_list_usecase.dart';
+import 'package:cashbook/features/home/presentation/bloc/expense/expense_bloc.dart';
+import 'package:cashbook/features/home/presentation/bloc/expense_history/expense_history_bloc.dart';
+import 'package:cashbook/features/home/presentation/bloc/tag/tag_bloc.dart';
+import 'package:cashbook/features/home/presentation/page/home.dart';
 import 'package:cashbook/features/settings/presentation/page/settings.dart';
 import 'package:cashbook/features/splash_screen/presentation/splash_screen.dart';
 import 'package:flutter/material.dart';
@@ -41,10 +44,17 @@ Future<void> main() async {
           ),
         ),
       ),
+      BlocProvider<ExpenseHistoryBloc>(
+          create: (context) => ExpenseHistoryBloc(
+                  expenseHistoryUseCase: ExpenseHistoryUseCase(
+                repository: ExpenseHistoryRepositoryImplementation(
+                  ExpenseLocalDatasourceImplementation(database),
+                ),
+              ))),
       BlocProvider<ExpenseBloc>(
           create: (context) => ExpenseBloc(
-                expenseHistoryUseCase: ExpenseDataUseCase(
-                  ExpenseRepositoryImplementation(
+                expenseTotalDataUseCase: ExpenseTotalDataUseCase(
+                  repository: ExpenseRepositoryImplementation(
                     datasource: ExpenseLocalDatasourceImplementation(database),
                   ),
                 ),

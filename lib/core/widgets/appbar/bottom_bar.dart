@@ -1,7 +1,7 @@
 import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:cashbook/core/theme/theme.dart';
 import 'package:cashbook/core/widgets/buttons/add_button.dart';
-import 'package:cashbook/features/main_app/presentation/widgets/add_entity/add_entity_popup.dart';
+import 'package:cashbook/features/home/presentation/widgets/add_entity/add_entity_popup.dart';
 import 'package:flutter/material.dart';
 
 class BottomBar extends StatefulWidget {
