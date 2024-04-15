@@ -1,8 +1,8 @@
 import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:cashbook/core/theme/theme.dart';
 import 'package:cashbook/core/utils/utils.dart';
-import 'package:cashbook/features/home/data/models/expense.dart';
-import 'package:cashbook/features/home/data/models/tag_data.dart';
+import 'package:cashbook/data/models/expense.dart';
+import 'package:cashbook/data/models/tag_data.dart';
 import 'package:cashbook/features/home/presentation/widgets/show_expense.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconpicker/flutter_iconpicker.dart';

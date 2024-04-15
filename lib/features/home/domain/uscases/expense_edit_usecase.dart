@@ -1,7 +1,7 @@
 import 'package:cashbook/core/exceptions/datasource_expensions.dart';
 import 'package:cashbook/core/types/reponse_types.dart';
 import 'package:cashbook/core/usecase/usecase.dart';
-import 'package:cashbook/features/home/data/models/tag_data.dart';
+import 'package:cashbook/data/models/tag_data.dart';
 import 'package:cashbook/features/home/domain/repositories/expense_repository.dart';
 import 'package:fpdart/fpdart.dart%20%20';
 

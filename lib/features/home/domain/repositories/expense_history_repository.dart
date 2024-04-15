@@ -1,6 +1,8 @@
-import 'package:cashbook/features/home/data/models/expense.dart';
+import 'package:cashbook/data/models/expense.dart';
 
 abstract interface class ExpenseHistoryRepository {
-  List<Expense> getExpenseHistory(
-      {required int count, bool descending = false});
+  List<Expense> getExpenseHistory({required int count,
+    DateTime? startDate,
+    DateTime? endDate,
+    bool descending = false});
 }

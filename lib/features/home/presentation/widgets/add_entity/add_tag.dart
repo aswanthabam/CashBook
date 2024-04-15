@@ -1,5 +1,5 @@
 import 'package:cashbook/core/theme/theme.dart';
-import 'package:cashbook/features/home/data/models/tag_data.dart';
+import 'package:cashbook/data/models/tag_data.dart';
 import 'package:cashbook/features/home/presentation/widgets/tag.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

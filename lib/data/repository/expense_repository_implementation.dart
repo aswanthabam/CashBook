@@ -1,5 +1,5 @@
-import 'package:cashbook/features/home/data/datasource/expense_local_datasource.dart';
-import 'package:cashbook/features/home/data/models/expense.dart';
+import 'package:cashbook/data/datasource/expense_local_datasource.dart';
+import 'package:cashbook/data/models/expense.dart';
 import 'package:cashbook/features/home/domain/repositories/expense_repository.dart';
 
 import '../models/tag_data.dart';
@@ -77,12 +77,17 @@ class ExpenseRepositoryImplementation implements ExpenseRepository {
     endDate =
         endDate.copyWith(hour: 23, minute: 59, second: 59, millisecond: 999);
     List<Expense> dailyExpenses = [];
+    bool start = false;
     for (;
         startDate.isBefore(endDate);
         startDate = startDate.add(const Duration(days: 1))) {
       double total = datasource.totalExpenseFilter(
           startDate: startDate,
           endDate: startDate.add(const Duration(days: 1)));
+      if (total == 0 && !start) {
+        continue;
+      }
+      start = true;
       dailyExpenses.add(Expense(
           title: "${startDate.day}/${startDate.month}/${startDate.year}",
           amount: total,
@@ -90,19 +95,6 @@ class ExpenseRepositoryImplementation implements ExpenseRepository {
           description: "Total expenses for the day",
           id: 0));
     }
-    print(dailyExpenses.length);
-    // if (dailyExpenses.length < 30) {
-    //   for (int i = dailyExpenses.length; i < 30; i++) {
-    //   print("ADDDINNDD");
-    //     dailyExpenses.add(Expense(
-    //         title: "No expenses",
-    //         amount: 0,
-    //         date: startDate,
-    //         description: "No expenses",
-    //         id: 0));
-    //     startDate = startDate.add(const Duration(days: 1));
-    //   }
-    // }
     return dailyExpenses;
   }
 }

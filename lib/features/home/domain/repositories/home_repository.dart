@@ -1,4 +1,4 @@
-import 'package:cashbook/features/home/data/models/expense.dart';
+import 'package:cashbook/data/models/expense.dart';
 
 abstract interface class HomeRepository {
   Future<List<Expense>> getExpenseList(

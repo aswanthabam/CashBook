@@ -1,5 +1,5 @@
 import 'package:bloc/bloc.dart';
-import 'package:cashbook/features/home/data/models/expense.dart';
+import 'package:cashbook/data/models/expense.dart';
 import 'package:cashbook/features/home/domain/uscases/expense_history_usecase.dart';
 import 'package:meta/meta.dart';
 

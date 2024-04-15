@@ -1,12 +1,15 @@
 import 'package:cashbook/core/bloc/theme/theme_bloc.dart';
 import 'package:cashbook/core/datasource/local/database.dart';
 import 'package:cashbook/core/theme/theme.dart';
-import 'package:cashbook/features/history/presentation/history.dart';
-import 'package:cashbook/features/home/data/datasource/expense_local_datasource.dart';
-import 'package:cashbook/features/home/data/datasource/tag_local_database.dart';
-import 'package:cashbook/features/home/data/repository/expense_history_implementation.dart';
-import 'package:cashbook/features/home/data/repository/expense_repository_implementation.dart';
-import 'package:cashbook/features/home/data/repository/tag_repository_implementation.dart';
+import 'package:cashbook/data/datasource/expense_local_datasource.dart';
+import 'package:cashbook/data/datasource/tag_local_database.dart';
+import 'package:cashbook/data/repository/expense_history_implementation.dart';
+import 'package:cashbook/data/repository/expense_repository_implementation.dart';
+import 'package:cashbook/data/repository/tag_repository_implementation.dart';
+import 'package:cashbook/features/history/data/repository/search_repository_implementation.dart';
+import 'package:cashbook/features/history/domain/usecase/SearchUsecase.dart';
+import 'package:cashbook/features/history/presentation/page/history.dart';
+import 'package:cashbook/features/history/presentation/page/history/history_bloc.dart';
 import 'package:cashbook/features/home/domain/uscases/expense_add_usecase.dart';
 import 'package:cashbook/features/home/domain/uscases/expense_edit_usecase.dart';
 import 'package:cashbook/features/home/domain/uscases/expense_history_usecase.dart';
@@ -27,6 +30,20 @@ Future<void> main() async {
   AppDatabase database = await AppDatabase.create();
   runApp(MultiBlocProvider(
     providers: [
+      BlocProvider<HistoryBloc>(
+        create: (context) => HistoryBloc(
+          expenseHistoryUseCase: ExpenseHistoryUseCase(
+            repository: ExpenseHistoryRepositoryImplementation(
+              ExpenseLocalDatasourceImplementation(database),
+            ),
+          ),
+          searchUseCase: SearchUseCase(
+            repository: SearchRepositoryImplementation(
+              datasource: ExpenseLocalDatasourceImplementation(database),
+            ),
+          ),
+        ),
+      ),
       BlocProvider<ThemeBloc>(
         create: (context) => ThemeBloc(),
       ),

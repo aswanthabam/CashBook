@@ -3,8 +3,8 @@ import 'package:cashbook/core/theme/theme.dart';
 import 'package:cashbook/core/widgets/appbar/bottom_bar.dart';
 import 'package:cashbook/core/widgets/appbar/main_appbar.dart';
 import 'package:cashbook/core/widgets/error/error_display.dart';
+import 'package:cashbook/features/history/presentation/page/history/history_bloc.dart';
 import 'package:cashbook/features/home/presentation/bloc/expense/expense_bloc.dart';
-import 'package:cashbook/features/home/presentation/bloc/expense_history/expense_history_bloc.dart';
 import 'package:cashbook/features/home/presentation/widgets/history_displayer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -17,46 +17,30 @@ class History extends StatefulWidget {
 }
 
 class _HistoryState extends State<History> {
-  // late Future<List<MainChartRow>> graphData;
   static int historyPageHistoryCount = 30;
   DateTime startDate = DateTime.now()
       .copyWith(day: 1, hour: 0, minute: 0, second: 0, millisecond: 0);
   DateTime endDate = DateTime.now()
-      .copyWith(day: 30, hour: 23, minute: 59, second: 59, millisecond: 999);
+      .copyWith(hour: 23, minute: 59, second: 59, millisecond: 999);
   TextEditingController searchController = TextEditingController();
+  late TextEditingController startDateController;
+  late TextEditingController endDateController;
 
-  // List<MainChartRow> _getChartData(List<Expense> expenses) {
-  //   if (expenses.isEmpty) {
-  //     return [];
-  //   }
-  //   if (expenses.length == 1) {
-  //     return [
-  //       MainChartRow(
-  //           value: 0,
-  //           date: DateFormat("d MMM").format(DateTime.now().copyWith(day: 1))),
-  //       MainChartRow(
-  //           value: expenses[0].amount,
-  //           date: DateFormat("d MMM").format(expenses[0].date))
-  //     ];
-  //   }
-  //   var data = <MainChartRow>[];
-  //   for (var x in expenses) {
-  //     data.add(MainChartRow(
-  //         value: x.amount, date: DateFormat("d MMM").format(x.date)));
-  //   }
-  //   return data;
-  // }
-
-  void _emitHistoryEvent(ExpenseHistoryBloc bloc) {
-    bloc.add(GetExpenseHistoryEvent(count: historyPageHistoryCount));
+  void _emitHistoryEvent(HistoryBloc bloc) {
+    bloc.add(GetHistoryEvent(count: historyPageHistoryCount));
   }
 
   @override
   void initState() {
     super.initState();
-    ExpenseHistoryBloc historyBloc = context.read<ExpenseHistoryBloc>();
+    startDateController =
+        TextEditingController(text: startDate.toIso8601String().split("T")[0]);
+    endDateController =
+        TextEditingController(text: endDate.toIso8601String().split("T")[0]);
+    HistoryBloc historyBloc = context.read<HistoryBloc>();
     _emitHistoryEvent(historyBloc);
-    historyBloc.stream.listen((event) {
+    ExpenseBloc expenseBloc = context.read<ExpenseBloc>();
+    expenseBloc.stream.listen((event) {
       if (event is ExpenseAdded) {
         _emitHistoryEvent(historyBloc);
       }
@@ -100,8 +84,9 @@ class _HistoryState extends State<History> {
                       child: TextField(
                         controller: searchController,
                         onChanged: (value) {
-                          // TODO : IMPLEMENT ON SEARCH
-                          // BlocProvider.of<ExpenseBloc>(context).add(SearchEvent(search: value));
+                          context
+                              .read<HistoryBloc>()
+                              .add(SearchHistoryEvent(query: value));
                         },
                         decoration: InputDecoration(
                             hintText: "Search",
@@ -133,9 +118,18 @@ class _HistoryState extends State<History> {
                                       lastDate: DateTime.now())
                                   .then((value) {
                                 if (value != null) {
-                                  setState(() {
-                                    startDate = value;
-                                  });
+                                  if (value != startDate) {
+                                    context.read<HistoryBloc>().add(
+                                        GetHistoryEvent(
+                                            count: 50,
+                                            startDate: value,
+                                            endDate: endDate));
+                                    setState(() {
+                                      startDate = value;
+                                      startDateController.text =
+                                          value.toIso8601String().split("T")[0];
+                                    });
+                                  }
                                 }
                                 FocusScope.of(context).unfocus();
                               });
@@ -143,6 +137,7 @@ class _HistoryState extends State<History> {
                             onTapOutside: (e) {
                               FocusScope.of(context).unfocus();
                             },
+                            controller: startDateController,
                             keyboardType: TextInputType.datetime,
                             decoration: InputDecoration(
                                 hintText: "Start Date",
@@ -165,12 +160,27 @@ class _HistoryState extends State<History> {
                               showDatePicker(
                                       context: context,
                                       firstDate: DateTime(1999),
-                                      lastDate: DateTime.now())
+                                      lastDate: DateTime.now(),
+                                      currentDate: endDate)
                                   .then((value) {
                                 if (value != null) {
-                                  setState(() {
-                                    startDate = value;
-                                  });
+                                  if (endDate != value) {
+                                    value = value.copyWith(
+                                        hour: 23,
+                                        minute: 59,
+                                        second: 59,
+                                        millisecond: 999);
+                                    context.read<HistoryBloc>().add(
+                                        GetHistoryEvent(
+                                            count: 50,
+                                            startDate: startDate,
+                                            endDate: value));
+                                    setState(() {
+                                      endDate = value!;
+                                      endDateController.text =
+                                          value.toIso8601String().split("T")[0];
+                                    });
+                                  }
                                 }
                                 FocusScope.of(context).unfocus();
                               });
@@ -178,9 +188,10 @@ class _HistoryState extends State<History> {
                             onTapOutside: (e) {
                               FocusScope.of(context).unfocus();
                             },
+                            controller: endDateController,
                             keyboardType: TextInputType.datetime,
                             decoration: InputDecoration(
-                                hintText: "Start Date",
+                                hintText: "End Date",
                                 hintStyle: TextStyle(
                                     fontSize: 12,
                                     color: Theme.of(context)
@@ -194,9 +205,9 @@ class _HistoryState extends State<History> {
                         ),
                       ],
                     ),
-                    BlocConsumer<ExpenseHistoryBloc, ExpenseHistoryState>(
+                    BlocConsumer<HistoryBloc, HistoryState>(
                         builder: (context, state) {
-                          if (state is ExpenseHistoryLoaded) {
+                          if (state is HistoryLoaded) {
                             if (state.expenses.isEmpty) {
                               return Padding(
                                 padding: const EdgeInsets.only(top: 10),
@@ -225,7 +236,7 @@ class _HistoryState extends State<History> {
                                 expenses: state.expenses,
                                 historyCount: historyPageHistoryCount);
                           }
-                          if (state is ExpenseHistoryError) {
+                          if (state is HistoryError) {
                             return ErrorDisplay(
                               title: "Error Occurred !",
                               description:

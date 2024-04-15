@@ -8,3 +8,4 @@ final class GetExpenseHistoryEvent extends ExpenseHistoryEvent {
 
   GetExpenseHistoryEvent({required this.count});
 }
+

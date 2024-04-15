@@ -1,5 +1,5 @@
 import 'package:cashbook/core/datasource/local/database.dart';
-import 'package:cashbook/features/home/data/models/tag_data.dart';
+import 'package:cashbook/data/models/tag_data.dart';
 import 'package:cashbook/objectbox.g.dart';
 
 @Entity()

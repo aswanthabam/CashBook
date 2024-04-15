@@ -1,5 +1,5 @@
 import 'package:bloc/bloc.dart';
-import 'package:cashbook/features/home/data/models/tag_data.dart';
+import 'package:cashbook/data/models/tag_data.dart';
 import 'package:cashbook/features/home/domain/uscases/tag_create_usecase.dart';
 import 'package:cashbook/features/home/domain/uscases/tag_list_usecase.dart';
 import 'package:meta/meta.dart';

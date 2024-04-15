@@ -1,7 +1,7 @@
 import 'package:cashbook/core/datasource/local/database.dart';
 import 'package:cashbook/core/exceptions/datasource_expensions.dart';
-import 'package:cashbook/features/home/data/models/expense.dart';
-import 'package:cashbook/features/home/data/models/tag_data.dart';
+import 'package:cashbook/data/models/expense.dart';
+import 'package:cashbook/data/models/tag_data.dart';
 import 'package:cashbook/objectbox.g.dart';
 
 abstract interface class ExpenseLocalDatasource {
@@ -24,8 +24,10 @@ abstract interface class ExpenseLocalDatasource {
     TagData? tag,
   });
 
-  List<Expense> getExpensesFilter(
-      {required int count, bool descending = false});
+  List<Expense> getExpensesFilter({required int count,
+    DateTime? startDate,
+    DateTime? endDate,
+    bool descending = false});
 
   double totalExpense();
 
@@ -36,6 +38,8 @@ abstract interface class ExpenseLocalDatasource {
       {required DateTime startDate,
       required DateTime endDate,
       bool descending = false});
+
+  List<Expense> searchExpense({required String query});
 }
 
 class ExpenseLocalDatasourceImplementation implements ExpenseLocalDatasource {
@@ -70,21 +74,33 @@ class ExpenseLocalDatasourceImplementation implements ExpenseLocalDatasource {
 
   @override
   Future<void> deleteExpense({required int id}) {
-    // TODO: implement deleteExpense
     throw UnimplementedError();
   }
 
   @override
-  List<Expense> getExpensesFilter(
-      {required int count, bool descending = false}) {
+  List<Expense> getExpensesFilter({required int count,
+    DateTime? startDate,
+    DateTime? endDate,
+    bool descending = false}) {
     try {
-      Query<Expense> query = database
-          .box<Expense>()
-          .query()
-          .order(Expense_.date, flags: descending ? 1 : 0)
-          .build();
-      query.limit = count;
-      return query.find();
+      Box<Expense> box = database.box<Expense>();
+      QueryBuilder<Expense> query;
+      if (startDate != null && endDate != null) {
+        query = box.query(Expense_.date.between(
+            startDate.millisecondsSinceEpoch, endDate.millisecondsSinceEpoch));
+      } else if (startDate != null) {
+        query = box
+            .query(Expense_.date.greaterThan(startDate.millisecondsSinceEpoch));
+      } else if (endDate != null) {
+        query =
+            box.query(Expense_.date.lessThan(endDate.millisecondsSinceEpoch));
+      } else {
+        query = box.query();
+      }
+      query.order(Expense_.date, flags: descending ? 1 : 0);
+      Query<Expense> qu = query.build();
+      qu.limit = -count;
+      return qu.find();
     } catch (e) {
       throw LocalDatabaseException(
           "Error getting expenses, an unexpected error occurred");
@@ -128,7 +144,10 @@ class ExpenseLocalDatasourceImplementation implements ExpenseLocalDatasource {
       DateTime? date,
       TagData? tag}) async {
     try {
-      Expense entity = database.box<Expense>().get(id);
+      Expense? entity = database.box<Expense>().get(id);
+      if (entity == null) {
+        throw LocalDatabaseException("Expense not found");
+      }
       if (title != null) {
         entity.title = title;
       }
@@ -166,6 +185,28 @@ class ExpenseLocalDatasourceImplementation implements ExpenseLocalDatasource {
     } catch (e) {
       throw LocalDatabaseException(
           "Error getting expenses, an unexpected error occurred");
+    }
+  }
+
+  @override
+  List<Expense> searchExpense({required String query}) {
+    try {
+      List<TagData> tags = database
+          .box<TagData>()
+          .query(TagData_.title.contains(query, caseSensitive: false))
+          .build()
+          .find();
+      print(tags);
+      Query<Expense> q = database
+          .box<Expense>()
+          .query(Expense_.title
+              .contains(query, caseSensitive: false)
+              .or(Expense_.description.contains(query, caseSensitive: false)))
+          .build();
+      return q.find();
+    } catch (e) {
+      throw LocalDatabaseException(
+          "Error searching expenses, an unexpected error occurred");
     }
   }
 }
