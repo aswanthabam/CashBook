@@ -1,10 +1,10 @@
 import 'package:bootstrap_icons/bootstrap_icons.dart';
+import 'package:cashbook/bloc/expense/expense_bloc.dart';
 import 'package:cashbook/core/theme/theme.dart';
 import 'package:cashbook/core/widgets/appbar/bottom_bar.dart';
 import 'package:cashbook/core/widgets/appbar/main_appbar.dart';
 import 'package:cashbook/core/widgets/error/error_display.dart';
 import 'package:cashbook/features/history/presentation/page/history/history_bloc.dart';
-import 'package:cashbook/features/home/presentation/bloc/expense/expense_bloc.dart';
 import 'package:cashbook/features/home/presentation/widgets/history_displayer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -115,7 +115,8 @@ class _HistoryState extends State<History> {
                               showDatePicker(
                                       context: context,
                                       firstDate: DateTime(1999),
-                                      lastDate: DateTime.now())
+                                      lastDate: DateTime.now(),
+                                      currentDate: startDate)
                                   .then((value) {
                                 if (value != null) {
                                   if (value != startDate) {

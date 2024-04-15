@@ -41,20 +41,39 @@ class _BottomBarState extends State<BottomBar> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      BottomBarButton(onPressed:() {
+                      BottomBarButton(
+                        onPressed: () {
                           Navigator.of(context).pushReplacementNamed('home');
-                        }, icon: BootstrapIcons.bank2, text: "Home",),
-                      BottomBarButton(onPressed:() {
+                        },
+                        icon: BootstrapIcons.bank2,
+                        text: "Home",
+                      ),
+                      BottomBarButton(
+                        onPressed: () {
                           Navigator.of(context).pushReplacementNamed('history');
-                        }, icon: BootstrapIcons.clock_history, text: "History",),
-                      SizedBox(width: width * 0.05,),
-                      BottomBarButton(onPressed:() {
-                        // TODO : IMPLEMENT ASSETS & LIABILITIES BUTTON
-                      }, icon: BootstrapIcons.currency_exchange, text: "Assets &\nLiabilities",),
-                      BottomBarButton(onPressed:() {
+                        },
+                        icon: BootstrapIcons.clock_history,
+                        text: "History",
+                      ),
+                      SizedBox(
+                        width: width * 0.05,
+                      ),
+                      BottomBarButton(
+                        onPressed: () {
+                          Navigator.of(context)
+                              .pushReplacementNamed('assets_liability');
+                        },
+                        icon: BootstrapIcons.currency_exchange,
+                        text: "Assets &\nLiabilities",
+                      ),
+                      BottomBarButton(
+                        onPressed: () {
                           Navigator.of(context)
                               .pushReplacementNamed('settings');
-                        }, icon: BootstrapIcons.gear_fill, text: "Settings",),
+                        },
+                        icon: BootstrapIcons.gear_fill,
+                        text: "Settings",
+                      ),
                     ],
                   ))),
           SizedBox(
@@ -93,10 +112,16 @@ class _BottomBarState extends State<BottomBar> {
 }
 
 class BottomBarButton extends StatelessWidget {
-  const BottomBarButton({super.key, required this.onPressed, required this.icon, required this.text});
+  const BottomBarButton(
+      {super.key,
+      required this.onPressed,
+      required this.icon,
+      required this.text});
+
   final VoidCallback onPressed;
   final IconData icon;
   final String text;
+
   @override
   Widget build(BuildContext context) {
     final double height = MediaQuery.of(context).size.height;
@@ -111,8 +136,7 @@ class BottomBarButton extends StatelessWidget {
             IconButton(
               padding: EdgeInsets.zero,
               onPressed: onPressed,
-              constraints:
-              BoxConstraints(maxHeight: height * 0.01),
+              constraints: BoxConstraints(maxHeight: height * 0.01),
               icon: Icon(
                 icon,
                 size: width * 0.05,
@@ -132,7 +156,9 @@ class BottomBarButton extends StatelessWidget {
                 fontSize: width * 0.025,
               ),
             ),
-            SizedBox(height: height * 0.015,),
+            SizedBox(
+              height: height * 0.015,
+            ),
           ],
         ),
       ),

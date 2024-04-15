@@ -1,8 +1,8 @@
 import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:cashbook/core/widgets/buttons/full_size_button.dart';
-import 'package:cashbook/features/home/presentation/page/add_asset_page.dart';
-import 'package:cashbook/features/home/presentation/page/add_expense_page.dart';
-import 'package:cashbook/features/home/presentation/page/add_liability_page.dart';
+import 'package:cashbook/features/create/presentation/pages/add_asset_page.dart';
+import 'package:cashbook/features/create/presentation/pages/add_expense_page.dart';
+import 'package:cashbook/features/create/presentation/pages/add_liability_page.dart';
 import 'package:flutter/material.dart';
 
 class AddEntityPopup extends StatefulWidget {
@@ -60,12 +60,7 @@ class _AddEntityPopupState extends State<AddEntityPopup> {
               onPressed: () {
                 Navigator.of(context).pop();
                 Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => AddAssetPage(
-                        heading: "Add Asset",
-                        onSubmit: () {
-                          // TODO : IMPLEMENT ADD ASSET
-                          return true;
-                        })));
+                    builder: (context) => AddAssetPage(heading: "Add Asset")));
               },
             ),
             SizedBox(

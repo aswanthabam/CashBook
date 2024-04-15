@@ -1,4 +1,5 @@
 import 'package:bootstrap_icons/bootstrap_icons.dart';
+import 'package:cashbook/bloc/expense/expense_bloc.dart';
 import 'package:cashbook/core/theme/theme.dart';
 import 'package:cashbook/core/widgets/appbar/bottom_bar.dart';
 import 'package:cashbook/core/widgets/appbar/main_appbar.dart';
@@ -6,7 +7,6 @@ import 'package:cashbook/core/widgets/buttons/add_button.dart';
 import 'package:cashbook/core/widgets/buttons/icon_button.dart';
 import 'package:cashbook/core/widgets/error/error_display.dart';
 import 'package:cashbook/data/models/expense.dart';
-import 'package:cashbook/features/home/presentation/bloc/expense/expense_bloc.dart';
 import 'package:cashbook/features/home/presentation/bloc/expense_history/expense_history_bloc.dart';
 import 'package:cashbook/features/home/presentation/widgets/add_entity/add_entity_popup.dart';
 import 'package:cashbook/features/home/presentation/widgets/charts/main_chart.dart';

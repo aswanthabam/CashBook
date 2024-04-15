@@ -1,6 +1,6 @@
 import 'package:cashbook/core/types/reponse_types.dart';
 import 'package:cashbook/core/usecase/usecase.dart';
-import 'package:cashbook/features/home/domain/repositories/tag_repository.dart';
+import 'package:cashbook/domain/repositories/tag_repository.dart';
 import 'package:fpdart/src/either.dart';
 
 class TagCreateUseCase implements UseCase<bool, Failure, TagCreateParams> {

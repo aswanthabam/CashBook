@@ -1,24 +1,31 @@
+import 'package:cashbook/bloc/expense/expense_bloc.dart';
+import 'package:cashbook/bloc/tag/tag_bloc.dart';
 import 'package:cashbook/core/bloc/theme/theme_bloc.dart';
 import 'package:cashbook/core/datasource/local/database.dart';
 import 'package:cashbook/core/theme/theme.dart';
+import 'package:cashbook/data/datasource/asset_local_datasource.dart';
 import 'package:cashbook/data/datasource/expense_local_datasource.dart';
 import 'package:cashbook/data/datasource/tag_local_database.dart';
+import 'package:cashbook/data/repository/assets_repository_implementation.dart';
 import 'package:cashbook/data/repository/expense_history_implementation.dart';
 import 'package:cashbook/data/repository/expense_repository_implementation.dart';
 import 'package:cashbook/data/repository/tag_repository_implementation.dart';
+import 'package:cashbook/features/assets_liability/domain/usecases/assets_list_usecase.dart';
+import 'package:cashbook/features/assets_liability/presentation/bloc/assets_list_bloc.dart';
+import 'package:cashbook/features/assets_liability/presentation/pages/assets_liability.dart';
+import 'package:cashbook/features/create/domain/usecases/create_asset_usecase.dart';
+import 'package:cashbook/features/create/domain/usecases/expense_add_usecase.dart';
+import 'package:cashbook/features/create/domain/usecases/expense_edit_usecase.dart';
+import 'package:cashbook/features/create/domain/usecases/tag_create_usecase.dart';
+import 'package:cashbook/features/create/presentation/bloc/assets/assets_bloc.dart';
 import 'package:cashbook/features/history/data/repository/search_repository_implementation.dart';
 import 'package:cashbook/features/history/domain/usecase/SearchUsecase.dart';
 import 'package:cashbook/features/history/presentation/page/history.dart';
 import 'package:cashbook/features/history/presentation/page/history/history_bloc.dart';
-import 'package:cashbook/features/home/domain/uscases/expense_add_usecase.dart';
-import 'package:cashbook/features/home/domain/uscases/expense_edit_usecase.dart';
 import 'package:cashbook/features/home/domain/uscases/expense_history_usecase.dart';
 import 'package:cashbook/features/home/domain/uscases/expense_total_data_usecase.dart';
-import 'package:cashbook/features/home/domain/uscases/tag_create_usecase.dart';
 import 'package:cashbook/features/home/domain/uscases/tag_list_usecase.dart';
-import 'package:cashbook/features/home/presentation/bloc/expense/expense_bloc.dart';
 import 'package:cashbook/features/home/presentation/bloc/expense_history/expense_history_bloc.dart';
-import 'package:cashbook/features/home/presentation/bloc/tag/tag_bloc.dart';
 import 'package:cashbook/features/home/presentation/page/home.dart';
 import 'package:cashbook/features/settings/presentation/page/settings.dart';
 import 'package:cashbook/features/splash_screen/presentation/splash_screen.dart';
@@ -30,6 +37,24 @@ Future<void> main() async {
   AppDatabase database = await AppDatabase.create();
   runApp(MultiBlocProvider(
     providers: [
+      BlocProvider<AssetsListBloc>(
+        create: (context) => AssetsListBloc(
+            assetsListUseCase: AssetsListUseCase(
+          repository: AssetsRepositoryImplementation(
+            assetsDataSource:
+                AssetLocalDataSourceImplementation(database: database),
+          ),
+        )),
+      ),
+      BlocProvider<AssetsBloc>(
+          create: (context) => AssetsBloc(
+                assetCreateUseCase: CreateAssetUseCase(
+                  repository: AssetsRepositoryImplementation(
+                    assetsDataSource:
+                        AssetLocalDataSourceImplementation(database: database),
+                  ),
+                ),
+              )),
       BlocProvider<HistoryBloc>(
         create: (context) => HistoryBloc(
           expenseHistoryUseCase: ExpenseHistoryUseCase(
@@ -96,7 +121,8 @@ Future<void> main() async {
             'home': (context) => const Home(),
             'splash_screen': (context) => const SplashScreen(),
             'settings': (context) => const Settings(),
-            'history': (context) => const History()
+            'history': (context) => const History(),
+            'assets_liability': (context) => const AssetsLiabilityPage(),
           },
           initialRoute: "splash_screen",
           theme: AppTheme.lightTheme,

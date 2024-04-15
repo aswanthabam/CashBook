@@ -1,23 +1,20 @@
 import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:cashbook/core/theme/theme.dart';
+import 'package:cashbook/features/create/presentation/bloc/assets/assets_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AddAssetPage extends StatefulWidget {
   const AddAssetPage({
-    super.key,
-    required this.heading,
-    required this.onSubmit,
-  });
+    super.key, required this.heading});
 
   final String heading;
-  final bool Function() onSubmit;
 
   @override
   State<AddAssetPage> createState() => _AddAssetPageState();
 }
 
 class _AddAssetPageState extends State<AddAssetPage> {
-
   TextEditingController titleController = TextEditingController();
   TextEditingController worthController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
@@ -130,7 +127,12 @@ class _AddAssetPageState extends State<AddAssetPage> {
                           .primary,
                     ),
                     onPressed: () {
-                      // TODO : IMPLEMENT ADD ASSET
+                      context.read<AssetsBloc>().add(CreateAssetEvent(
+                          title: titleController.text,
+                          worth: double.parse(worthController.text),
+                          description: descriptionController.text,
+                          date: DateTime.now(),
+                          tag: null));
                     },
                     child: Text(
                       "Add Asset",

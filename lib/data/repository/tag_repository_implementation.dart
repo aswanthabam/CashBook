@@ -1,6 +1,6 @@
 import 'package:cashbook/data/datasource/tag_local_database.dart';
 import 'package:cashbook/data/models/tag_data.dart';
-import 'package:cashbook/features/home/domain/repositories/tag_repository.dart';
+import 'package:cashbook/domain/repositories/tag_repository.dart';
 
 class TagRepositoryImplementation implements TagRepository {
   TagLocalDatabaseImplementation tagLocalDatabaseImplementation;

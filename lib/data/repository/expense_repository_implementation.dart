@@ -1,6 +1,6 @@
 import 'package:cashbook/data/datasource/expense_local_datasource.dart';
 import 'package:cashbook/data/models/expense.dart';
-import 'package:cashbook/features/home/domain/repositories/expense_repository.dart';
+import 'package:cashbook/domain/repositories/expense_repository.dart';
 
 import '../models/tag_data.dart';
 

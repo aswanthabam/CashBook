@@ -2,7 +2,7 @@ import 'package:cashbook/core/exceptions/datasource_expensions.dart';
 import 'package:cashbook/core/types/reponse_types.dart';
 import 'package:cashbook/core/usecase/usecase.dart';
 import 'package:cashbook/data/models/expense.dart';
-import 'package:cashbook/features/home/domain/repositories/expense_repository.dart';
+import 'package:cashbook/domain/repositories/expense_repository.dart';
 import 'package:fpdart/src/either.dart';
 
 class ExpenseTotalDataUseCase

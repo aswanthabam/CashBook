@@ -1,4 +1,4 @@
-part of 'expense_bloc.dart';
+part of '../../../../../bloc/expense/expense_bloc.dart';
 
 @immutable
 sealed class ExpenseState {}
