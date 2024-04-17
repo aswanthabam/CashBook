@@ -1,12 +1,16 @@
 import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:cashbook/core/theme/theme.dart';
+import 'package:cashbook/data/models/tag_data.dart';
 import 'package:cashbook/features/create/presentation/bloc/assets/assets_bloc.dart';
+import 'package:cashbook/features/create/presentation/pages/create_tag_page.dart';
+import 'package:cashbook/features/home/presentation/widgets/add_entity/add_tag.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_iconpicker/flutter_iconpicker.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class AddAssetPage extends StatefulWidget {
-  const AddAssetPage({
-    super.key, required this.heading});
+  const AddAssetPage({super.key, required this.heading});
 
   final String heading;
 
@@ -18,6 +22,21 @@ class _AddAssetPageState extends State<AddAssetPage> {
   TextEditingController titleController = TextEditingController();
   TextEditingController worthController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
+  TagData? tag;
+
+  @override
+  void initState() {
+    super.initState();
+    AssetsBloc bloc = context.read<AssetsBloc>();
+    bloc.stream.listen((event) {
+      if (event is AssetCreated) {
+        Fluttertoast.showToast(msg: "Successfully added asset!");
+        Navigator.of(context).pop();
+      } else if (event is AssetsCreationError) {
+        Fluttertoast.showToast(msg: event.message);
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -109,6 +128,66 @@ class _AddAssetPageState extends State<AddAssetPage> {
                                         .extension<AppColorsExtension>()!
                                         .primary))),
                       ),
+                      SizedBox(
+                        height: height * 0.025,
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          showDialog(
+                              context: context,
+                              builder: (context) => AddTag(
+                                  tag: tag,
+                                  onAddTag: (selectedTag) {
+                                    setState(() {
+                                      tag = selectedTag;
+                                    });
+                                    Navigator.of(context).pop();
+                                  },
+                                  onCreateTag: () {
+                                    Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                const CreateTagPage(
+                                                    heading:
+                                                        "Create new Tag")));
+                                  }));
+                        },
+                        child: Row(
+                          children: [
+                            Container(
+                              width: width * 0.1,
+                              height: width * 0.1,
+                              decoration: BoxDecoration(
+                                color: Colors.blue,
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              child: Center(
+                                child: Icon(tag != null
+                                    ? deserializeIcon(
+                                        {"key": tag!.icon, "pack": "material"},
+                                        iconPack: IconPack.allMaterial)
+                                    : Icons.bookmark),
+                              ),
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            const Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Add a Tag",
+                                  style: TextStyle(fontSize: 15),
+                                ),
+                                Text(
+                                  "Add a tag for classifying your assets.",
+                                  style: TextStyle(fontSize: 10),
+                                )
+                              ],
+                            ),
+                          ],
+                        ),
+                      )
                     ],
                   ),
                 )
@@ -132,7 +211,7 @@ class _AddAssetPageState extends State<AddAssetPage> {
                           worth: double.parse(worthController.text),
                           description: descriptionController.text,
                           date: DateTime.now(),
-                          tag: null));
+                          tag: tag));
                     },
                     child: Text(
                       "Add Asset",

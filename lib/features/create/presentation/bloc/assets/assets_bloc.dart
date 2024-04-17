@@ -14,13 +14,14 @@ class AssetsBloc extends Bloc<AssetsEvent, AssetsState> {
       : _assetCreateUseCase = assetCreateUseCase,
         super(AssetsInitial()) {
     on<CreateAssetEvent>((event, emit) {
-      _assetCreateUseCase(Asset(
-              id: 0,
-              title: event.title,
-              worth: event.worth,
-              description: event.description,
-              date: event.date))
-          .then((value) {
+      var asset = Asset(
+          id: 0,
+          title: event.title,
+          worth: event.worth,
+          description: event.description,
+          date: event.date);
+      asset.tag.target = event.tag;
+      _assetCreateUseCase(asset).then((value) {
         value.fold(
           (success) {
             emit(AssetCreated());
