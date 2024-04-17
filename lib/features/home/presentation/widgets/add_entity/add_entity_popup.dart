@@ -73,12 +73,7 @@ class _AddEntityPopupState extends State<AddEntityPopup> {
               onPressed: () {
                 Navigator.of(context).pop();
                 Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => AddLiabilityPage(
-                        heading: "Add Liability",
-                        onSubmit: () {
-                          // TODO : IMPLEMENT ADD ASSET
-                          return true;
-                        })));
+                    builder: (context) => AddLiabilityPage(heading: "Add Liability")));
               },
             ),
           ],
