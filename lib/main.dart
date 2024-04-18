@@ -13,7 +13,9 @@ import 'package:cashbook/data/repository/expense_repository_implementation.dart'
 import 'package:cashbook/data/repository/liability_repository_implementation.dart';
 import 'package:cashbook/data/repository/tag_repository_implementation.dart';
 import 'package:cashbook/features/assets_liability/domain/usecases/assets_list_usecase.dart';
-import 'package:cashbook/features/assets_liability/presentation/bloc/assets_list_bloc.dart';
+import 'package:cashbook/features/assets_liability/domain/usecases/liability_list_usecase.dart';
+import 'package:cashbook/features/assets_liability/presentation/bloc/assets/assets_list_bloc.dart';
+import 'package:cashbook/features/assets_liability/presentation/bloc/liability/liability_list_bloc.dart';
 import 'package:cashbook/features/assets_liability/presentation/pages/assets_liability.dart';
 import 'package:cashbook/features/create/domain/usecases/create_asset_usecase.dart';
 import 'package:cashbook/features/create/domain/usecases/create_liability_usecase.dart';
@@ -41,6 +43,15 @@ Future<void> main() async {
   AppDatabase database = await AppDatabase.create();
   runApp(MultiBlocProvider(
     providers: [
+      BlocProvider<LiabilityListBloc>(
+        create: (context) => LiabilityListBloc(
+            liabilityListUseCase: LiabilityListUseCase(
+          repository: LiabilityRepositoryImplementation(
+            datasource:
+                LiabilityLocalDataSourceImplementation(database: database),
+          ),
+        )),
+      ),
       BlocProvider<LiabilityBloc>(
         create: (context) => LiabilityBloc(
             createLiabilityUseCase: CreateLiabilityUseCase(

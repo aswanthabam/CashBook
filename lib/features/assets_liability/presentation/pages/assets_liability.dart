@@ -1,9 +1,12 @@
 import 'package:cashbook/core/widgets/appbar/bottom_bar.dart';
 import 'package:cashbook/core/widgets/appbar/main_appbar.dart';
 import 'package:cashbook/core/widgets/error/error_display.dart';
-import 'package:cashbook/features/assets_liability/presentation/bloc/assets_list_bloc.dart';
+import 'package:cashbook/features/assets_liability/presentation/bloc/assets/assets_list_bloc.dart';
+import 'package:cashbook/features/assets_liability/presentation/bloc/liability/liability_list_bloc.dart';
 import 'package:cashbook/features/assets_liability/presentation/widgets/assets_displayer.dart';
+import 'package:cashbook/features/assets_liability/presentation/widgets/liability_displayer.dart';
 import 'package:cashbook/features/create/presentation/bloc/assets/assets_bloc.dart';
+import 'package:cashbook/features/create/presentation/bloc/liability/liability_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -19,13 +22,23 @@ class _AssetsLiabilityPageState extends State<AssetsLiabilityPage> {
   @override
   void initState() {
     super.initState();
-    AssetsListBloc bloc = context.read<AssetsListBloc>();
-    bloc.add(GetAssetsListEvent());
-    bloc.stream.listen((event) {
+    AssetsListBloc assetsBloc = context.read<AssetsListBloc>();
+    LiabilityListBloc liabilityBloc = context.read<LiabilityListBloc>();
+    assetsBloc.add(GetAssetsListEvent());
+    assetsBloc.stream.listen((event) {
       if (event is AssetCreated) {
-        bloc.add(GetAssetsListEvent());
+        assetsBloc.add(GetAssetsListEvent());
       }
       if (event is AssetsListError) {
+        Fluttertoast.showToast(msg: event.message);
+      }
+    });
+    liabilityBloc.add(GetLiabilitiesEvent(includeFinished: true, count: 10));
+    liabilityBloc.stream.listen((event) {
+      if (event is LiabilityCreated) {
+        liabilityBloc.add(GetLiabilitiesEvent());
+      }
+      if (event is LiabilityListError) {
         Fluttertoast.showToast(msg: event.message);
       }
     });
@@ -70,6 +83,36 @@ class _AssetsLiabilityPageState extends State<AssetsLiabilityPage> {
                     }
                     return const ErrorDisplay(
                       title: 'No Assets Added',
+                      description: 'Try adding a new asset you own.',
+                      icon: Icons.not_interested_outlined,
+                    );
+                  },
+                ),
+                const Padding(
+                  padding: EdgeInsets.only(left: 8),
+                  child: Text(
+                    "Your Liabilities",
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                  ),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                BlocConsumer<LiabilityListBloc, LiabilityListState>(
+                  listener: (context, state) {
+                    if (state is LiabilityListError) {
+                      Fluttertoast.showToast(msg: state.message);
+                    }
+                  },
+                  builder: (context, state) {
+                    if (state is LiabilityListLoaded) {
+                      return LiabilityDisplayer(
+                        liabilities: state.liabilities,
+                        assetsCount: state.liabilities.length,
+                      );
+                    }
+                    return const ErrorDisplay(
+                      title: 'No Liabilities Added',
                       description: 'Try adding a new asset you own.',
                       icon: Icons.not_interested_outlined,
                     );
