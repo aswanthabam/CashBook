@@ -43,5 +43,5 @@ class AppDatabase {
     _store?.close();
   }
 
-  get box => _store!.box;
+  Box<T> Function<T>() get box => _store!.box;
 }
