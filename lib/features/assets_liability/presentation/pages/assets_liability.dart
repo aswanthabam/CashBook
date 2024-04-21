@@ -22,22 +22,34 @@ class _AssetsLiabilityPageState extends State<AssetsLiabilityPage> {
   @override
   void initState() {
     super.initState();
-    AssetsListBloc assetsBloc = context.read<AssetsListBloc>();
-    LiabilityListBloc liabilityBloc = context.read<LiabilityListBloc>();
-    assetsBloc.add(GetAssetsListEvent());
+    AssetsListBloc assetsListBloc = context.read<AssetsListBloc>();
+    AssetsBloc assetsBloc = context.read<AssetsBloc>();
+
+    LiabilityListBloc liabilityListBloc = context.read<LiabilityListBloc>();
+    LiabilityBloc liabilityBloc = context.read<LiabilityBloc>();
+
+    assetsListBloc.add(GetAssetsListEvent());
     assetsBloc.stream.listen((event) {
       if (event is AssetCreated) {
-        assetsBloc.add(GetAssetsListEvent());
+        assetsListBloc.add(GetAssetsListEvent());
       }
+    });
+
+    assetsListBloc.stream.listen((event) {
       if (event is AssetsListError) {
         Fluttertoast.showToast(msg: event.message);
       }
     });
-    liabilityBloc.add(GetLiabilitiesEvent(includeFinished: true, count: 10));
+
+    liabilityListBloc
+        .add(GetLiabilitiesEvent(includeFinished: true, count: 10));
     liabilityBloc.stream.listen((event) {
       if (event is LiabilityCreated) {
-        liabilityBloc.add(GetLiabilitiesEvent());
+        liabilityListBloc.add(GetLiabilitiesEvent());
       }
+    });
+
+    liabilityListBloc.stream.listen((event) {
       if (event is LiabilityListError) {
         Fluttertoast.showToast(msg: event.message);
       }
@@ -106,6 +118,7 @@ class _AssetsLiabilityPageState extends State<AssetsLiabilityPage> {
                   },
                   builder: (context, state) {
                     if (state is LiabilityListLoaded) {
+                      print(state.liabilities.length);
                       return LiabilityDisplayer(
                         liabilities: state.liabilities,
                         assetsCount: state.liabilities.length,

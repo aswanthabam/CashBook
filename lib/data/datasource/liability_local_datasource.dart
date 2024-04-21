@@ -31,10 +31,11 @@ class LiabilityLocalDataSourceImplementation
     Box<Liability> box = database.box<Liability>();
     QueryBuilder<Liability> query;
     if (!includeFinished) {
-      query = box.query(Liability_.remaining.lessOrEqual(0));
+      query = box.query(Liability_.remaining.greaterThan(0));
     } else {
       query = box.query();
     }
+    print("HERREEEE");
     Query<Liability> qu = query.build();
     if (count != null) {
       qu.limit = count;
