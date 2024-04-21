@@ -8,12 +8,14 @@ final class CreateAssetEvent extends AssetsEvent {
   final double worth;
   final String description;
   final DateTime date;
-  final TagData? tag;
+  final String? icon;
+  final int color;
 
   CreateAssetEvent(
       {required this.title,
       required this.worth,
       required this.description,
       required this.date,
-      required this.tag});
+      required this.icon,
+      this.color = 0xff0000ff});
 }

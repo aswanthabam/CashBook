@@ -1,4 +1,3 @@
-import 'package:cashbook/data/models/tag_data.dart';
 import 'package:objectbox/objectbox.dart';
 
 @Entity()
@@ -8,19 +7,22 @@ class Asset {
   String title;
   double worth;
   String? description;
-  ToOne<TagData> tag = ToOne<TagData>();
+  String? icon;
   @Property(type: PropertyType.date)
   DateTime date = DateTime.now();
+  int color;
 
-  Asset({
-    required this.id,
-    required this.title,
-    required this.worth,
-    required this.description,
-      required this.date});
+  Asset(
+      {required this.id,
+      required this.title,
+      required this.worth,
+      required this.description,
+      required this.date,
+      required this.icon,
+      required this.color});
 
   @override
   String toString() {
-    return 'Asset{id: $id, title: $title, worth: $worth, description: $description, tags: $tag, date: $date}';
+    return 'Asset{id: $id, title: $title, worth: $worth, description: $description,icon: $icon, date: $date}';
   }
 }

@@ -71,7 +71,7 @@ class _AssetsLiabilityPageState extends State<AssetsLiabilityPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Padding(
-                  padding: EdgeInsets.only(left: 8),
+                  padding: EdgeInsets.only(left: 8, bottom: 10),
                   child: Text(
                     "Your Assets",
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
@@ -88,20 +88,29 @@ class _AssetsLiabilityPageState extends State<AssetsLiabilityPage> {
                   },
                   builder: (context, state) {
                     if (state is AssetsListLoaded) {
-                      return AssetsDisplayer(
-                        assets: state.assets,
-                        assetsCount: state.assets.length,
+                      if (state.assets.isNotEmpty) {
+                        return AssetsDisplayer(
+                          assets: state.assets,
+                          assetsCount: state.assets.length,
+                        );
+                      }
+                      return const ErrorDisplay(
+                        title: 'No Assets Added',
+                        description: 'Try adding a new asset you own.',
+                        icon: Icons.not_interested_outlined,
                       );
                     }
-                    return const ErrorDisplay(
-                      title: 'No Assets Added',
-                      description: 'Try adding a new asset you own.',
-                      icon: Icons.not_interested_outlined,
+                    return ErrorDisplay(
+                      mainColor: Colors.red.withAlpha(200),
+                      title: 'An Error Occurred',
+                      description:
+                          'An unexpected error occurred while fetching assets.',
+                      icon: Icons.bug_report_outlined,
                     );
                   },
                 ),
                 const Padding(
-                  padding: EdgeInsets.only(left: 8),
+                  padding: EdgeInsets.only(left: 8, top: 20, bottom: 10),
                   child: Text(
                     "Your Liabilities",
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
@@ -118,16 +127,24 @@ class _AssetsLiabilityPageState extends State<AssetsLiabilityPage> {
                   },
                   builder: (context, state) {
                     if (state is LiabilityListLoaded) {
-                      print(state.liabilities.length);
-                      return LiabilityDisplayer(
-                        liabilities: state.liabilities,
-                        assetsCount: state.liabilities.length,
+                      if (state.liabilities.isNotEmpty) {
+                        return LiabilityDisplayer(
+                          liabilities: state.liabilities,
+                          assetsCount: state.liabilities.length,
+                        );
+                      }
+                      return const ErrorDisplay(
+                        title: 'No Liabilities Added',
+                        description: 'Try adding a new asset you own.',
+                        icon: Icons.not_interested_outlined,
                       );
                     }
-                    return const ErrorDisplay(
-                      title: 'No Liabilities Added',
-                      description: 'Try adding a new asset you own.',
-                      icon: Icons.not_interested_outlined,
+                    return ErrorDisplay(
+                      mainColor: Colors.red.withAlpha(200),
+                      title: 'An Error Occurred',
+                      description:
+                          'An unexpected error occurred while fetching liabilities.',
+                      icon: Icons.bug_report_outlined,
                     );
                   },
                 ),

@@ -1,9 +1,7 @@
 import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:cashbook/core/theme/theme.dart';
-import 'package:cashbook/data/models/tag_data.dart';
 import 'package:cashbook/features/create/presentation/bloc/assets/assets_bloc.dart';
-import 'package:cashbook/features/create/presentation/pages/create_tag_page.dart';
-import 'package:cashbook/features/home/presentation/widgets/add_entity/add_tag.dart';
+import 'package:flex_color_picker/flex_color_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_iconpicker/flutter_iconpicker.dart';
@@ -22,7 +20,8 @@ class _AddAssetPageState extends State<AddAssetPage> {
   TextEditingController titleController = TextEditingController();
   TextEditingController worthController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
-  TagData? tag;
+  String? icon;
+  int color = 0xff0000ff;
 
   @override
   void initState() {
@@ -43,186 +42,236 @@ class _AddAssetPageState extends State<AddAssetPage> {
     final double height = MediaQuery.of(context).size.height;
     final double width = MediaQuery.of(context).size.width;
     return Scaffold(
-      body: SizedBox(
-        width: width,
-        height: height + MediaQuery.of(context).padding.top,
-        child: Stack(
+      body: SingleChildScrollView(
+        child: Column(
           children: [
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                AppBar(
-                  iconTheme: IconThemeData(
-                    color: Theme.of(context)
-                        .extension<AppColorsExtension>()!
-                        .black,
-                  ),
-                  backgroundColor: Theme.of(context)
-                      .extension<AppColorsExtension>()!
-                      .red
-                      .withAlpha(0),
-                  title: Text(widget.heading),
-                ),
-                Padding(
-                  padding: EdgeInsets.all(width * 0.05),
-                  child: Column(
+            SizedBox(
+              width: width,
+              height: height,
+              child: Stack(
+                children: [
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                          "Add an asset by adding the title or name of asset and worth of the asset."),
-                      SizedBox(
-                        height: height * 0.01,
+                      AppBar(
+                        iconTheme: IconThemeData(
+                          color: Theme.of(context)
+                              .extension<AppColorsExtension>()!
+                              .black,
+                        ),
+                        backgroundColor: Theme.of(context)
+                            .extension<AppColorsExtension>()!
+                            .red
+                            .withAlpha(0),
+                        title: Text(widget.heading),
                       ),
-                      TextField(
-                        onTapOutside: (e) {
-                          FocusScope.of(context).unfocus();
-                        },
-                        controller: titleController,
-                        decoration: InputDecoration(
-                            hintText: "Asset Title *",
-                            focusedBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                    width: 1.5,
-                                    color: Theme.of(context)
-                                        .extension<AppColorsExtension>()!
-                                        .primary))),
-                      ),
-                      SizedBox(
-                        height: height * 0.03,
-                      ),
-                      TextField(
-                        onTapOutside: (e) {
-                          FocusScope.of(context).unfocus();
-                        },
-                        controller: worthController,
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                            suffixIcon:
-                                const Icon(BootstrapIcons.currency_rupee),
-                            hintText: "Worth of Asset *",
-                            focusedBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                    width: 1.5,
-                                    color: Theme.of(context)
-                                        .extension<AppColorsExtension>()!
-                                        .primary))),
-                      ),
-                      SizedBox(
-                        height: height * 0.03,
-                      ),
-                      TextField(
-                        onTapOutside: (e) {
-                          FocusScope.of(context).unfocus();
-                        },
-                        controller: descriptionController,
-                        autocorrect: true,
-                        maxLines: 5,
-                        keyboardType: TextInputType.multiline,
-                        decoration: InputDecoration(
-                            hintText: "Description",
-                            focusedBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                    width: 1.5,
-                                    color: Theme.of(context)
-                                        .extension<AppColorsExtension>()!
-                                        .primary))),
-                      ),
-                      SizedBox(
-                        height: height * 0.025,
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          showDialog(
-                              context: context,
-                              builder: (context) => AddTag(
-                                  tag: tag,
-                                  onAddTag: (selectedTag) {
-                                    setState(() {
-                                      tag = selectedTag;
-                                    });
-                                    Navigator.of(context).pop();
-                                  },
-                                  onCreateTag: () {
-                                    Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                const CreateTagPage(
-                                                    heading:
-                                                        "Create new Tag")));
-                                  }));
-                        },
-                        child: Row(
+                      Padding(
+                        padding: EdgeInsets.all(width * 0.05),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Container(
-                              width: width * 0.1,
-                              height: width * 0.1,
-                              decoration: BoxDecoration(
-                                color: Colors.blue,
-                                borderRadius: BorderRadius.circular(5),
+                            const Text(
+                                "Add an asset by adding the title or name of asset and worth of the asset."),
+                            SizedBox(
+                              height: height * 0.01,
+                            ),
+                            TextField(
+                              onTapOutside: (e) {
+                                FocusScope.of(context).unfocus();
+                              },
+                              controller: titleController,
+                              decoration: InputDecoration(
+                                  hintText: "Asset Title *",
+                                  focusedBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                          width: 1.5,
+                                          color: Theme.of(context)
+                                              .extension<AppColorsExtension>()!
+                                              .primary))),
+                            ),
+                            SizedBox(
+                              height: height * 0.03,
+                            ),
+                            TextField(
+                              onTapOutside: (e) {
+                                FocusScope.of(context).unfocus();
+                              },
+                              controller: worthController,
+                              keyboardType: TextInputType.number,
+                              decoration: InputDecoration(
+                                  suffixIcon:
+                                      const Icon(BootstrapIcons.currency_rupee),
+                                  hintText: "Worth of Asset *",
+                                  focusedBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                          width: 1.5,
+                                          color: Theme.of(context)
+                                              .extension<AppColorsExtension>()!
+                                              .primary))),
+                            ),
+                            SizedBox(
+                              height: height * 0.03,
+                            ),
+                            TextField(
+                              onTapOutside: (e) {
+                                FocusScope.of(context).unfocus();
+                              },
+                              controller: descriptionController,
+                              autocorrect: true,
+                              maxLines: 5,
+                              keyboardType: TextInputType.multiline,
+                              decoration: InputDecoration(
+                                  hintText: "Description",
+                                  focusedBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                          width: 1.5,
+                                          color: Theme.of(context)
+                                              .extension<AppColorsExtension>()!
+                                              .primary))),
+                            ),
+                            SizedBox(
+                              height: height * 0.025,
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                showColorPickerDialog(context, Color(color))
+                                    .then((value) {
+                                  if (value.value != color) {
+                                    setState(() {
+                                      color = value.value;
+                                    });
+                                  }
+                                });
+                              },
+                              child: Row(
+                                children: [
+                                  Container(
+                                    width: width * 0.1,
+                                    height: width * 0.1,
+                                    decoration: BoxDecoration(
+                                      color: Color(color),
+                                      borderRadius: BorderRadius.circular(5),
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  const Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "Set a color",
+                                        style: TextStyle(fontSize: 15),
+                                      ),
+                                      Text(
+                                        "Set a color for your asset for better visibility.",
+                                        style: TextStyle(fontSize: 10),
+                                      )
+                                    ],
+                                  ),
+                                ],
                               ),
-                              child: Center(
-                                child: Icon(tag != null
-                                    ? deserializeIcon(
-                                        {"key": tag!.icon, "pack": "material"},
-                                        iconPack: IconPack.allMaterial)
-                                    : Icons.bookmark),
+                            ),
+                            SizedBox(
+                              height: height * 0.025,
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                showIconPicker(context,
+                                    iconColor: Color(color),
+                                    iconSize: 30,
+                                    iconPackModes: const [
+                                      IconPack.allMaterial
+                                    ]).then((value) {
+                                  if (value != null) {
+                                    setState(() {
+                                      icon = serializeIcon(value,
+                                          iconPack:
+                                              IconPack.allMaterial)!["key"];
+                                    });
+                                  }
+                                });
+                              },
+                              child: Row(
+                                children: [
+                                  Container(
+                                    width: width * 0.1,
+                                    height: width * 0.1,
+                                    decoration: BoxDecoration(
+                                      color: Color(color),
+                                      borderRadius: BorderRadius.circular(5),
+                                    ),
+                                    child: Center(
+                                      child: Icon(icon != null
+                                          ? deserializeIcon(
+                                              {"key": icon, "pack": "material"},
+                                              iconPack: IconPack.allMaterial)
+                                          : Icons.business_sharp),
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  const Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "Add an Icon",
+                                        style: TextStyle(fontSize: 15),
+                                      ),
+                                      Text(
+                                        "Add an icon for your asset for better visibility.",
+                                        style: TextStyle(fontSize: 10),
+                                      )
+                                    ],
+                                  ),
+                                ],
                               ),
-                            ),
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            const Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "Add a Tag",
-                                  style: TextStyle(fontSize: 15),
-                                ),
-                                Text(
-                                  "Add a tag for classifying your assets.",
-                                  style: TextStyle(fontSize: 10),
-                                )
-                              ],
-                            ),
+                            )
                           ],
                         ),
                       )
                     ],
                   ),
-                )
-              ],
+                  Positioned(
+                      bottom: 0,
+                      width: width,
+                      height: height * 0.05 + width * 0.1,
+                      child: Padding(
+                        padding: EdgeInsets.all(width * 0.05),
+                        child: ElevatedButton(
+                          style: TextButton.styleFrom(
+                            backgroundColor: Theme.of(context)
+                                .extension<AppColorsExtension>()!
+                                .primary,
+                          ),
+                          onPressed: () {
+                            context.read<AssetsBloc>().add(
+                                  CreateAssetEvent(
+                                      title: titleController.text,
+                                      worth: double.parse(worthController.text),
+                                      description: descriptionController.text,
+                                      date: DateTime.now(),
+                                      icon: icon,
+                                      color: color),
+                                );
+                          },
+                          child: Text(
+                            "Add Asset",
+                            style: TextStyle(
+                                color: Theme.of(context)
+                                    .extension<AppColorsExtension>()!
+                                    .primaryLightTextColor,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ))
+                ],
+              ),
             ),
-            Positioned(
-                bottom: 0,
-                width: width,
-                height: height * 0.05 + width * 0.1,
-                child: Padding(
-                  padding: EdgeInsets.all(width * 0.05),
-                  child: ElevatedButton(
-                    style: TextButton.styleFrom(
-                      backgroundColor: Theme.of(context)
-                          .extension<AppColorsExtension>()!
-                          .primary,
-                    ),
-                    onPressed: () {
-                      context.read<AssetsBloc>().add(CreateAssetEvent(
-                          title: titleController.text,
-                          worth: double.parse(worthController.text),
-                          description: descriptionController.text,
-                          date: DateTime.now(),
-                          tag: tag));
-                    },
-                    child: Text(
-                      "Add Asset",
-                      style: TextStyle(
-                          color: Theme.of(context)
-                              .extension<AppColorsExtension>()!
-                              .primaryLightTextColor,
-                          fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ))
           ],
         ),
       ),
