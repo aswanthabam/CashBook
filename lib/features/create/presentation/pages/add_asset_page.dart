@@ -23,6 +23,24 @@ class _AddAssetPageState extends State<AddAssetPage> {
   String? icon;
   int color = 0xff0000ff;
 
+  bool _validate() {
+    if (titleController.text.isEmpty) {
+      Fluttertoast.showToast(msg: "Title cannot be empty!");
+      return false;
+    }
+    if (worthController.text.isEmpty) {
+      Fluttertoast.showToast(msg: "Worth cannot be empty!");
+      return false;
+    }
+    try {
+      double.parse(worthController.text);
+    } catch (e) {
+      Fluttertoast.showToast(msg: "Worth should be a number!");
+      return false;
+    }
+    return true;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -249,15 +267,18 @@ class _AddAssetPageState extends State<AddAssetPage> {
                                 .primary,
                           ),
                           onPressed: () {
-                            context.read<AssetsBloc>().add(
-                                  CreateAssetEvent(
-                                      title: titleController.text,
-                                      worth: double.parse(worthController.text),
-                                      description: descriptionController.text,
-                                      date: DateTime.now(),
-                                      icon: icon,
-                                      color: color),
-                                );
+                            if (_validate()) {
+                              context.read<AssetsBloc>().add(
+                                    CreateAssetEvent(
+                                        title: titleController.text,
+                                        worth:
+                                            double.parse(worthController.text),
+                                        description: descriptionController.text,
+                                        date: DateTime.now(),
+                                        icon: icon,
+                                        color: color),
+                                  );
+                            }
                           },
                           child: Text(
                             "Add Asset",

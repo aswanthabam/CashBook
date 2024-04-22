@@ -2,7 +2,6 @@ import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:cashbook/core/theme/theme.dart';
 import 'package:cashbook/core/utils/utils.dart';
 import 'package:cashbook/data/models/liability.dart';
-import 'package:cashbook/data/models/tag_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconpicker/flutter_iconpicker.dart';
 
@@ -29,16 +28,12 @@ class _LiabilityDisplayerState extends State<LiabilityDisplayer> {
             ? widget.assetsCount
             : widget.liabilities.length,
         itemBuilder: (context, index) {
-          TagData? tag = widget
-              .liabilities[widget.liabilities.length - index - 1].tag.target;
+          int color =
+              widget.liabilities[widget.liabilities.length - index - 1].color;
+          String? icon =
+              widget.liabilities[widget.liabilities.length - index - 1].icon;
           return ListTile(
             onTap: () {
-              // showDialog(
-              //     context: context,
-              //     builder: (context) => ShowExpense(
-              //       expense:
-              //       widget.assets[widget.assets.length - index - 1],
-              //     ));
               // TODO : IMPLEMENT SHOW ASSET
             },
             shape: const Border(top: BorderSide(color: Colors.grey, width: 1)),
@@ -46,12 +41,12 @@ class _LiabilityDisplayerState extends State<LiabilityDisplayer> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(
-                  tag != null
-                      ? deserializeIcon({"key": tag.icon, "pack": "material"},
+                  icon != null
+                      ? deserializeIcon({"key": icon, "pack": "material"},
                               iconPack: IconPack.allMaterial) ??
                           BootstrapIcons.hourglass_split
                       : BootstrapIcons.hourglass_split,
-                  color: tag != null ? Color(tag.color) : Colors.blue,
+                  color: Color(color),
                 ),
                 const SizedBox(
                   height: 3,
@@ -72,14 +67,7 @@ class _LiabilityDisplayerState extends State<LiabilityDisplayer> {
                     formatDate(widget
                         .liabilities[widget.liabilities.length - index - 1]
                         .date),
-                    style: const TextStyle(fontSize: 12)),
-                Text(
-                  "  ⦿  ${tag != null ? tag.title : 'Uncategorized'}",
-                  style: TextStyle(
-                      color: tag != null ? Color(tag.color) : Colors.blue,
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold),
-                )
+                    style: const TextStyle(fontSize: 12))
               ],
             ),
             trailing: Text(

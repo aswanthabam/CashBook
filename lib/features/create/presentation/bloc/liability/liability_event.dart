@@ -9,7 +9,8 @@ final class CreateLiabilityEvent extends LiabilityEvent {
   final double remaining;
   final double interest;
   final String? description;
-  final TagData? tag;
+  final int color;
+  final String? icon;
   final DateTime date;
   final DateTime? endDate;
 
@@ -19,7 +20,8 @@ final class CreateLiabilityEvent extends LiabilityEvent {
       required this.remaining,
       required this.interest,
       required this.description,
-      required this.tag,
+      required this.icon,
+      this.color = 0xff0000ff,
       required this.date,
       required this.endDate});
 }
