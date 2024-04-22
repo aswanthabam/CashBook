@@ -1,6 +1,7 @@
 import 'package:cashbook/core/datasource/local/database.dart';
 import 'package:cashbook/core/exceptions/datasource_expensions.dart';
 import 'package:cashbook/data/models/expense.dart';
+import 'package:cashbook/data/models/liability.dart';
 import 'package:cashbook/data/models/tag_data.dart';
 import 'package:cashbook/objectbox.g.dart';
 
@@ -11,8 +12,7 @@ abstract interface class ExpenseLocalDatasource {
     required String description,
     required DateTime date,
     required TagData? tag,
-    int isLiability = 0,
-  });
+      Liability? liability});
 
   Future<void> deleteExpense({required int id});
 
@@ -56,15 +56,14 @@ class ExpenseLocalDatasourceImplementation implements ExpenseLocalDatasource {
       required String description,
       required DateTime date,
       required TagData? tag,
-      int isLiability = 0}) async {
+      Liability? liability}) async {
     Expense entity = Expense(
       id: 0,
       title: title,
       amount: amount,
       description: description,
-      date: date,
-      isLiability: isLiability,
-    );
+        date: date);
+    entity.liability.target = liability;
     if (tag != null) entity.tag.target = tag;
 
     try {

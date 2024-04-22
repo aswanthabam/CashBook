@@ -1,4 +1,5 @@
 import 'package:cashbook/data/models/expense.dart';
+import 'package:cashbook/data/models/liability.dart';
 import 'package:cashbook/data/models/tag_data.dart';
 
 abstract interface class ExpenseRepository {
@@ -8,7 +9,7 @@ abstract interface class ExpenseRepository {
     required String description,
     required DateTime date,
     required TagData? tag,
-    int isLiability = 0,
+    Liability? liability,
   });
 
   Future<void> deleteExpense({required int id});

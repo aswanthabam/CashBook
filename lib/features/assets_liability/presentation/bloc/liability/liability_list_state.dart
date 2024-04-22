@@ -16,3 +16,15 @@ final class LiabilityListError extends LiabilityListState {
 
   LiabilityListError({required this.message});
 }
+
+final class LiabilityPayoutsLoaded extends LiabilityListState {
+  final List<Expense> expenses;
+
+  LiabilityPayoutsLoaded(this.expenses);
+}
+
+final class LiabilityPayoutsError extends LiabilityListState {
+  final String message;
+
+  LiabilityPayoutsError(this.message);
+}

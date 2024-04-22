@@ -307,7 +307,9 @@ class _AddLiabilityPageState extends State<AddLiabilityPage> {
                                 FocusScope.of(context).unfocus();
                               },
                               onTap: () {
-                                interestController.text = "0";
+                                if (interestController.text == "") {
+                                  interestController.text = "0";
+                                }
                               },
                               decoration: InputDecoration(
                                   hintText: "Interest Rate",
@@ -460,8 +462,10 @@ class _AddLiabilityPageState extends State<AddLiabilityPage> {
                                   icon: icon,
                                   color: color,
                                   remaining: double.parse(worthController.text),
-                                  interest:
-                                      double.parse(interestController.text),
+                                  interest: double.parse(
+                                      interestController.text == ""
+                                          ? "0"
+                                          : interestController.text),
                                   endDate: endDate));
                         } else {
                           context.read<LiabilityBloc>().add(EditLiabilityEvent(
@@ -472,8 +476,13 @@ class _AddLiabilityPageState extends State<AddLiabilityPage> {
                               date: startDate,
                               icon: icon,
                               color: color,
-                              remaining: double.parse(worthController.text),
-                              interest: double.parse(interestController.text),
+                              remaining: double.parse(worthController.text) -
+                                  (widget.liability!.amount -
+                                      widget.liability!.remaining),
+                              interest: double.parse(
+                                  interestController.text == ""
+                                      ? "0"
+                                      : interestController.text),
                               endDate: endDate));
                         }
                       }

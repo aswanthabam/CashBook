@@ -16,7 +16,7 @@ final class AddExpenseEvent extends ExpenseEvent {
   final String description;
   final DateTime date;
   final TagData? tag;
-  final int isLiability;
+  final Liability? liability;
 
   AddExpenseEvent(
       {required this.title,
@@ -24,7 +24,7 @@ final class AddExpenseEvent extends ExpenseEvent {
       required this.description,
       required this.date,
       required this.tag,
-      this.isLiability = 0});
+      this.liability});
 }
 
 final class EditExpenseEvent extends ExpenseEvent {

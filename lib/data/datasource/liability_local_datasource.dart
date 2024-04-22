@@ -9,11 +9,27 @@ abstract interface class LiabilityLocalDataSource {
 
   bool addLiability(Liability asset);
 
-  void editLiability(Liability liability);
+  void editLiability({
+    required int id,
+    String? title,
+    double? amount,
+    String? description,
+    DateTime? date,
+    DateTime? endDate,
+    double? remaining,
+    String? icon,
+    int? color,
+    double? interest,
+  });
 
   int payLiability(Liability liability, Expense expense);
 
-  void editLiabilityPayment(int liabilityId, Expense expense, double newAmount);
+  void editLiabilityPayment(
+      Liability liability, Expense expense, double newAmount);
+
+  Liability getLiability(int id);
+
+  List<Expense> getLiabilityPayments(int id);
 }
 
 class LiabilityLocalDataSourceImplementation
@@ -50,9 +66,51 @@ class LiabilityLocalDataSourceImplementation
   }
 
   @override
-  void editLiability(Liability liability) {
+  void editLiability({
+    required int id,
+    String? title,
+    double? amount,
+    String? description,
+    DateTime? date,
+    DateTime? endDate,
+    double? remaining,
+    String? icon,
+    int? color,
+    double? interest,
+  }) {
     try {
-      database.box<Liability>().put(liability);
+      Liability? Li = database.box<Liability>().get(id);
+      if (Li == null) {
+        throw LocalDatabaseException("Liability not found");
+      }
+      if (title != null) {
+        Li.title = title;
+      }
+      if (amount != null) {
+        Li.amount = amount;
+      }
+      if (description != null) {
+        Li.description = description;
+      }
+      if (date != null) {
+        Li.date = date;
+      }
+      if (endDate != null) {
+        Li.endDate = endDate;
+      }
+      if (remaining != null) {
+        Li.remaining = remaining;
+      }
+      if (icon != null) {
+        Li.icon = icon;
+      }
+      if (color != null) {
+        Li.color = color;
+      }
+      if (interest != null) {
+        Li.interest = interest;
+      }
+      database.box<Liability>().put(Li);
     } catch (e) {
       throw LocalDatabaseException(
           "An Unexpected error occurred while editing the liability");
@@ -73,19 +131,43 @@ class LiabilityLocalDataSourceImplementation
   }
 
   @override
-  void editLiabilityPayment(
-      int liabilityId, Expense expense, double newAmount) {
+  void editLiabilityPayment(Liability liability, Expense expense,
+      double newAmount) {
     try {
-      Liability? liability = database.box<Liability>().get(liabilityId);
-      if (liability == null) {
-        throw LocalDatabaseException("Liability not found");
-      }
       liability.remaining += expense.amount;
       liability.remaining -= newAmount;
       database.box<Liability>().put(liability);
     } catch (e) {
       throw LocalDatabaseException(
           "An Unexpected error occurred while paying the liability");
+    }
+  }
+
+  @override
+  Liability getLiability(int id) {
+    try {
+      Liability? liability = database.box<Liability>().get(id);
+      if (liability == null) {
+        throw LocalDatabaseException("Liability not found");
+      }
+      return liability;
+    } catch (e) {
+      throw LocalDatabaseException(
+          "An Unexpected error occurred while getting the liability");
+    }
+  }
+
+  @override
+  List<Expense> getLiabilityPayments(int id) {
+    try {
+      Liability? liability = database.box<Liability>().get(id);
+      if (liability == null) {
+        throw LocalDatabaseException("Liability not found");
+      }
+      return liability.payouts;
+    } catch (e) {
+      throw LocalDatabaseException(
+          "An Unexpected error occurred while getting the liability payments");
     }
   }
 }

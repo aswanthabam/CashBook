@@ -36,3 +36,15 @@ final class LiabilityPaymentEditError extends LiabilityState {
 
   LiabilityPaymentEditError({required this.message});
 }
+
+final class GotLiability extends LiabilityState {
+  final Liability liability;
+
+  GotLiability({required this.liability});
+}
+
+final class GetLiabilityError extends LiabilityState {
+  final String message;
+
+  GetLiabilityError({required this.message});
+}

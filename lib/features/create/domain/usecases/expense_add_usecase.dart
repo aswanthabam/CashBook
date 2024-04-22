@@ -1,6 +1,7 @@
 import 'package:cashbook/core/types/reponse_types.dart';
 import 'package:cashbook/core/usecase/usecase.dart';
 import 'package:cashbook/data/models/expense.dart';
+import 'package:cashbook/data/models/liability.dart';
 import 'package:cashbook/data/models/tag_data.dart';
 import 'package:cashbook/domain/repositories/expense_repository.dart';
 import 'package:fpdart/fpdart.dart%20%20';
@@ -19,7 +20,7 @@ class ExpenseAddUseCase implements UseCase<Expense, Failure, ExpenseAddParams> {
           description: params.description,
           date: params.date,
           tag: params.tag,
-          isLiability: params.isLiability));
+          liability: params.liability));
     } catch (e) {
       return right(Failure("An error occurred"));
     }
@@ -32,7 +33,7 @@ class ExpenseAddParams {
   final String description;
   final DateTime date;
   final TagData? tag;
-  final int isLiability;
+  final Liability? liability;
 
   ExpenseAddParams(
       {required this.title,
@@ -40,5 +41,5 @@ class ExpenseAddParams {
       required this.description,
       required this.date,
       required this.tag,
-      this.isLiability = 0});
+      this.liability});
 }

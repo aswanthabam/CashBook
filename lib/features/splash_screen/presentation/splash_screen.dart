@@ -1,4 +1,5 @@
 import 'package:cashbook/core/bloc/theme/theme_bloc.dart';
+import 'package:cashbook/features/create/presentation/bloc/liability/liability_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -14,6 +15,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     ThemeBloc bloc = context.read<ThemeBloc>();
+    LiabilityBloc liabilityBloc = context.read<LiabilityBloc>();
     bloc.add(LoadTheme());
     bloc.stream.listen((event) {
       Future.delayed(const Duration(seconds: 1), () {

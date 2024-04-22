@@ -59,12 +59,17 @@ final class PayLiabilityEvent extends LiabilityEvent {
 }
 
 final class EditLiabilityPaymentEvent extends LiabilityEvent {
-  final int liabilityId;
+  final Liability liability;
   final Expense expense;
   final double neAmount;
 
-  EditLiabilityPaymentEvent(
-      {required this.liabilityId,
+  EditLiabilityPaymentEvent({required this.liability,
       required this.expense,
       required this.neAmount});
+}
+
+final class GetLiabilityEvent extends LiabilityEvent {
+  final int id;
+
+  GetLiabilityEvent({required this.id});
 }

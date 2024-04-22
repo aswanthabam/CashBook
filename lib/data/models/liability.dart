@@ -17,6 +17,8 @@ class Liability {
   DateTime date = DateTime.now();
   @Property(type: PropertyType.date)
   DateTime? endDate;
+  @Property(type: PropertyType.date)
+  DateTime updatedOn;
 
   Liability(
       {required this.id,
@@ -28,7 +30,8 @@ class Liability {
       required this.remaining,
       required this.icon,
       required this.color,
-      this.interest = 0});
+      this.interest = 0,
+      required this.updatedOn});
 
   @override
   String toString() {

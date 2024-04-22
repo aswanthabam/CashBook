@@ -56,10 +56,8 @@ class _AddExpensePageState extends State<AddExpensePage> {
   @override
   void initState() {
     super.initState();
-    print(widget.entity);
     if (widget.liability != null) {
       titleController.text = "${widget.liability!.title} Payment";
-      print(widget.liability);
     }
     ExpenseBloc bloc = context.read<ExpenseBloc>();
 
@@ -90,9 +88,9 @@ class _AddExpensePageState extends State<AddExpensePage> {
       } else if (event is ExpenseAddError) {
         Fluttertoast.showToast(msg: "Failed to add expense");
       } else if (event is ExpenseEdited) {
-        if (widget.entity != null && widget.entity!.isLiability != 0) {
+        if (widget.entity != null && widget.entity!.liability.target != null) {
           liabilityBloc.add(EditLiabilityPaymentEvent(
-              liabilityId: widget.entity!.isLiability,
+              liability: widget.entity!.liability.target!,
               expense: widget.entity!,
               neAmount: event.expense.amount));
         } else {
@@ -232,7 +230,7 @@ class _AddExpensePageState extends State<AddExpensePage> {
                                 description: descriptionController.text,
                                 date: DateTime.now(),
                                 tag: tag,
-                                isLiability: widget.liability!.id));
+                                liability: widget.liability));
                           } else if (widget.entity == null) {
                             context.read<ExpenseBloc>().add(AddExpenseEvent(
                                 amount: double.parse(amountController.text),
@@ -242,7 +240,7 @@ class _AddExpensePageState extends State<AddExpensePage> {
                                 // TODO : IMPLEMENT CUSTOM TIMEING
                                 tag: tag));
                           } else {
-                            if (widget.entity!.isLiability != 0) {
+                            if (widget.entity!.liability.target != null) {
                               context.read<ExpenseBloc>().add(EditExpenseEvent(
                                   title: titleController.text,
                                   amount: double.parse(amountController.text),

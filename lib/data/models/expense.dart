@@ -1,3 +1,4 @@
+import 'package:cashbook/data/models/liability.dart';
 import 'package:cashbook/data/models/tag_data.dart';
 import 'package:objectbox/objectbox.dart';
 
@@ -11,19 +12,18 @@ class Expense {
   ToOne<TagData> tag = ToOne<TagData>();
   @Property(type: PropertyType.date)
   DateTime date = DateTime.now();
-  int isLiability = 0;
+  ToOne<Liability> liability = ToOne<Liability>();
 
   Expense(
       {required this.id,
       required this.title,
       required this.amount,
       required this.description,
-      required this.date,
-      this.isLiability = 0});
+      required this.date});
 
   @override
   String toString() {
-    return 'Expense{id: $id, title: $title, amount: $amount, description: $description, tags: $tag, date: $date, isLiabilityPayment: $isLiability}';
+    return 'Expense{id: $id, title: $title, amount: $amount, description: $description, tags: $tag, date: $date, liability: $liability}';
   }
 }
 

@@ -1,4 +1,5 @@
 import 'package:cashbook/data/models/expense.dart';
+import 'package:cashbook/data/models/liability.dart';
 import 'package:cashbook/data/models/tag_data.dart';
 import 'package:cashbook/features/create/domain/usecases/expense_add_usecase.dart';
 import 'package:cashbook/features/create/domain/usecases/expense_edit_usecase.dart';
@@ -49,7 +50,7 @@ class ExpenseBloc extends Bloc<ExpenseEvent, ExpenseState> {
               description: event.description,
               date: event.date,
               tag: event.tag,
-              isLiability: event.isLiability))
+              liability: event.liability))
           .then((value) {
         value.fold((success) {
           emit(ExpenseAdded(success));
