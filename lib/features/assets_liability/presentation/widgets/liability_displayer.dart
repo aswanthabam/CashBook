@@ -2,6 +2,7 @@ import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:cashbook/core/theme/theme.dart';
 import 'package:cashbook/core/utils/utils.dart';
 import 'package:cashbook/data/models/liability.dart';
+import 'package:cashbook/features/assets_liability/presentation/pages/show_liability.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconpicker/flutter_iconpicker.dart';
 
@@ -34,7 +35,24 @@ class _LiabilityDisplayerState extends State<LiabilityDisplayer> {
               widget.liabilities[widget.liabilities.length - index - 1].icon;
           return ListTile(
             onTap: () {
-              // TODO : IMPLEMENT SHOW ASSET
+              Navigator.of(context).push(PageRouteBuilder(
+                  pageBuilder: (context, a1, a2) => ShowLiabilityPage(
+                        liability: widget
+                            .liabilities[widget.liabilities.length - index - 1],
+                      ),
+                  transitionsBuilder:
+                      (context, animation, secondaryAnimation, child) {
+                    const begin = Offset(1.0, 0.0);
+                    const end = Offset.zero;
+                    const curve = Curves.ease;
+                    var tween = Tween(begin: begin, end: end)
+                        .chain(CurveTween(curve: curve));
+                    var offsetAnimation = animation.drive(tween);
+                    return SlideTransition(
+                      position: offsetAnimation,
+                      child: child,
+                    );
+                  }));
             },
             shape: const Border(top: BorderSide(color: Colors.grey, width: 1)),
             leading: Column(

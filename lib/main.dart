@@ -19,6 +19,7 @@ import 'package:cashbook/features/assets_liability/presentation/bloc/liability/l
 import 'package:cashbook/features/assets_liability/presentation/pages/assets_liability.dart';
 import 'package:cashbook/features/create/domain/usecases/create_asset_usecase.dart';
 import 'package:cashbook/features/create/domain/usecases/create_liability_usecase.dart';
+import 'package:cashbook/features/create/domain/usecases/edit_liability_usecase.dart';
 import 'package:cashbook/features/create/domain/usecases/expense_add_usecase.dart';
 import 'package:cashbook/features/create/domain/usecases/expense_edit_usecase.dart';
 import 'package:cashbook/features/create/domain/usecases/tag_create_usecase.dart';
@@ -54,12 +55,16 @@ Future<void> main() async {
       ),
       BlocProvider<LiabilityBloc>(
         create: (context) => LiabilityBloc(
+            editLiabilityUseCase: EditLiabilityUseCase(
+                repository: LiabilityRepositoryImplementation(
+                    datasource: LiabilityLocalDataSourceImplementation(
+                        database: database))),
             createLiabilityUseCase: CreateLiabilityUseCase(
-          repository: LiabilityRepositoryImplementation(
-            datasource:
-                LiabilityLocalDataSourceImplementation(database: database),
-          ),
-        )),
+              repository: LiabilityRepositoryImplementation(
+                datasource:
+                    LiabilityLocalDataSourceImplementation(database: database),
+              ),
+            )),
       ),
       BlocProvider<AssetsListBloc>(
         create: (context) => AssetsListBloc(

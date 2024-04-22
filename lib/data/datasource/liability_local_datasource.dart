@@ -7,6 +7,8 @@ abstract interface class LiabilityLocalDataSource {
   List<Liability> getLiabilities({int? count, bool includeFinished = false});
 
   bool addLiability(Liability asset);
+
+  void editLiability(Liability liability);
 }
 
 class LiabilityLocalDataSourceImplementation
@@ -35,11 +37,20 @@ class LiabilityLocalDataSourceImplementation
     } else {
       query = box.query();
     }
-    print("HERREEEE");
     Query<Liability> qu = query.build();
     if (count != null) {
       qu.limit = count;
     }
     return qu.find();
+  }
+
+  @override
+  void editLiability(Liability liability) {
+    try {
+      database.box<Liability>().put(liability);
+    } catch (e) {
+      throw LocalDatabaseException(
+          "An Unexpected error occurred while editing the liability");
+    }
   }
 }

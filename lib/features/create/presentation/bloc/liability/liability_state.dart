@@ -12,3 +12,11 @@ final class LiabilityCreationError extends LiabilityState {
 
   LiabilityCreationError({required this.message});
 }
+
+final class LiabilityEdited extends LiabilityState {}
+
+final class LiabilityEditError extends LiabilityState {
+  final String message;
+
+  LiabilityEditError({required this.message});
+}

@@ -1,5 +1,6 @@
 import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:cashbook/core/theme/theme.dart';
+import 'package:cashbook/data/models/liability.dart';
 import 'package:cashbook/features/create/presentation/bloc/liability/liability_bloc.dart';
 import 'package:flex_color_picker/flex_color_picker.dart';
 import 'package:flutter/material.dart';
@@ -8,9 +9,10 @@ import 'package:flutter_iconpicker/flutter_iconpicker.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class AddLiabilityPage extends StatefulWidget {
-  const AddLiabilityPage({super.key, required this.heading});
+  const AddLiabilityPage({super.key, required this.heading, this.liability});
 
   final String heading;
+  final Liability? liability;
 
   @override
   State<AddLiabilityPage> createState() => _AddLiabilityPageState();
@@ -54,15 +56,35 @@ class _AddLiabilityPageState extends State<AddLiabilityPage> {
   @override
   void initState() {
     super.initState();
+    if (widget.liability != null) {
+      titleController.text = widget.liability!.title;
+      worthController.text = widget.liability!.amount.toString();
+      interestController.text = widget.liability!.interest.toString();
+      descriptionController.text = widget.liability!.description ?? "";
+      startDate = widget.liability!.date;
+      endDate = widget.liability!.endDate;
+      icon = widget.liability!.icon;
+      color = widget.liability!.color;
+    }
     LiabilityBloc bloc = context.read<LiabilityBloc>();
+
     bloc.stream.listen((event) {
       if (event is LiabilityCreated) {
         Fluttertoast.showToast(msg: "Successfully added liability!");
         Navigator.of(context).pop();
       } else if (event is LiabilityCreationError) {
         Fluttertoast.showToast(msg: event.message);
+      } else if (event is LiabilityEdited) {
+        Fluttertoast.showToast(msg: "Successfully edited liability!");
+        Navigator.of(context).pop();
+      } else if (event is LiabilityEditError) {
+        Fluttertoast.showToast(msg: event.message);
       }
     });
+    startDateController.text = startDate.toIso8601String().split("T")[0];
+    endDateController.text =
+        endDate == null ? "" : endDate!.toIso8601String().split("T")[0];
+    setState(() {});
   }
 
   @override
@@ -428,20 +450,38 @@ class _AddLiabilityPageState extends State<AddLiabilityPage> {
                     ),
                     onPressed: () {
                       if (_validate()) {
-                        context.read<LiabilityBloc>().add(CreateLiabilityEvent(
-                            title: titleController.text,
-                            amount: double.parse(worthController.text),
-                            description: descriptionController.text,
-                            date: startDate,
-                            icon: icon,
-                            color: color,
-                            remaining: double.parse(worthController.text),
-                            interest: double.parse(interestController.text),
-                            endDate: endDate));
+                        if (widget.liability == null) {
+                          context.read<LiabilityBloc>().add(
+                              CreateLiabilityEvent(
+                                  title: titleController.text,
+                                  amount: double.parse(worthController.text),
+                                  description: descriptionController.text,
+                                  date: startDate,
+                                  icon: icon,
+                                  color: color,
+                                  remaining: double.parse(worthController.text),
+                                  interest:
+                                      double.parse(interestController.text),
+                                  endDate: endDate));
+                        } else {
+                          context.read<LiabilityBloc>().add(EditLiabilityEvent(
+                              id: widget.liability!.id,
+                              title: titleController.text,
+                              amount: double.parse(worthController.text),
+                              description: descriptionController.text,
+                              date: startDate,
+                              icon: icon,
+                              color: color,
+                              remaining: double.parse(worthController.text),
+                              interest: double.parse(interestController.text),
+                              endDate: endDate));
+                        }
                       }
                     },
                     child: Text(
-                      "Add Liability",
+                      widget.liability == null
+                          ? "Add Liability"
+                          : "Edit Liability",
                       style: TextStyle(
                           color: Theme.of(context)
                               .extension<AppColorsExtension>()!

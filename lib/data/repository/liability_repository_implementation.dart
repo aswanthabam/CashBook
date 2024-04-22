@@ -17,4 +17,9 @@ class LiabilityRepositoryImplementation implements LiabilityRepository {
     return datasource.getLiabilities(
         count: count, includeFinished: includeFinished);
   }
+
+  @override
+  void editLiability(Liability liability) {
+    return datasource.editLiability(liability);
+  }
 }

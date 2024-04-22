@@ -46,6 +46,8 @@ class _AssetsLiabilityPageState extends State<AssetsLiabilityPage> {
     liabilityBloc.stream.listen((event) {
       if (event is LiabilityCreated) {
         liabilityListBloc.add(GetLiabilitiesEvent());
+      } else if (event is LiabilityEdited) {
+        liabilityListBloc.add(GetLiabilitiesEvent());
       }
     });
 
