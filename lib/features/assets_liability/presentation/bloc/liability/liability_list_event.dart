@@ -9,3 +9,9 @@ final class GetLiabilitiesEvent extends LiabilityListEvent {
 
   GetLiabilitiesEvent({this.count, this.includeFinished = false});
 }
+
+final class GetLiabilityPayoutsEvent extends LiabilityListEvent {
+  final int id;
+
+  GetLiabilityPayoutsEvent({required this.id});
+}

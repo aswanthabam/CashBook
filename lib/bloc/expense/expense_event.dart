@@ -16,13 +16,15 @@ final class AddExpenseEvent extends ExpenseEvent {
   final String description;
   final DateTime date;
   final TagData? tag;
+  final Liability? liability;
 
   AddExpenseEvent(
       {required this.title,
       required this.amount,
       required this.description,
       required this.date,
-      required this.tag});
+      required this.tag,
+      this.liability});
 }
 
 final class EditExpenseEvent extends ExpenseEvent {

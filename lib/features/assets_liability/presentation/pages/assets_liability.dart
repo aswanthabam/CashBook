@@ -1,6 +1,7 @@
 import 'package:cashbook/core/widgets/appbar/bottom_bar.dart';
 import 'package:cashbook/core/widgets/appbar/main_appbar.dart';
 import 'package:cashbook/core/widgets/error/error_display.dart';
+import 'package:cashbook/data/models/liability.dart';
 import 'package:cashbook/features/assets_liability/presentation/bloc/assets/assets_list_bloc.dart';
 import 'package:cashbook/features/assets_liability/presentation/bloc/liability/liability_list_bloc.dart';
 import 'package:cashbook/features/assets_liability/presentation/widgets/assets_displayer.dart';
@@ -19,6 +20,8 @@ class AssetsLiabilityPage extends StatefulWidget {
 }
 
 class _AssetsLiabilityPageState extends State<AssetsLiabilityPage> {
+  List<Liability> liabilities = [];
+
   @override
   void initState() {
     super.initState();
@@ -45,6 +48,12 @@ class _AssetsLiabilityPageState extends State<AssetsLiabilityPage> {
         .add(GetLiabilitiesEvent(includeFinished: true, count: 10));
     liabilityBloc.stream.listen((event) {
       if (event is LiabilityCreated) {
+        liabilityListBloc.add(GetLiabilitiesEvent());
+      } else if (event is LiabilityEdited) {
+        liabilityListBloc.add(GetLiabilitiesEvent());
+      } else if (event is LiabilityPaid) {
+        liabilityListBloc.add(GetLiabilitiesEvent());
+      } else if (event is LiabilityPaymentEdited) {
         liabilityListBloc.add(GetLiabilitiesEvent());
       }
     });
@@ -128,6 +137,7 @@ class _AssetsLiabilityPageState extends State<AssetsLiabilityPage> {
                   builder: (context, state) {
                     if (state is LiabilityListLoaded) {
                       if (state.liabilities.isNotEmpty) {
+                        liabilities = state.liabilities;
                         return LiabilityDisplayer(
                           liabilities: state.liabilities,
                           assetsCount: state.liabilities.length,
@@ -138,13 +148,24 @@ class _AssetsLiabilityPageState extends State<AssetsLiabilityPage> {
                         description: 'Try adding a new asset you own.',
                         icon: Icons.not_interested_outlined,
                       );
+                    } else if (state is LiabilityListError) {
+                      return ErrorDisplay(
+                        mainColor: Colors.red.withAlpha(200),
+                        title: 'An Error Occurred',
+                        description: state.message,
+                        icon: Icons.bug_report_outlined,
+                      );
                     }
-                    return ErrorDisplay(
-                      mainColor: Colors.red.withAlpha(200),
-                      title: 'An Error Occurred',
-                      description:
-                          'An unexpected error occurred while fetching liabilities.',
-                      icon: Icons.bug_report_outlined,
+                    if (liabilities.isNotEmpty) {
+                      return LiabilityDisplayer(
+                        liabilities: liabilities,
+                        assetsCount: liabilities.length,
+                      );
+                    }
+                    return const ErrorDisplay(
+                      title: 'No Liabilities Added',
+                      description: 'Try adding a new asset you own.',
+                      icon: Icons.not_interested_outlined,
                     );
                   },
                 ),

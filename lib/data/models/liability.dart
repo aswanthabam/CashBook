@@ -1,5 +1,4 @@
 import 'package:cashbook/data/models/expense.dart';
-import 'package:cashbook/data/models/tag_data.dart';
 import 'package:objectbox/objectbox.dart';
 
 @Entity()
@@ -11,12 +10,15 @@ class Liability {
   double remaining;
   double interest;
   String? description;
-  ToOne<TagData> tag = ToOne<TagData>();
+  String? icon;
+  int color;
   ToMany<Expense> payouts = ToMany<Expense>();
   @Property(type: PropertyType.date)
   DateTime date = DateTime.now();
   @Property(type: PropertyType.date)
   DateTime? endDate;
+  @Property(type: PropertyType.date)
+  DateTime updatedOn;
 
   Liability(
       {required this.id,
@@ -26,10 +28,13 @@ class Liability {
       required this.date,
       required this.endDate,
       required this.remaining,
-      this.interest = 0});
+      required this.icon,
+      required this.color,
+      this.interest = 0,
+      required this.updatedOn});
 
   @override
   String toString() {
-    return 'Liability{id: $id, title: $title, worth: $amount,remaining: $remaining,interest: $interest, description: $description, tags: $tag, date: $date, payouts: $payouts}';
+    return 'Liability{id: $id, title: $title, worth: $amount,remaining: $remaining,interest: $interest, description: $description, icon: $icon,color: $color, date: $date, payouts: $payouts}';
   }
 }

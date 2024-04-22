@@ -38,9 +38,10 @@ class _ShowExpenseState extends State<ShowExpense> {
 
               Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) => AddExpensePage(
-                        heading: "Edit Expense",
-                        entity: widget.expense,
-                      )));
+                      heading: widget.expense.liability.target != null
+                          ? "Edit Liability Payment"
+                          : "Edit Expense",
+                      entity: widget.expense)));
             },
             child: Row(
               mainAxisSize: MainAxisSize.min,
@@ -133,13 +134,21 @@ class _ShowExpenseState extends State<ShowExpense> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Icon(
-                        widget.expense.tag.target != null
+                        widget.expense.liability.target != null
                             ? deserializeIcon({
-                                  "key": widget.expense.tag.target!.icon,
+                                  "key":
+                                      widget.expense.liability.target?.icon ??
+                                          "hourglass_split",
                                   "pack": "material"
                                 }, iconPack: IconPack.allMaterial) ??
                                 BootstrapIcons.hourglass_split
-                            : BootstrapIcons.hourglass_split,
+                            : widget.expense.tag.target != null
+                                ? deserializeIcon({
+                                      "key": widget.expense.tag.target!.icon,
+                                      "pack": "material"
+                                    }, iconPack: IconPack.allMaterial) ??
+                                    BootstrapIcons.hourglass_split
+                                : BootstrapIcons.hourglass_split,
                         size: width * 0.03,
                         color: Theme.of(context)
                             .extension<AppColorsExtension>()!
@@ -149,9 +158,11 @@ class _ShowExpenseState extends State<ShowExpense> {
                         width: 5,
                       ),
                       Text(
-                        widget.expense.tag.target != null
-                            ? widget.expense.tag.target!.title
-                            : "Uncategorized",
+                        widget.expense.liability.target != null
+                            ? "Liability"
+                            : widget.expense.tag.target != null
+                                ? widget.expense.tag.target!.title
+                                : "Uncategorized",
                         textAlign: TextAlign.start,
                         style: TextStyle(
                             fontSize: width * 0.03,

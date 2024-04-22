@@ -1,21 +1,22 @@
 import 'package:cashbook/core/datasource/local/database.dart';
 import 'package:cashbook/core/exceptions/datasource_expensions.dart';
 import 'package:cashbook/data/models/expense.dart';
+import 'package:cashbook/data/models/liability.dart';
 import 'package:cashbook/data/models/tag_data.dart';
 import 'package:cashbook/objectbox.g.dart';
 
 abstract interface class ExpenseLocalDatasource {
-  Future<int> addExpense({
+  Future<Expense> addExpense({
     required String title,
     required double amount,
     required String description,
     required DateTime date,
     required TagData? tag,
-  });
+      Liability? liability});
 
   Future<void> deleteExpense({required int id});
 
-  Future<int> updateExpense({
+  Future<Expense> updateExpense({
     required int id,
     String? title,
     double? amount,
@@ -24,10 +25,11 @@ abstract interface class ExpenseLocalDatasource {
     TagData? tag,
   });
 
-  List<Expense> getExpensesFilter({required int count,
-    DateTime? startDate,
-    DateTime? endDate,
-    bool descending = false});
+  List<Expense> getExpensesFilter(
+      {required int count,
+      DateTime? startDate,
+      DateTime? endDate,
+      bool descending = false});
 
   double totalExpense();
 
@@ -48,25 +50,27 @@ class ExpenseLocalDatasourceImplementation implements ExpenseLocalDatasource {
   ExpenseLocalDatasourceImplementation(this.database);
 
   @override
-  Future<int> addExpense(
+  Future<Expense> addExpense(
       {required String title,
       required double amount,
       required String description,
       required DateTime date,
-      required TagData? tag}) async {
+      required TagData? tag,
+      Liability? liability}) async {
     Expense entity = Expense(
       id: 0,
       title: title,
       amount: amount,
       description: description,
-      date: date,
-    );
+        date: date);
+    entity.liability.target = liability;
     if (tag != null) entity.tag.target = tag;
 
     try {
-      return database.insert<Expense>(entity);
+      int id = database.insert<Expense>(entity);
+      entity.id = id;
+      return entity;
     } catch (e) {
-      print(e);
       throw LocalDatabaseException(
           "Error adding expense, an unexpected error occurred");
     }
@@ -78,10 +82,11 @@ class ExpenseLocalDatasourceImplementation implements ExpenseLocalDatasource {
   }
 
   @override
-  List<Expense> getExpensesFilter({required int count,
-    DateTime? startDate,
-    DateTime? endDate,
-    bool descending = false}) {
+  List<Expense> getExpensesFilter(
+      {required int count,
+      DateTime? startDate,
+      DateTime? endDate,
+      bool descending = false}) {
     try {
       Box<Expense> box = database.box<Expense>();
       QueryBuilder<Expense> query;
@@ -136,7 +141,7 @@ class ExpenseLocalDatasourceImplementation implements ExpenseLocalDatasource {
   }
 
   @override
-  Future<int> updateExpense(
+  Future<Expense> updateExpense(
       {required int id,
       String? title,
       double? amount,
@@ -162,7 +167,7 @@ class ExpenseLocalDatasourceImplementation implements ExpenseLocalDatasource {
       }
       entity.tag.target = tag;
       database.box<Expense>().put(entity);
-      return entity.id;
+      return entity;
     } catch (e) {
       throw LocalDatabaseException(
           "Error updating expense, an unexpected error occurred");

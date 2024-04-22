@@ -2,7 +2,7 @@ import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:cashbook/core/theme/theme.dart';
 import 'package:cashbook/core/utils/utils.dart';
 import 'package:cashbook/data/models/liability.dart';
-import 'package:cashbook/data/models/tag_data.dart';
+import 'package:cashbook/features/assets_liability/presentation/pages/show_liability.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconpicker/flutter_iconpicker.dart';
 
@@ -29,29 +29,42 @@ class _LiabilityDisplayerState extends State<LiabilityDisplayer> {
             ? widget.assetsCount
             : widget.liabilities.length,
         itemBuilder: (context, index) {
-          TagData? tag = widget
-              .liabilities[widget.liabilities.length - index - 1].tag.target;
+          int color =
+              widget.liabilities[widget.liabilities.length - index - 1].color;
+          String? icon =
+              widget.liabilities[widget.liabilities.length - index - 1].icon;
           return ListTile(
             onTap: () {
-              // showDialog(
-              //     context: context,
-              //     builder: (context) => ShowExpense(
-              //       expense:
-              //       widget.assets[widget.assets.length - index - 1],
-              //     ));
-              // TODO : IMPLEMENT SHOW ASSET
+              Navigator.of(context).push(PageRouteBuilder(
+                  pageBuilder: (context, a1, a2) => ShowLiabilityPage(
+                        liability: widget
+                            .liabilities[widget.liabilities.length - index - 1],
+                      ),
+                  transitionsBuilder:
+                      (context, animation, secondaryAnimation, child) {
+                    const begin = Offset(1.0, 0.0);
+                    const end = Offset.zero;
+                    const curve = Curves.ease;
+                    var tween = Tween(begin: begin, end: end)
+                        .chain(CurveTween(curve: curve));
+                    var offsetAnimation = animation.drive(tween);
+                    return SlideTransition(
+                      position: offsetAnimation,
+                      child: child,
+                    );
+                  }));
             },
             shape: const Border(top: BorderSide(color: Colors.grey, width: 1)),
             leading: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(
-                  tag != null
-                      ? deserializeIcon({"key": tag.icon, "pack": "material"},
+                  icon != null
+                      ? deserializeIcon({"key": icon, "pack": "material"},
                               iconPack: IconPack.allMaterial) ??
                           BootstrapIcons.hourglass_split
                       : BootstrapIcons.hourglass_split,
-                  color: tag != null ? Color(tag.color) : Colors.blue,
+                  color: Color(color),
                 ),
                 const SizedBox(
                   height: 3,
@@ -74,16 +87,17 @@ class _LiabilityDisplayerState extends State<LiabilityDisplayer> {
                         .date),
                     style: const TextStyle(fontSize: 12)),
                 Text(
-                  "  ⦿  ${tag != null ? tag.title : 'Uncategorized'}",
-                  style: TextStyle(
-                      color: tag != null ? Color(tag.color) : Colors.blue,
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold),
-                )
+                    " ⦿ ${widget.liabilities[widget.liabilities.length - index - 1].amount}",
+                    style: TextStyle(
+                        fontSize: 12,
+                        color: Theme.of(context)
+                            .extension<AppColorsExtension>()!
+                            .green)),
               ],
             ),
             trailing: Text(
-              widget.liabilities[widget.liabilities.length - index - 1].amount
+              widget
+                  .liabilities[widget.liabilities.length - index - 1].remaining
                   .toString(),
               style: const TextStyle(
                   color: Colors.red, fontSize: 15, fontWeight: FontWeight.bold),

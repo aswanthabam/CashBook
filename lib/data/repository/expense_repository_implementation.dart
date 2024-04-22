@@ -1,5 +1,6 @@
 import 'package:cashbook/data/datasource/expense_local_datasource.dart';
 import 'package:cashbook/data/models/expense.dart';
+import 'package:cashbook/data/models/liability.dart';
 import 'package:cashbook/domain/repositories/expense_repository.dart';
 
 import '../models/tag_data.dart';
@@ -10,18 +11,20 @@ class ExpenseRepositoryImplementation implements ExpenseRepository {
   ExpenseRepositoryImplementation({required this.datasource});
 
   @override
-  Future<int> addExpense(
+  Future<Expense> addExpense(
       {required String title,
       required double amount,
       required String description,
       required DateTime date,
-      required TagData? tag}) async {
+      required TagData? tag,
+      Liability? liability}) async {
     return await datasource.addExpense(
         title: title,
         amount: amount,
         description: description,
         date: date,
-        tag: tag);
+        tag: tag,
+        liability: liability);
   }
 
   @override
@@ -50,7 +53,7 @@ class ExpenseRepositoryImplementation implements ExpenseRepository {
   }
 
   @override
-  Future<int> updateExpense(
+  Future<Expense> updateExpense(
       {required int id,
       String? title,
       double? amount,

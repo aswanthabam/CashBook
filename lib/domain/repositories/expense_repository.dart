@@ -1,18 +1,20 @@
 import 'package:cashbook/data/models/expense.dart';
+import 'package:cashbook/data/models/liability.dart';
 import 'package:cashbook/data/models/tag_data.dart';
 
 abstract interface class ExpenseRepository {
-  Future<int> addExpense({
+  Future<Expense> addExpense({
     required String title,
     required double amount,
     required String description,
     required DateTime date,
     required TagData? tag,
+    Liability? liability,
   });
 
   Future<void> deleteExpense({required int id});
 
-  Future<int> updateExpense({
+  Future<Expense> updateExpense({
     required int id,
     String? title,
     double? amount,

@@ -14,13 +14,18 @@ import 'package:cashbook/data/repository/liability_repository_implementation.dar
 import 'package:cashbook/data/repository/tag_repository_implementation.dart';
 import 'package:cashbook/features/assets_liability/domain/usecases/assets_list_usecase.dart';
 import 'package:cashbook/features/assets_liability/domain/usecases/liability_list_usecase.dart';
+import 'package:cashbook/features/assets_liability/domain/usecases/liability_payouts_usecase.dart';
 import 'package:cashbook/features/assets_liability/presentation/bloc/assets/assets_list_bloc.dart';
 import 'package:cashbook/features/assets_liability/presentation/bloc/liability/liability_list_bloc.dart';
 import 'package:cashbook/features/assets_liability/presentation/pages/assets_liability.dart';
 import 'package:cashbook/features/create/domain/usecases/create_asset_usecase.dart';
 import 'package:cashbook/features/create/domain/usecases/create_liability_usecase.dart';
+import 'package:cashbook/features/create/domain/usecases/edit_liability_payment.dart';
+import 'package:cashbook/features/create/domain/usecases/edit_liability_usecase.dart';
 import 'package:cashbook/features/create/domain/usecases/expense_add_usecase.dart';
 import 'package:cashbook/features/create/domain/usecases/expense_edit_usecase.dart';
+import 'package:cashbook/features/create/domain/usecases/get_liability_usecase.dart';
+import 'package:cashbook/features/create/domain/usecases/pay_liablity_usecase.dart';
 import 'package:cashbook/features/create/domain/usecases/tag_create_usecase.dart';
 import 'package:cashbook/features/create/presentation/bloc/assets/assets_bloc.dart';
 import 'package:cashbook/features/create/presentation/bloc/liability/liability_bloc.dart';
@@ -46,20 +51,48 @@ Future<void> main() async {
       BlocProvider<LiabilityListBloc>(
         create: (context) => LiabilityListBloc(
             liabilityListUseCase: LiabilityListUseCase(
-          repository: LiabilityRepositoryImplementation(
-            datasource:
-                LiabilityLocalDataSourceImplementation(database: database),
-          ),
-        )),
+              repository: LiabilityRepositoryImplementation(
+                datasource:
+                    LiabilityLocalDataSourceImplementation(database: database),
+              ),
+            ),
+            liabilityPayoutsUseCase: LiabilityPayoutsUseCase(
+              repository: LiabilityRepositoryImplementation(
+                datasource:
+                    LiabilityLocalDataSourceImplementation(database: database),
+              ),
+            )),
       ),
       BlocProvider<LiabilityBloc>(
         create: (context) => LiabilityBloc(
+            editLiabilityUseCase: EditLiabilityUseCase(
+                repository: LiabilityRepositoryImplementation(
+                    datasource: LiabilityLocalDataSourceImplementation(
+                        database: database))),
             createLiabilityUseCase: CreateLiabilityUseCase(
-          repository: LiabilityRepositoryImplementation(
-            datasource:
-                LiabilityLocalDataSourceImplementation(database: database),
-          ),
-        )),
+              repository: LiabilityRepositoryImplementation(
+                datasource:
+                    LiabilityLocalDataSourceImplementation(database: database),
+              ),
+            ),
+            payLiabilityUseCase: PayLiabilityUseCase(
+              repository: LiabilityRepositoryImplementation(
+                datasource:
+                    LiabilityLocalDataSourceImplementation(database: database),
+              ),
+            ),
+            editLiabilityPaymentUseCase: EditLiabilityPaymentUseCase(
+              repository: LiabilityRepositoryImplementation(
+                datasource:
+                    LiabilityLocalDataSourceImplementation(database: database),
+              ),
+            ),
+            getLiabilityUseCase: GetLiabilityUseCase(
+              repository: LiabilityRepositoryImplementation(
+                datasource:
+                    LiabilityLocalDataSourceImplementation(database: database),
+              ),
+            )),
       ),
       BlocProvider<AssetsListBloc>(
         create: (context) => AssetsListBloc(

@@ -22,7 +22,11 @@ final class ExpenseDataError extends ExpenseState {
 
 /* Expense Add Related */
 
-final class ExpenseAdded extends ExpenseState {}
+final class ExpenseAdded extends ExpenseState {
+  final Expense expense;
+
+  ExpenseAdded(this.expense);
+}
 
 final class ExpenseAddError extends ExpenseState {
   final String message;
@@ -32,7 +36,11 @@ final class ExpenseAddError extends ExpenseState {
 
 /* Expense Edit Related */
 
-final class ExpenseEdited extends ExpenseState {}
+final class ExpenseEdited extends ExpenseState {
+  final Expense expense;
+
+  ExpenseEdited(this.expense);
+}
 
 final class ExpenseEditedError extends ExpenseState {
   final String message;

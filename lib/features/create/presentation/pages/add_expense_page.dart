@@ -2,7 +2,9 @@ import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:cashbook/bloc/expense/expense_bloc.dart';
 import 'package:cashbook/core/theme/theme.dart';
 import 'package:cashbook/data/models/expense.dart';
+import 'package:cashbook/data/models/liability.dart';
 import 'package:cashbook/data/models/tag_data.dart';
+import 'package:cashbook/features/create/presentation/bloc/liability/liability_bloc.dart';
 import 'package:cashbook/features/create/presentation/pages/create_tag_page.dart';
 import 'package:cashbook/features/home/presentation/widgets/add_entity/add_description.dart';
 import 'package:cashbook/features/home/presentation/widgets/add_entity/add_tag.dart';
@@ -14,10 +16,12 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 
 class AddExpensePage extends StatefulWidget {
-  const AddExpensePage({super.key, required this.heading, this.entity});
+  const AddExpensePage(
+      {super.key, required this.heading, this.entity, this.liability});
 
   final String heading;
   final Expense? entity;
+  final Liability? liability;
 
   @override
   State<AddExpensePage> createState() => _AddExpensePageState();
@@ -52,16 +56,47 @@ class _AddExpensePageState extends State<AddExpensePage> {
   @override
   void initState() {
     super.initState();
+    if (widget.liability != null) {
+      titleController.text = "${widget.liability!.title} Payment";
+    }
     ExpenseBloc bloc = context.read<ExpenseBloc>();
+
+    LiabilityBloc liabilityBloc = context.read<LiabilityBloc>();
+    liabilityBloc.stream.listen((event) {
+      if (event is LiabilityPaid) {
+        Fluttertoast.showToast(msg: "Successfully paid liability");
+        // Navigator.of(context).pop();
+      } else if (event is LiabilityPayError) {
+        Fluttertoast.showToast(msg: event.message);
+      } else if (event is LiabilityPaymentEdited) {
+        Fluttertoast.showToast(msg: "Successfully edited liability payment");
+        // Navigator.of(context).pop();
+      } else if (event is LiabilityPaymentEditError) {
+        Fluttertoast.showToast(msg: "Failed to edit liability payment");
+      }
+    });
+
     bloc.stream.listen((event) {
       if (event is ExpenseAdded) {
-        Navigator.of(context).pop();
-        Fluttertoast.showToast(msg: "Successfully added expense");
+        if (widget.liability != null) {
+          liabilityBloc.add(PayLiabilityEvent(
+              liability: widget.liability!, expense: event.expense));
+        } else {
+          Navigator.of(context).pop();
+          Fluttertoast.showToast(msg: "Successfully added expense");
+        }
       } else if (event is ExpenseAddError) {
         Fluttertoast.showToast(msg: "Failed to add expense");
       } else if (event is ExpenseEdited) {
-        Navigator.of(context).pop();
-        Fluttertoast.showToast(msg: "Successfully Edited expense");
+        if (widget.entity != null && widget.entity!.liability.target != null) {
+          liabilityBloc.add(EditLiabilityPaymentEvent(
+              liability: widget.entity!.liability.target!,
+              expense: widget.entity!,
+              neAmount: event.expense.amount));
+        } else {
+          Navigator.of(context).pop();
+          Fluttertoast.showToast(msg: "Successfully Edited expense");
+        }
       } else if (event is ExpenseEditedError) {
         Fluttertoast.showToast(msg: "Failed to edit expense");
       }
@@ -119,48 +154,52 @@ class _AddExpensePageState extends State<AddExpensePage> {
                           .primaryDark
                           .withAlpha(150)),
                   padding: EdgeInsets.symmetric(
-                      horizontal: width * 0.03, vertical: height * 0.02),
+                      horizontal: width * 0.03, vertical: height * 0.01),
                   child: Row(
                     children: [
-                      BottomButton(
-                        onPressed: () {
-                          showDialog(
-                              context: context,
-                              builder: (context) => AddTag(
-                                  tag: tag,
-                                  onAddTag: (selectedTag) {
-                                    setState(() {
-                                      tag = selectedTag;
-                                    });
-                                    Navigator.of(context).pop();
-                                  },
-                                  onCreateTag: () {
-                                    Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                const CreateTagPage(
-                                                    heading:
-                                                        "Create new Tag")));
-                                  }));
-                        },
-                        icon: BootstrapIcons.tag_fill,
-                        text: "Tag",
-                      ),
-                      SizedBox(
-                        width: width * 0.03,
-                      ),
-                      BottomButton(
-                        onPressed: () {
-                          showDialog(
-                              context: context,
-                              builder: (context) => AddDescription(
-                                    descriptionController:
-                                        descriptionController,
-                                  ));
-                        },
-                        icon: BootstrapIcons.plus_circle_dotted,
-                        text: "Description",
-                      ),
+                      (widget.liability == null
+                          ? Row(children: [
+                              BottomButton(
+                                onPressed: () {
+                                  showDialog(
+                                      context: context,
+                                      builder: (context) => AddTag(
+                                          tag: tag,
+                                          onAddTag: (selectedTag) {
+                                            setState(() {
+                                              tag = selectedTag;
+                                            });
+                                            Navigator.of(context).pop();
+                                          },
+                                          onCreateTag: () {
+                                            Navigator.of(context).push(
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        const CreateTagPage(
+                                                            heading:
+                                                                "Create new Tag")));
+                                          }));
+                                },
+                                icon: BootstrapIcons.tag_fill,
+                                text: "Tag",
+                              ),
+                              SizedBox(
+                                width: width * 0.03,
+                              ),
+                              BottomButton(
+                                onPressed: () {
+                                  showDialog(
+                                      context: context,
+                                      builder: (context) => AddDescription(
+                                            descriptionController:
+                                                descriptionController,
+                                          ));
+                                },
+                                icon: BootstrapIcons.plus_circle_dotted,
+                                text: "Description",
+                              ),
+                            ])
+                          : const SizedBox()),
                       const Spacer(),
                       IconButton(
                         padding: EdgeInsets.symmetric(
@@ -181,7 +220,18 @@ class _AddExpensePageState extends State<AddExpensePage> {
                           if (!_validate()) {
                             return;
                           }
-                          if (widget.entity == null) {
+                          if (widget.liability != null) {
+                            print(
+                                "LIABILITY::::::::::::::::::::::::::::::::::::::::::::::::::");
+                            print(widget.liability!.id);
+                            context.read<ExpenseBloc>().add(AddExpenseEvent(
+                                amount: double.parse(amountController.text),
+                                title: titleController.text,
+                                description: descriptionController.text,
+                                date: DateTime.now(),
+                                tag: tag,
+                                liability: widget.liability));
+                          } else if (widget.entity == null) {
                             context.read<ExpenseBloc>().add(AddExpenseEvent(
                                 amount: double.parse(amountController.text),
                                 title: titleController.text,
@@ -190,21 +240,43 @@ class _AddExpensePageState extends State<AddExpensePage> {
                                 // TODO : IMPLEMENT CUSTOM TIMEING
                                 tag: tag));
                           } else {
-                            context.read<ExpenseBloc>().add(EditExpenseEvent(
-                                title: titleController.text,
-                                amount: double.parse(amountController.text),
-                                description: descriptionController.text,
-                                date: widget.entity!.date,
-                                tag: tag,
-                                // TODO : IMPLEMENT CUSTOM TIMEING
-                                id: widget.entity!.id));
+                            if (widget.entity!.liability.target != null) {
+                              context.read<ExpenseBloc>().add(EditExpenseEvent(
+                                  title: titleController.text,
+                                  amount: double.parse(amountController.text),
+                                  description: descriptionController.text,
+                                  date: widget.entity!.date,
+                                  tag: tag,
+                                  // TODO : IMPLEMENT CUSTOM TIMEING
+                                  id: widget.entity!.id));
+                            } else {
+                              context.read<ExpenseBloc>().add(EditExpenseEvent(
+                                  title: titleController.text,
+                                  amount: double.parse(amountController.text),
+                                  description: descriptionController.text,
+                                  date: widget.entity!.date,
+                                  tag: tag,
+                                  // TODO : IMPLEMENT CUSTOM TIMEING
+                                  id: widget.entity!.id));
+                            }
                           }
                         },
-                        icon: Icon(
-                          Icons.send_rounded,
-                          color: Theme.of(context)
-                              .extension<AppColorsExtension>()!
-                              .black,
+                        icon: Row(
+                          children: [
+                            const Text(
+                              "Save",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            const SizedBox(
+                              width: 5,
+                            ),
+                            Icon(
+                              Icons.send_rounded,
+                              color: Theme.of(context)
+                                  .extension<AppColorsExtension>()!
+                                  .black,
+                            ),
+                          ],
                         ),
                       ),
                     ],
