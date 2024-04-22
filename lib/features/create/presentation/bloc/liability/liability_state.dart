@@ -20,3 +20,19 @@ final class LiabilityEditError extends LiabilityState {
 
   LiabilityEditError({required this.message});
 }
+
+final class LiabilityPaid extends LiabilityState {}
+
+final class LiabilityPayError extends LiabilityState {
+  final String message;
+
+  LiabilityPayError({required this.message});
+}
+
+final class LiabilityPaymentEdited extends LiabilityState {}
+
+final class LiabilityPaymentEditError extends LiabilityState {
+  final String message;
+
+  LiabilityPaymentEditError({required this.message});
+}

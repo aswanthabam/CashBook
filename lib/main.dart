@@ -19,9 +19,11 @@ import 'package:cashbook/features/assets_liability/presentation/bloc/liability/l
 import 'package:cashbook/features/assets_liability/presentation/pages/assets_liability.dart';
 import 'package:cashbook/features/create/domain/usecases/create_asset_usecase.dart';
 import 'package:cashbook/features/create/domain/usecases/create_liability_usecase.dart';
+import 'package:cashbook/features/create/domain/usecases/edit_liability_payment.dart';
 import 'package:cashbook/features/create/domain/usecases/edit_liability_usecase.dart';
 import 'package:cashbook/features/create/domain/usecases/expense_add_usecase.dart';
 import 'package:cashbook/features/create/domain/usecases/expense_edit_usecase.dart';
+import 'package:cashbook/features/create/domain/usecases/pay_liablity_usecase.dart';
 import 'package:cashbook/features/create/domain/usecases/tag_create_usecase.dart';
 import 'package:cashbook/features/create/presentation/bloc/assets/assets_bloc.dart';
 import 'package:cashbook/features/create/presentation/bloc/liability/liability_bloc.dart';
@@ -60,6 +62,18 @@ Future<void> main() async {
                     datasource: LiabilityLocalDataSourceImplementation(
                         database: database))),
             createLiabilityUseCase: CreateLiabilityUseCase(
+              repository: LiabilityRepositoryImplementation(
+                datasource:
+                    LiabilityLocalDataSourceImplementation(database: database),
+              ),
+            ),
+            payLiabilityUseCase: PayLiabilityUseCase(
+              repository: LiabilityRepositoryImplementation(
+                datasource:
+                    LiabilityLocalDataSourceImplementation(database: database),
+              ),
+            ),
+            editLiabilityPaymentUseCase: EditLiabilityPaymentUseCase(
               repository: LiabilityRepositoryImplementation(
                 datasource:
                     LiabilityLocalDataSourceImplementation(database: database),

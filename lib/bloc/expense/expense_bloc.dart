@@ -34,7 +34,7 @@ class ExpenseBloc extends Bloc<ExpenseEvent, ExpenseState> {
               tag: event.tag))
           .then((value) {
         value.fold((success) {
-          emit(ExpenseEdited());
+          emit(ExpenseEdited(success));
         }, (failure) {
           emit(ExpenseEditedError(failure.message));
         });
@@ -48,10 +48,11 @@ class ExpenseBloc extends Bloc<ExpenseEvent, ExpenseState> {
               amount: event.amount,
               description: event.description,
               date: event.date,
-              tag: event.tag))
+              tag: event.tag,
+              isLiability: event.isLiability))
           .then((value) {
         value.fold((success) {
-          emit(ExpenseAdded());
+          emit(ExpenseAdded(success));
         }, (failure) {
           emit(ExpenseAddError(failure.message));
         });

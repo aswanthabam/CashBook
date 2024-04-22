@@ -10,18 +10,20 @@ class ExpenseRepositoryImplementation implements ExpenseRepository {
   ExpenseRepositoryImplementation({required this.datasource});
 
   @override
-  Future<int> addExpense(
+  Future<Expense> addExpense(
       {required String title,
       required double amount,
       required String description,
       required DateTime date,
-      required TagData? tag}) async {
+      required TagData? tag,
+      int isLiability = 0}) async {
     return await datasource.addExpense(
         title: title,
         amount: amount,
         description: description,
         date: date,
-        tag: tag);
+        tag: tag,
+        isLiability: isLiability);
   }
 
   @override
@@ -50,7 +52,7 @@ class ExpenseRepositoryImplementation implements ExpenseRepository {
   }
 
   @override
-  Future<int> updateExpense(
+  Future<Expense> updateExpense(
       {required int id,
       String? title,
       double? amount,

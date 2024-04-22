@@ -11,18 +11,19 @@ class Expense {
   ToOne<TagData> tag = ToOne<TagData>();
   @Property(type: PropertyType.date)
   DateTime date = DateTime.now();
+  int isLiability = 0;
 
   Expense(
       {required this.id,
       required this.title,
       required this.amount,
       required this.description,
-    required this.date,
-  });
+      required this.date,
+      this.isLiability = 0});
 
   @override
   String toString() {
-    return 'Expense{id: $id, title: $title, amount: $amount, description: $description, tags: $tag, date: $date}';
+    return 'Expense{id: $id, title: $title, amount: $amount, description: $description, tags: $tag, date: $date, isLiabilityPayment: $isLiability}';
   }
 }
 

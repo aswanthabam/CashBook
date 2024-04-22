@@ -50,3 +50,21 @@ final class EditLiabilityEvent extends LiabilityEvent {
       required this.date,
       required this.endDate});
 }
+
+final class PayLiabilityEvent extends LiabilityEvent {
+  final Liability liability;
+  final Expense expense;
+
+  PayLiabilityEvent({required this.liability, required this.expense});
+}
+
+final class EditLiabilityPaymentEvent extends LiabilityEvent {
+  final int liabilityId;
+  final Expense expense;
+  final double neAmount;
+
+  EditLiabilityPaymentEvent(
+      {required this.liabilityId,
+      required this.expense,
+      required this.neAmount});
+}
