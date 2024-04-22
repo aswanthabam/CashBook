@@ -67,11 +67,19 @@ class _LiabilityDisplayerState extends State<LiabilityDisplayer> {
                     formatDate(widget
                         .liabilities[widget.liabilities.length - index - 1]
                         .date),
-                    style: const TextStyle(fontSize: 12))
+                    style: const TextStyle(fontSize: 12)),
+                Text(
+                    " ⦿ ${widget.liabilities[widget.liabilities.length - index - 1].amount}",
+                    style: TextStyle(
+                        fontSize: 12,
+                        color: Theme.of(context)
+                            .extension<AppColorsExtension>()!
+                            .green)),
               ],
             ),
             trailing: Text(
-              widget.liabilities[widget.liabilities.length - index - 1].amount
+              widget
+                  .liabilities[widget.liabilities.length - index - 1].remaining
                   .toString(),
               style: const TextStyle(
                   color: Colors.red, fontSize: 15, fontWeight: FontWeight.bold),
