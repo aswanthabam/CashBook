@@ -104,7 +104,9 @@ class ExpenseLocalDatasourceImplementation implements ExpenseLocalDatasource {
       }
       query.order(Expense_.date, flags: descending ? 1 : 0);
       Query<Expense> qu = query.build();
-      qu.limit = -count;
+      if (count != -1) {
+        qu.limit = -count;
+      }
       return qu.find();
     } catch (e) {
       throw LocalDatabaseException(

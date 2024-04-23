@@ -62,7 +62,9 @@ class _ShowLiabilityPageState extends State<ShowLiabilityPage> {
                         style: ElevatedButton.styleFrom(
                             shadowColor: Colors.transparent,
                             backgroundColor: Colors.transparent,
-                            foregroundColor: Colors.black,
+                            foregroundColor: Theme.of(context)
+                                .extension<AppColorsExtension>()!
+                                .black,
                             elevation: 0),
                         onPressed: () {
                           Navigator.of(context).pushReplacement(

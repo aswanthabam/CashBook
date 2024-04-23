@@ -36,7 +36,8 @@ class _HomeState extends State<Home> {
         MainChartRow(
             color: Colors.blue,
             value: 0,
-            date: DateFormat("d MMM").format(DateTime.now().copyWith(day: 1))),
+            date: DateFormat("d MMM")
+                .format(DateTime.now().copyWith(day: DateTime.now().day - 1))),
         MainChartRow(
             color: expenses[0].tag.target?.colorValue ?? Colors.blue,
             value: expenses[0].amount,
