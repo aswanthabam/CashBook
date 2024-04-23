@@ -1,5 +1,6 @@
 import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:cashbook/core/theme/theme.dart';
+import 'package:cashbook/features/notifications/presentation/pages/notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -33,9 +34,19 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
                 width: width * 0.035,
               ),
               IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.of(context).push(PageRouteBuilder(
+                      pageBuilder: (context, a, b) => const Notifications(),
+                      transitionsBuilder:
+                          (context, animation, secondaryAnimation, child) {
+                        return FadeTransition(
+                          opacity: animation,
+                          child: child,
+                        );
+                      }));
+                },
                 icon: Icon(
-                  BootstrapIcons.person_fill,
+                  BootstrapIcons.bell_fill,
                   color: Theme.of(context)
                       .extension<AppColorsExtension>()!
                       .primaryLight,
@@ -43,16 +54,19 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
               ),
               const Spacer(),
               IconButton(
-                onPressed: () {
-                  context.read<ThemeBloc>().add(ThemeChanged());
-                },
-                icon: Icon(
-                  BootstrapIcons.moon,
-                  color: Theme.of(context)
-                      .extension<AppColorsExtension>()!
-                      .primaryLight,
-                ),
-              ),
+                  onPressed: () {
+                    context.read<ThemeBloc>().add(ThemeChanged());
+                  },
+                  icon: BlocBuilder<ThemeBloc, ThemeState>(
+                    builder: (context, state) => Icon(
+                      state.isDark
+                          ? BootstrapIcons.sun_fill
+                          : BootstrapIcons.moon_fill,
+                      color: Theme.of(context)
+                          .extension<AppColorsExtension>()!
+                          .primaryLight,
+                    ),
+                  )),
               SizedBox(
                 width: width * 0.035,
               ),

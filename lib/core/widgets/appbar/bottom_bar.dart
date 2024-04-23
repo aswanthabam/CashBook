@@ -5,7 +5,7 @@ import 'package:cashbook/features/assets_liability/presentation/pages/assets_lia
 import 'package:cashbook/features/history/presentation/page/history.dart';
 import 'package:cashbook/features/home/presentation/page/home.dart';
 import 'package:cashbook/features/home/presentation/widgets/add_entity/add_entity_popup.dart';
-import 'package:cashbook/features/settings/presentation/page/settings.dart';
+import 'package:cashbook/features/profile/presentation/page/profile.dart';
 import 'package:flutter/material.dart';
 
 class BottomBar extends StatefulWidget {
@@ -87,10 +87,10 @@ class _BottomBarState extends State<BottomBar> {
                       BottomBarButton(
                         onPressed: () {
                           Navigator.of(context).pushReplacement(
-                              _createRoute(child: const Settings()));
+                              _createRoute(child: const Profile()));
                         },
-                        icon: BootstrapIcons.gear_fill,
-                        text: "Settings",
+                        icon: BootstrapIcons.person_fill,
+                        text: "Profile",
                       ),
                     ],
                   ))),
