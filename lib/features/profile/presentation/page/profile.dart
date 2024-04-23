@@ -68,7 +68,11 @@ class _ProfileState extends State<Profile> {
   }
 
   Future<File?> _generatePDF() async {
-    if (!await requestPermission(Permission.manageExternalStorage)) return null;
+    if (!await requestPermission(Permission.manageExternalStorage) &&
+        !await requestPermission(Permission.storage)) {
+      Fluttertoast.showToast(msg: "Permission denied");
+      return null;
+    }
     List<Expense> expenses = await _expenseRepositoryImplementation
         .getExpensesFilter(count: -1, descending: true);
     List<Asset> assets = _assetsRepositoryImplementation.getAssets();
@@ -173,7 +177,11 @@ class _ProfileState extends State<Profile> {
       * This method is used to generate an excel file with the expenses, assets and liabilities data
   */
   Future<File?> _generateExcel() async {
-    if (!await requestPermission(Permission.manageExternalStorage)) return null;
+    if (!await requestPermission(Permission.manageExternalStorage) &&
+        !await requestPermission(Permission.storage)) {
+      Fluttertoast.showToast(msg: "Permission denied");
+      return null;
+    }
     List<Expense> expenses = await _expenseRepositoryImplementation
         .getExpensesFilter(count: -1, descending: true);
     List<Asset> assets = _assetsRepositoryImplementation.getAssets();
