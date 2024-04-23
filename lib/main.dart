@@ -38,7 +38,7 @@ import 'package:cashbook/features/home/domain/uscases/expense_total_data_usecase
 import 'package:cashbook/features/home/domain/uscases/tag_list_usecase.dart';
 import 'package:cashbook/features/home/presentation/bloc/expense_history/expense_history_bloc.dart';
 import 'package:cashbook/features/home/presentation/page/home.dart';
-import 'package:cashbook/features/settings/presentation/page/settings.dart';
+import 'package:cashbook/features/profile/presentation/page/profile.dart';
 import 'package:cashbook/features/splash_screen/presentation/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -177,7 +177,7 @@ Future<void> main() async {
           routes: {
             'home': (context) => const Home(),
             'splash_screen': (context) => const SplashScreen(),
-            'settings': (context) => const Settings(),
+            'settings': (context) => const Profile(),
             'history': (context) => const History(),
             'assets_liability': (context) => const AssetsLiabilityPage(),
           },

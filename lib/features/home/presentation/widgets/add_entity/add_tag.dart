@@ -7,7 +7,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_iconpicker/flutter_iconpicker.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-
 class AddTag extends StatefulWidget {
   const AddTag(
       {super.key, required this.onAddTag, required this.onCreateTag, this.tag});
@@ -27,7 +26,6 @@ class _AddTagState extends State<AddTag> {
   @override
   void initState() {
     super.initState();
-
     TagBloc tagBloc = context.read<TagBloc>();
     tagBloc.add(GetTagsEvent());
     tagBloc.stream.listen((event) {
@@ -79,31 +77,39 @@ class _AddTagState extends State<AddTag> {
               SizedBox(
                 height: height * 0.01,
               ),
-              Wrap(
-                  alignment: WrapAlignment.center,
-                  children: tags.map((tag) {
-                    return Tag(
-                        onPressed: () {
-                          tag.isSelected = !tag.isSelected;
-                          if (selectedTag != null) {
-                            selectedTag?.isSelected = false;
-                          }
-                          if (tag.isSelected) {
-                            selectedTag = tag;
-                            widget.onAddTag(selectedTag);
-                            // Navigator.of(context).pop();
-                          } else {
-                            selectedTag = null;
-                          }
-                          setState(() {});
-                        },
-                        tagData: tag,
-                        highlightColor: Colors.grey,
-                        icon: deserializeIcon(
-                                {"key": tag.icon, "pack": "material"},
-                                iconPack: IconPack.allMaterial) ??
-                            Icons.error);
-                  }).toList()),
+              SizedBox(
+                height: height * 0.25,
+                child: Scrollbar(
+                  thumbVisibility: true,
+                  child: SingleChildScrollView(
+                    child: Wrap(
+                        alignment: WrapAlignment.center,
+                        children: tags.map((tag) {
+                          return Tag(
+                              onPressed: () {
+                                tag.isSelected = !tag.isSelected;
+                                if (selectedTag != null) {
+                                  selectedTag?.isSelected = false;
+                                }
+                                if (tag.isSelected) {
+                                  selectedTag = tag;
+                                  widget.onAddTag(selectedTag);
+                                  // Navigator.of(context).pop();
+                                } else {
+                                  selectedTag = null;
+                                }
+                                setState(() {});
+                              },
+                              tagData: tag,
+                              highlightColor: Colors.grey,
+                              icon: deserializeIcon(
+                                      {"key": tag.icon, "pack": "material"},
+                                      iconPack: IconPack.allMaterial) ??
+                                  Icons.error);
+                        }).toList()),
+                  ),
+                ),
+              ),
               const Spacer(),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,

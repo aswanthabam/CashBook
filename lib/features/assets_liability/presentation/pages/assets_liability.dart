@@ -48,13 +48,17 @@ class _AssetsLiabilityPageState extends State<AssetsLiabilityPage> {
         .add(GetLiabilitiesEvent(includeFinished: true, count: 10));
     liabilityBloc.stream.listen((event) {
       if (event is LiabilityCreated) {
-        liabilityListBloc.add(GetLiabilitiesEvent());
+        liabilityListBloc
+            .add(GetLiabilitiesEvent(includeFinished: true, count: 10));
       } else if (event is LiabilityEdited) {
-        liabilityListBloc.add(GetLiabilitiesEvent());
+        liabilityListBloc
+            .add(GetLiabilitiesEvent(includeFinished: true, count: 10));
       } else if (event is LiabilityPaid) {
-        liabilityListBloc.add(GetLiabilitiesEvent());
+        liabilityListBloc
+            .add(GetLiabilitiesEvent(includeFinished: true, count: 10));
       } else if (event is LiabilityPaymentEdited) {
-        liabilityListBloc.add(GetLiabilitiesEvent());
+        liabilityListBloc
+            .add(GetLiabilitiesEvent(includeFinished: true, count: 10));
       }
     });
 
@@ -136,6 +140,8 @@ class _AssetsLiabilityPageState extends State<AssetsLiabilityPage> {
                   },
                   builder: (context, state) {
                     if (state is LiabilityListLoaded) {
+                      print(
+                          "LOADED LIABILITIES: ${state.liabilities} ::::::::::::::::;");
                       if (state.liabilities.isNotEmpty) {
                         liabilities = state.liabilities;
                         return LiabilityDisplayer(
