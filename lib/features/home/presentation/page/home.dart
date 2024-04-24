@@ -238,8 +238,7 @@ class _HomeState extends State<Home> {
                       children: [
                         IconButtonWidget(
                           onPressed: () {
-                            Navigator.of(context)
-                                .pushReplacementNamed("history");
+                            Navigator.of(context).pushNamed("history");
                           },
                           message: "View All Transactions",
                           icon: Icons.chevron_right,
