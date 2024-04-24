@@ -7,7 +7,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../bloc/theme/theme_bloc.dart';
 
 class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const MainAppBar({super.key});
+  const MainAppBar({super.key, required this.title, this.showTitle = true});
+
+  final bool showTitle;
+  final String title;
 
   @override
   Size get preferredSize => const Size.fromHeight(50);
@@ -33,25 +36,48 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
               SizedBox(
                 width: width * 0.035,
               ),
-              IconButton(
-                onPressed: () {
-                  Navigator.of(context).push(PageRouteBuilder(
-                      pageBuilder: (context, a, b) => const Notifications(),
-                      transitionsBuilder:
-                          (context, animation, secondaryAnimation, child) {
-                        return FadeTransition(
-                          opacity: animation,
-                          child: child,
-                        );
-                      }));
-                },
-                icon: Icon(
-                  BootstrapIcons.bell_fill,
-                  color: Theme.of(context)
-                      .extension<AppColorsExtension>()!
-                      .primaryLight,
-                ),
-              ),
+              showTitle
+                  ? Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Image.asset('assets/icons/app_icon/icon.png',
+                            width: width * 0.1,
+                            height: width * 0.05,
+                            fit: BoxFit.contain),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          title,
+                          style: TextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(context)
+                                  .extension<AppColorsExtension>()!
+                                  .primary),
+                        ),
+                      ],
+                    )
+                  : IconButton(
+                      onPressed: () {
+                        Navigator.of(context).push(PageRouteBuilder(
+                            pageBuilder: (context, a, b) =>
+                                const Notifications(),
+                            transitionsBuilder: (context, animation,
+                                secondaryAnimation, child) {
+                              return FadeTransition(
+                                opacity: animation,
+                                child: child,
+                              );
+                            }));
+                      },
+                      icon: Icon(
+                        BootstrapIcons.bell_fill,
+                        color: Theme.of(context)
+                            .extension<AppColorsExtension>()!
+                            .primaryLight,
+                      ),
+                    ),
               const Spacer(),
               IconButton(
                   onPressed: () {

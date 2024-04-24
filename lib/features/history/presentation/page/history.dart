@@ -56,26 +56,13 @@ class _HistoryState extends State<History> {
         body: SingleChildScrollView(
           child: Column(
             children: [
-              const MainAppBar(),
+              const MainAppBar(title: "Transaction History"),
               Container(
                 width: MediaQuery.of(context).size.width,
                 padding: const EdgeInsets.all(10),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 10, horizontal: 0),
-                      child: Text(
-                        "All History",
-                        style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Theme.of(context)
-                                .extension<AppColorsExtension>()!
-                                .primary),
-                      ),
-                    ),
                     const SizedBox(
                       height: 10,
                     ),
