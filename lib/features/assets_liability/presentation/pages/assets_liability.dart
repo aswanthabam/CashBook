@@ -76,7 +76,9 @@ class _AssetsLiabilityPageState extends State<AssetsLiabilityPage> {
         bottomNavigationBar: const BottomBar(),
         body: SingleChildScrollView(
             child: Column(children: [
-          const MainAppBar(),
+          const MainAppBar(
+            title: "Assets & Liabilities",
+          ),
           Container(
             padding: EdgeInsets.all(width * 0.035),
             width: MediaQuery.of(context).size.width,
@@ -84,14 +86,11 @@ class _AssetsLiabilityPageState extends State<AssetsLiabilityPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Padding(
-                  padding: EdgeInsets.only(left: 8, bottom: 10),
+                  padding: EdgeInsets.only(left: 3),
                   child: Text(
-                    "Your Assets",
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                    "Assets",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
                   ),
-                ),
-                const SizedBox(
-                  height: 10,
                 ),
                 BlocConsumer<AssetsListBloc, AssetsListState>(
                   listener: (context, state) {
@@ -123,14 +122,11 @@ class _AssetsLiabilityPageState extends State<AssetsLiabilityPage> {
                   },
                 ),
                 const Padding(
-                  padding: EdgeInsets.only(left: 8, top: 20, bottom: 10),
+                  padding: EdgeInsets.only(left: 3),
                   child: Text(
-                    "Your Liabilities",
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                    "Liabilities",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
                   ),
-                ),
-                const SizedBox(
-                  height: 10,
                 ),
                 BlocConsumer<LiabilityListBloc, LiabilityListState>(
                   listener: (context, state) {

@@ -101,7 +101,7 @@ class _HomeState extends State<Home> {
         body: SingleChildScrollView(
           child: Column(
             children: [
-              const MainAppBar(),
+              const MainAppBar(title: "CashBook", showTitle: false),
               Container(
                 padding: EdgeInsets.all(width * 0.035),
                 width: MediaQuery.of(context).size.width,
@@ -238,8 +238,7 @@ class _HomeState extends State<Home> {
                       children: [
                         IconButtonWidget(
                           onPressed: () {
-                            Navigator.of(context)
-                                .pushReplacementNamed("history");
+                            Navigator.of(context).pushNamed("history");
                           },
                           message: "View All Transactions",
                           icon: Icons.chevron_right,

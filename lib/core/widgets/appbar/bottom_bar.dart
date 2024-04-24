@@ -1,8 +1,8 @@
 import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:cashbook/core/theme/theme.dart';
 import 'package:cashbook/core/widgets/buttons/add_button.dart';
+import 'package:cashbook/features/analytics/presentation/pages/analytics.dart';
 import 'package:cashbook/features/assets_liability/presentation/pages/assets_liability.dart';
-import 'package:cashbook/features/history/presentation/page/history.dart';
 import 'package:cashbook/features/home/presentation/page/home.dart';
 import 'package:cashbook/features/home/presentation/widgets/add_entity/add_entity_popup.dart';
 import 'package:cashbook/features/profile/presentation/page/profile.dart';
@@ -68,10 +68,10 @@ class _BottomBarState extends State<BottomBar> {
                       BottomBarButton(
                         onPressed: () {
                           Navigator.of(context).pushReplacement(
-                              _createRoute(child: const History()));
+                              _createRoute(child: const AnalyticsPage()));
                         },
-                        icon: BootstrapIcons.clock_history,
-                        text: "History",
+                        icon: BootstrapIcons.bar_chart_fill,
+                        text: "Analytics",
                       ),
                       SizedBox(
                         width: width * 0.05,

@@ -348,24 +348,14 @@ class _ProfileState extends State<Profile> {
         body: SingleChildScrollView(
             child: Column(
           children: [
-            const MainAppBar(),
+            const MainAppBar(
+              title: "Profile",
+            ),
             Padding(
               padding: EdgeInsets.all(width * 0.05),
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Padding(
-                      padding: EdgeInsets.only(bottom: width * 0.05),
-                      child: const Column(
-                        children: [
-                          Text(
-                            "Profile",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 20),
-                          ),
-                        ],
-                      ),
-                    ),
                     Padding(
                       padding: EdgeInsets.only(bottom: width * 0.05),
                       child: FullSizeButton(
