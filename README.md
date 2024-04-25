@@ -1,4 +1,5 @@
-# cashbook
+![Banner](https://raw.githubusercontent.com/aswanthabam/CashBook/main/banner_image.png)
+# Cashbook
 
 Personal finance management app developed for tracking your expenses, earnings and savings. 
 
