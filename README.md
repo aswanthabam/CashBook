@@ -25,6 +25,10 @@ flutter build apk --no-tree-shake-icons
 ```
 > Note: While this project has been extensively tested and optimized for Android API versions 22 through 34, we warmly welcome iOS developers to contribute by testing and optimizing the app on the iOS platform.
 
+### iOs
+
+This project is not tested on iOS platform.
+
 ## Contributing 🤝
 
 Contributions are welcome! If you have any ideas, suggestions, or bug reports, feel free to open an issue or submit a pull request.
